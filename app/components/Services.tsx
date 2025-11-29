@@ -34,7 +34,7 @@ export default function Services() {
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           What we deliver
         </h2>
-        <p className="mt-2 text-sm text-slate-300 sm:text-base">
+        <p className="mt-2 text-sm text-slate-700 sm:text-base">
           Managed, ethical remote support for NGOs, social enterprises, and
           mission-driven teams.
         </p>
@@ -44,16 +44,16 @@ export default function Services() {
         {services.map((s, i) => (
           <motion.article
             key={s.title}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"
+            className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-5 shadow-sm shadow-violet-100"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <h3 className="text-lg font-semibold text-slate-50">
+            <h3 className="text-lg font-semibold text-slate-900">
               {s.title}
             </h3>
-            <ul className="mt-3 text-sm text-slate-300 space-y-2">
+            <ul className="mt-3 space-y-2 text-sm text-slate-700">
               {s.bullets.map((b) => (
                 <li key={b}>• {b}</li>
               ))}

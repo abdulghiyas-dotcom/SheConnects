@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Keep the elegant dark theme */
 body {
-  @apply bg-slate-950 text-slate-50 antialiased;
+  @apply text-slate-900 antialiased;
+  background: radial-gradient(circle at 12% 20%, rgba(129, 140, 248, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 10%, rgba(236, 72, 153, 0.12), transparent 30%),
+    #f8fafc;
 }

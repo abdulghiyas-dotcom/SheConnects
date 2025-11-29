@@ -26,13 +26,13 @@ export default function ForVAs() {
         {steps.map((s, i) => (
           <motion.div
             key={s}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm"
+            className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 text-sm shadow-sm shadow-violet-100"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <h3 className="text-sm font-semibold text-slate-50">{s}</h3>
+            <h3 className="text-sm font-semibold text-slate-900">{s}</h3>
           </motion.div>
         ))}
       </div>
