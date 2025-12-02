@@ -35,14 +35,14 @@ export default function Testimonials() {
         {testimonials.map((t, i) => (
           <motion.figure
             key={i}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm"
+            className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 text-sm shadow-sm shadow-violet-100"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <p className="text-slate-200 text-xs">“{t.q}”</p>
-            <figcaption className="mt-3 text-xs text-slate-400">
+            <p className="text-xs text-slate-800">“{t.q}”</p>
+            <figcaption className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-violet-700">
               {t.n}
             </figcaption>
           </motion.figure>

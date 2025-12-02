@@ -27,16 +27,16 @@ export default function HowItWorks() {
         {steps.map((s, i) => (
           <motion.div
             key={s}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm"
+            className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 text-sm shadow-sm shadow-violet-100"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <div className="h-7 w-7 rounded-full bg-violet-500 text-slate-950 flex items-center justify-center text-xs font-semibold">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-600 text-xs font-semibold text-white shadow-sm">
               {i + 1}
             </div>
-            <h3 className="mt-3 text-sm font-semibold text-slate-50">{s}</h3>
+            <h3 className="mt-3 text-sm font-semibold text-slate-900">{s}</h3>
           </motion.div>
         ))}
       </div>

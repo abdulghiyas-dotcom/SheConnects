@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 
 function Card({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm">
-      <p className="text-slate-300 text-xs">{label}</p>
-      <p className="mt-2 text-xl font-semibold text-slate-50">{value}</p>
+    <div className="rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50 p-4 text-sm shadow-sm shadow-violet-100/70">
+      <p className="text-xs font-semibold text-violet-700">{label}</p>
+      <p className="mt-2 text-xl font-semibold text-slate-900">{value}</p>
     </div>
   );
 }
@@ -24,7 +24,7 @@ export default function Impact() {
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Measurable impact for Afghan women
         </h2>
-        <p className="mt-2 text-sm text-slate-300 sm:text-base">
+        <p className="mt-2 text-sm text-slate-700 sm:text-base">
           Every project through SheConnects creates dignified remote work
           opportunities.
         </p>

@@ -38,14 +38,14 @@ export default function ForOrganizations() {
         {items.map((it, i) => (
           <motion.article
             key={it.t}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4"
+            className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm shadow-violet-100"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <h3 className="text-sm font-semibold text-slate-50">{it.t}</h3>
-            <p className="mt-2 text-xs text-slate-300">{it.d}</p>
+            <h3 className="text-sm font-semibold text-slate-900">{it.t}</h3>
+            <p className="mt-2 text-xs text-slate-700">{it.d}</p>
           </motion.article>
         ))}
       </div>
