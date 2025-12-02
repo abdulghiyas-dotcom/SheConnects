@@ -14,8 +14,8 @@ export default function FinalCta() {
           Ready to turn your next project into impact?
         </h2>
         <p className="mt-2 text-sm text-slate-300 sm:text-base">
-          Partner with SheConnects for your research, content, or digital
-          support.
+          Partner with SheConnects for your programming, research, content, or
+          digital support.
         </p>
         <div className="mt-4 flex justify-center gap-3">
           <a
@@ -25,10 +25,12 @@ export default function FinalCta() {
             Request support
           </a>
           <a
-            href="#vas"
+            href="https://airtable.com/appTu7XehOpXfYbGs/pagFNaGNJuGLQXAuV/form"
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-full border border-slate-700 px-5 py-2 text-slate-100 text-sm"
           >
-            Join as a VA
+            Join as Freelancer
           </a>
         </div>
       </motion.div>

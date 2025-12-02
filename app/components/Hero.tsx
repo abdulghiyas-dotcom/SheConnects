@@ -25,8 +25,8 @@ export default function Hero() {
         </h1>
         <p className="max-w-xl text-slate-300 text-sm sm:text-base">
           SheConnects is a managed service studio powered by skilled Afghan
-          women. We deliver remote support for research, content, and digital
-          tasks — fully compliant and impact-driven.
+          women. We deliver remote support for programming, research, content,
+          and digital tasks — fully compliant and impact-driven.
         </p>
         <div className="flex flex-wrap gap-3">
           <a
@@ -36,10 +36,12 @@ export default function Hero() {
             Request support
           </a>
           <a
-            href="#vas"
+            href="https://airtable.com/appTu7XehOpXfYbGs/pagFNaGNJuGLQXAuV/form"
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-full border border-slate-700 px-5 py-2 text-sm text-slate-200"
           >
-            Join as a VA
+            Join as Freelancer
           </a>
         </div>
       </motion.div>
