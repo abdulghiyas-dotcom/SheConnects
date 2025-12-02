@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 export default function Header() {
@@ -21,9 +22,14 @@ export default function Header() {
         aria-label="Main navigation"
       >
         <Link href="#hero" className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-violet-500 text-sm font-semibold">
-            SC
-          </span>
+          <Image
+            src="/sheconnects-logo.svg"
+            alt="SheConnects logo"
+            width={32}
+            height={32}
+            className="h-8 w-8"
+            priority
+          />
           <span className="text-sm font-semibold">SheConnects</span>
         </Link>
 

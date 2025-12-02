@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hair" x1="120" y1="80" x2="430" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6D4CCF" />
+      <stop offset="0.5" stop-color="#8E6FD9" />
+      <stop offset="1" stop-color="#F4A8C4" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M268 80c-70 0-126 56-126 125 0 44 13 74 24 90l-5 40c-3 27 11 52 36 63 18 8 37 13 57 14 47 2 84-28 93-69 3-13 2-28-3-41l-19-49c28-22 45-56 45-94 0-69-55-125-122-125z"
+    stroke="url(#hair)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M212 140c24-28 79-44 127-3" stroke="url(#hair)" stroke-width="10" stroke-linecap="round" fill="none" />
+  <path d="M196 190c29-35 99-58 162-5" stroke="url(#hair)" stroke-width="10" stroke-linecap="round" fill="none" />
+  <path d="M196 240c38-32 113-47 156-10" stroke="url(#hair)" stroke-width="10" stroke-linecap="round" fill="none" />
+  <path d="M208 294c32-22 87-28 125-2" stroke="url(#hair)" stroke-width="10" stroke-linecap="round" fill="none" />
+  <path d="M302 138l62-26 51 34" stroke="url(#hair)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M330 178l85-16 38 34" stroke="url(#hair)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M340 222l91 14 36 32" stroke="url(#hair)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <circle cx="364" cy="112" r="10" fill="#0F172A" stroke="url(#hair)" stroke-width="9" />
+  <circle cx="428" cy="146" r="10" fill="#0F172A" stroke="url(#hair)" stroke-width="9" />
+  <circle cx="396" cy="170" r="10" fill="#0F172A" stroke="url(#hair)" stroke-width="9" />
+  <circle cx="434" cy="196" r="10" fill="#0F172A" stroke="url(#hair)" stroke-width="9" />
+  <circle cx="430" cy="248" r="10" fill="#0F172A" stroke="url(#hair)" stroke-width="9" />
+  <circle cx="470" cy="258" r="10" fill="#0F172A" stroke="url(#hair)" stroke-width="9" />
+</svg>

@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Hero() {
   return (
@@ -13,6 +14,25 @@ export default function Hero() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
+        <div className="inline-flex items-center gap-3 rounded-full border border-slate-800 bg-slate-900/70 px-3 py-2 shadow-lg shadow-violet-500/20">
+          <Image
+            src="/sheconnects-logo.svg"
+            alt="SheConnects logo"
+            width={40}
+            height={40}
+            className="h-10 w-10"
+            priority
+          />
+          <div className="leading-tight">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-violet-200">
+              Digital work
+            </p>
+            <p className="text-sm font-semibold text-slate-50">
+              with human impact.
+            </p>
+          </div>
+        </div>
+
         <p className="text-xs uppercase tracking-wider text-violet-300">
           Tech for good · Social impact
         </p>
