@@ -1,75 +1,88 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+
   const navItems = [
     { href: "#services", label: "Services" },
     { href: "#how-it-works", label: "How it works" },
     { href: "#impact", label: "Impact" },
     { href: "#organizations", label: "For organizations" },
     { href: "#vas", label: "For Afghan women" },
-    { href: "#testimonials", label: "Stories" },
+    { href: "#testimonials", label: "Stories" }
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 text-slate-800 shadow-sm backdrop-blur">
+    <header className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur border-b border-slate-800">
       <nav
         className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
         aria-label="Main navigation"
       >
-        <Link href="#hero" className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 text-sm font-semibold text-white shadow-sm">
-            SC
+        {/* Logo + brand */}
+        <Link href="#hero" className="flex items-center gap-3">
+          <Image
+            src="/icon.png"
+            alt="SheConnects logo"
+            width={36}
+            height={36}
+            priority
+            className="rounded-full"
+          />
+          <span className="text-sm font-semibold tracking-tight">
+            SheConnects
           </span>
-          <span className="text-sm font-semibold">SheConnects</span>
         </Link>
 
+        {/* Mobile menu button */}
         <button
-          className="sm:hidden rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 shadow-sm"
+          className="sm:hidden rounded border border-slate-700 px-2 py-1 text-xs text-slate-200"
           onClick={() => setOpen(!open)}
-          aria-label="Toggle navigation menu"
         >
           {open ? "Close" : "Menu"}
         </button>
 
-        <div className="hidden gap-6 text-sm text-slate-700 sm:flex">
-          {navItems.map((n) => (
+        {/* Desktop navigation */}
+        <div className="hidden sm:flex gap-6 text-sm text-slate-200">
+          {navItems.map((item) => (
             <a
-              key={n.href}
-              href={n.href}
-              className="transition-colors hover:text-violet-700"
+              key={item.href}
+              href={item.href}
+              className="hover:text-violet-300 transition-colors"
             >
-              {n.label}
+              {item.label}
             </a>
           ))}
           <a
             href="#contact"
-            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
+            className="rounded-full bg-violet-500 px-4 py-2 text-sm font-medium text-slate-950 shadow-lg shadow-violet-500/40 hover:bg-violet-400 transition"
           >
             Talk to our team
           </a>
         </div>
       </nav>
 
+      {/* Mobile dropdown nav */}
       {open && (
-        <div className="border-t border-slate-200 bg-white sm:hidden">
-          <div className="px-4 py-3">
-            {navItems.map((n) => (
+        <div className="sm:hidden bg-slate-950 border-t border-slate-800">
+          <div className="px-4 py-3 flex flex-col gap-2">
+            {navItems.map((item) => (
               <a
-                key={n.href}
-                href={n.href}
-                className="block py-1 text-sm text-slate-700"
+                key={item.href}
+                href={item.href}
+                className="text-slate-200 py-1"
                 onClick={() => setOpen(false)}
               >
-                {n.label}
+                {item.label}
               </a>
             ))}
+
             <a
               href="#contact"
-              className="mt-2 inline-block w-full rounded-full bg-violet-600 px-4 py-2 text-center text-sm font-medium text-white shadow-md shadow-violet-200"
+              className="mt-2 w-full rounded-full bg-violet-500 px-4 py-2 text-center text-sm font-semibold text-slate-950"
               onClick={() => setOpen(false)}
             >
               Talk to our team
@@ -80,3 +93,4 @@ export default function Header() {
     </header>
   );
 }
+
