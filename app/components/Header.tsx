@@ -27,8 +27,8 @@ export default function Header() {
           <Image
             src="/icon.png" // from public/icon.png
             alt="SheConnects logo"
-            width={44}
-            height={44}
+            width={48}
+            height={48}
             priority
             className="rounded-full"
           />
