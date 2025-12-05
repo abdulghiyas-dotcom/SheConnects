@@ -54,8 +54,8 @@ export default function Services() {
         </h2>
         <p className="mt-2 text-sm text-slate-700 sm:text-base">
           A managed remote studio of Afghan women professionals offering
-          programming, creative production, translation, and research support
-          for NGOs, social enterprises, and impact-driven teams.
+          programming, creative production, translation, and market research
+          for enterprises, NGOs and solopreneur.
         </p>
       </motion.div>
 
