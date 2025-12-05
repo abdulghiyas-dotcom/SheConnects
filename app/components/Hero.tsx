@@ -28,8 +28,8 @@ export default function Hero() {
           .
         </h1>
         <p className="max-w-xl text-sm text-slate-700 sm:text-base">
-          SheConnects is a managed service studio powered by skilled women
-          in Afghanistan. We deliver remote support for programming,translatioin, graphics, market research and digital
+          SheConnects is a managed service studio powered by professional women
+          in Afghanistan. We deliver remote support for programming, translation, graphics, lead generation, and digital
           tasks — fully compliant and impact-driven.
         </p>
         <div className="flex flex-wrap gap-3">
@@ -59,7 +59,7 @@ export default function Hero() {
           <p className="mt-3 text-sm text-slate-700">
             Since 2021, hundreds of thousands of professional women in Afghanistan have lost the
             right to work. SheConnects creates dignified freelancing opportunities
-            by connecting their skills to international organizations.
+            by connecting their skills to international market.
           </p>
         </div>
       </motion.div>
