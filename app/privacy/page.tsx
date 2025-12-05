@@ -91,30 +91,6 @@ export default function PrivacyPage() {
       <Header />
 
       <div className="relative mx-auto max-w-5xl px-4 pb-20 pt-14">
-        <div id="hero" className="sr-only">
-          Privacy Policy
-        </div>
-        <div id="services" className="sr-only">
-          Services
-        </div>
-        <div id="how-it-works" className="sr-only">
-          How it works
-        </div>
-        <div id="impact" className="sr-only">
-          Impact
-        </div>
-        <div id="organizations" className="sr-only">
-          For organizations
-        </div>
-        <div id="vas" className="sr-only">
-          For Afghan women
-        </div>
-        <div id="testimonials" className="sr-only">
-          Stories
-        </div>
-        <div id="contact" className="sr-only">
-          Contact
-        </div>
         <div className="pointer-events-none absolute inset-0 opacity-60">
           <div className="absolute -left-24 top-10 h-56 w-56 rounded-full bg-violet-200 blur-3xl" />
           <div className="absolute -right-24 bottom-10 h-64 w-64 rounded-full bg-fuchsia-200 blur-3xl" />
