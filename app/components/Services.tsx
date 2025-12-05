@@ -3,20 +3,38 @@ import { motion } from "framer-motion";
 
 const services = [
   {
-    title: "Research & insights",
-    bullets: ["Market research", "Contact lists", "Policy briefs"],
+    title: "Programming",
+    bullets: [
+      "Back-end and front-end development",
+      "WordPress development and customization",
+    ],
   },
   {
-    title: "Content & presentation support",
-    bullets: ["Slide decks", "Info sheets", "Light editing"],
+    title: "Document Translation",
+    bullets: [
+      "Translation between English ↔ Dari/Farsi/Pashto",
+      "Localization and cultural adaptation of materials",
+      "Subtitling and transcript services for NGOs and media",
+    ],
   },
   {
-    title: "Digital & back-office support",
-    bullets: ["Data entry", "CMS updates", "Templates"],
+    title: "Creative & Design",
+    bullets: [
+      "Graphic design (posters, infographics, presentations)",
+      "Branding & visual identity packages",
+      "Social media visuals and templates",
+      "Canva / Adobe-based design production",
+      "Basic video editing for campaigns and storytelling",
+    ],
   },
   {
-    title: "Translation & localization",
-    bullets: ["Dari/Farsi/Pashto ↔ English", "Localization", "Glossaries"],
+    title: "Research & Data Studio",
+    bullets: [
+      "Market research & competitor analysis",
+      "Donor and partner mapping (for NGOs)",
+      "Desk-based studies and literature reviews",
+      "Data cleaning and structuring for reports",
+    ],
   },
 ];
 
@@ -35,8 +53,9 @@ export default function Services() {
           What we deliver
         </h2>
         <p className="mt-2 text-sm text-slate-700 sm:text-base">
-          Managed, ethical remote support for NGOs, social enterprises, and
-          mission-driven teams.
+          A managed remote studio of Afghan women professionals offering
+          programming, creative production, translation, and research support
+          for NGOs, social enterprises, and impact-driven teams.
         </p>
       </motion.div>
 
