@@ -13,6 +13,11 @@ export default function Footer() {
               hello@sheconnects.work
             </a>
           </p>
+          <p className="mt-1">
+            <a href="/privacy" className="underline">
+              Privacy Policy
+            </a>
+          </p>
           <p className="mt-2 text-slate-700">© {new Date().getFullYear()} SheConnects</p>
         </div>
       </div>
