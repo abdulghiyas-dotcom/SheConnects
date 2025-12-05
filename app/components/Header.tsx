@@ -22,19 +22,26 @@ export default function Header() {
         className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
         aria-label="Main navigation"
       >
-        {/* Logo + brand */}
+        {/* Logo + brand + slogan */}
         <Link href="#hero" className="flex items-center gap-3">
           <Image
-            src="/icon.png" // from public/icon.png
+            src="/icon.png"
             alt="SheConnects logo"
             width={48}
             height={48}
             priority
             className="rounded-full"
           />
-          <span className="text-sm font-semibold tracking-tight">
-            SheConnects
-          </span>
+
+          <div className="flex flex-col leading-tight">
+            <span className="text-sm font-semibold tracking-tight">
+              SheConnects
+            </span>
+
+            <span className="text-[10px] font-medium text-slate-500 -mt-0.5">
+              Digital work with human impact.
+            </span>
+          </div>
         </Link>
 
         {/* Mobile menu button */}
