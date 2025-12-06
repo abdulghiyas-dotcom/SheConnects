@@ -22,9 +22,9 @@ export default function HomePage() {
       <ForOrganizations />
       <ForVAs />
       <Testimonials />
-      <Faq />        {/* ← FAQ section added here */}
       <ContactSection />
       <FinalCta />
+<Faq />        {/* ← FAQ section added here */}
       <Footer />
     </main>
   );
