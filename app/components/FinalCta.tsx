@@ -28,7 +28,7 @@ export default function FinalCta() {
             href="#vas"
             className="rounded-full border border-slate-200 px-5 py-2 text-sm text-slate-800 shadow-sm"
           >
-            Join as a VA
+            Join as a Freelancer
           </a>
         </div>
       </motion.div>
