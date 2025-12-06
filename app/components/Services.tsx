@@ -97,8 +97,7 @@ export default function Services() {
           >
             Tell us what you need
           </a>{" "}
-          and we&apos;ll shape a custom support model for your team.
-        </p>
+                 </p>
       </div>
     </section>
   );
