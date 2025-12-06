@@ -22,7 +22,7 @@ export default function Footer() {
           <p className="mt-1">
             Impact-driven remote service studio powered by Afghan women.
           </p>
-          <p className="mt-1 text-slate-700">Based in Milan, Italy</p>
+          <p className="mt-1 text-slate-700">Milan, Italy</p>
         </div>
 
         {/* Right side */}
