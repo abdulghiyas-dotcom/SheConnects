@@ -10,11 +10,6 @@ type FaqItem = {
 
 const faqs: FaqItem[] = [
   {
-    question: "What is SheConnects?",
-    answer:
-      "SheConnects is a digital service studio powered by skilled Afghan women freelancers. We provide programming, design, translation, research, and custom digital support to organizations in Europe and beyond.",
-  },
-  {
     question: "How does SheConnects work?",
     answer:
       "Organizations share their needs with us, we match them with trained Afghan women freelancers, and our studio manages delivery, communication, and quality from end to end.",
@@ -83,7 +78,12 @@ export default function Faq() {
       id="faq"
       className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
     >
-      <div className="max-w-2xl">
+      <motion.div
+        className="max-w-2xl"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Frequently asked questions
         </h2>
@@ -97,25 +97,44 @@ export default function Faq() {
           </a>{" "}
           directly.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white/80">
+      <motion.div
+        className="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white/80 shadow-sm"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
         {faqs.map((item, index) => {
           const isOpen = openIndex === index;
 
           return (
-            <div key={item.question}>
+            <motion.div
+              key={item.question}
+              initial={false}
+              className="overflow-hidden"
+            >
               <button
                 type="button"
                 onClick={() => toggle(index)}
-                className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm sm:text-base"
+                className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm sm:text-base hover:bg-violet-50/60 transition-colors"
               >
-                <span className="font-medium text-slate-900">
-                  {item.question}
-                </span>
-                <span className="text-xs font-semibold text-violet-700">
-                  {isOpen ? "−" : "+"}
-                </span>
+                <div className="flex items-center gap-2">
+                  {/* Small bullet icon on the left */}
+                  <span className="flex h-2 w-2 rounded-full bg-violet-400" />
+                  <span className="font-medium text-slate-900">
+                    {item.question}
+                  </span>
+                </div>
+
+                {/* Collapsible icon with animation */}
+                <motion.span
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-violet-200 bg-violet-50 text-xs font-semibold text-violet-700"
+                  animate={{ rotate: isOpen ? 90 : 0 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  ▸
+                </motion.span>
               </button>
 
               <AnimatePresence initial={false}>
@@ -125,7 +144,7 @@ export default function Faq() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.18 }}
+                    transition={{ duration: 0.2 }}
                   >
                     <div className="px-4 pb-3 text-sm text-slate-700 sm:text-[15px]">
                       {item.answer}
@@ -133,10 +152,10 @@ export default function Faq() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 }
