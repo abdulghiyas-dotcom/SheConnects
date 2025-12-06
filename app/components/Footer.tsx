@@ -12,8 +12,8 @@ export default function Footer() {
             <Image
               src="/icon.png"
               alt="SheConnects logo"
-              width={28}
-              height={28}
+              width={48}
+              height={48}
               className="rounded-full"
             />
             <p className="font-semibold text-slate-800">SheConnects</p>
