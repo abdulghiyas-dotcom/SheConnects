@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Footer() {
   return (
     <footer className="border-t border-violet-100 bg-gradient-to-r from-white via-white to-violet-50">
@@ -5,7 +7,18 @@ export default function Footer() {
         
         {/* Left side */}
         <div>
-          <p className="font-semibold text-slate-800">SheConnects</p>
+          {/* Logo + name */}
+          <div className="flex items-center gap-2">
+            <Image
+              src="/icon.png"
+              alt="SheConnects logo"
+              width={28}
+              height={28}
+              className="rounded-full"
+            />
+            <p className="font-semibold text-slate-800">SheConnects</p>
+          </div>
+
           <p className="mt-1">
             Impact-driven remote service studio powered by Afghan women.
           </p>
