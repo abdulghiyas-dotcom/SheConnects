@@ -90,8 +90,7 @@ export default function Services() {
           <span className="font-semibold text-slate-900">
             Need something different?
           </span>{" "}
-          Many of our collaborations start with a unique request – from data
-          clean-up to long-form reports or ongoing support.{" "}
+          Many of our collaborations start with a unique request.{" "}
           <a
             href="#contact"
             className="font-medium text-violet-700 underline underline-offset-2"
