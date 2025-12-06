@@ -24,7 +24,7 @@ const services = [
       "Branding & visual identity packages",
       "Social media visuals and templates",
       "Canva / Adobe-based design production",
-      "Basic video editing for campaigns and storytelling",
+      "video editing for campaigns and storytelling",
     ],
   },
   {
@@ -53,9 +53,12 @@ export default function Services() {
           What we deliver
         </h2>
         <p className="mt-2 text-sm text-slate-700 sm:text-base">
-          A managed remote studio of Afghan women professionals offering
-          programming, creative production, translation, and market research
-          for enterprises, NGOs and solopreneur.
+          These are our core studio capabilities – programming, translation,
+          creative production, and research. We also regularly design{" "}
+          <span className="font-medium">
+            custom support packages based on the specific needs
+          </span>{" "}
+          of NGOs, social enterprises, and impact-driven teams.
         </p>
       </motion.div>
 
@@ -79,6 +82,24 @@ export default function Services() {
             </ul>
           </motion.article>
         ))}
+      </div>
+
+      {/* Custom services callout */}
+      <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white/70 px-4 py-3 text-sm text-slate-700">
+        <p>
+          <span className="font-semibold text-slate-900">
+            Need something different?
+          </span>{" "}
+          Many of our collaborations start with a unique request – from data
+          clean-up to long-form reports or ongoing support.{" "}
+          <a
+            href="#contact"
+            className="font-medium text-violet-700 underline underline-offset-2"
+          >
+            Tell us what you need
+          </a>{" "}
+          and we&apos;ll shape a custom support model for your team.
+        </p>
       </div>
     </section>
   );
