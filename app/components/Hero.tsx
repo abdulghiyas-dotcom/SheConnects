@@ -18,7 +18,7 @@ export default function Hero() {
         viewport={{ once: true }}
       >
         <p className="inline-flex items-center rounded-full bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-violet-700 ring-1 ring-violet-100">
-          Tech for good · woman-founed
+          Tech for good · woman-founded
         </p>
         <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
           Remote support with{" "}
