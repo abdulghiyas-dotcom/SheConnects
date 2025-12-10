@@ -14,6 +14,10 @@ export default function Header() {
     { href: "/#organizations", label: "For organizations" },
     { href: "/#vas", label: "For Afghan women" },
     { href: "/#testimonials", label: "Stories" },
+
+    // 🔥 NEW ITEMS
+    { href: "/blog", label: "Blog" },
+    { href: "/#faq", label: "FAQ" },
   ];
 
   return (
@@ -65,12 +69,12 @@ export default function Header() {
             </Link>
           ))}
 
-            <Link
-              href="/#contact"
-              className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
-            >
-              Talk to our team
-            </Link>
+          <Link
+            href="/#contact"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
+          >
+            Talk to our team
+          </Link>
         </div>
       </nav>
 
