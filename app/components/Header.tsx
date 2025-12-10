@@ -13,7 +13,9 @@ export default function Header() {
     { href: "/#impact", label: "Impact" },
     { href: "/#organizations", label: "For organizations" },
     { href: "/#vas", label: "For Afghan women" },
-    { href: "/#testimonials", label: "Stories" },
+
+    // REMOVED STORIES
+    // { href: "/#testimonials", label: "Stories" },
 
     // 🔥 NEW ITEMS
     { href: "/blog", label: "Blog" },
