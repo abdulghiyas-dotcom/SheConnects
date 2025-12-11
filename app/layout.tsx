@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import "./globals.css";
+import type { Metadata } from "next";
+import CookieConsent from "./components/CookieConsent";
 
 export const metadata: Metadata = {
-  title: "SheConnects – Digital Work With Human Impact!",
+  title: "SheConnects – Digital work with human impact",
   description:
-    "SheConnects is a service studio powered by Afghan women professionals, delivering ethical, managed remote support for research, content, and digital tasks.",
+    "Impact-driven remote service studio powered by Afghan women, offering ethical remote services in translation, programming, design, and research.",
 };
 
 export default function RootLayout({
@@ -12,25 +13,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "SheConnects",
-    url: "https://www.sheconnects.work",
-    description:
-      "Impact-driven remote service studio connecting Afghan women professionals with organizations in Europe."
-  };
-
   return (
     <html lang="en">
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
-      <body className="bg-slate-50 text-slate-900 antialiased">
+      <body className="bg-slate-50 text-slate-900">
         {children}
+        <CookieConsent />
       </body>
     </html>
   );
