@@ -476,7 +476,7 @@ export const translations: Record<Language, SiteContent> = {
         { href: "/blog", label: "Blog" },
         { href: "/#faq", label: "FAQ" },
       ],
-      cta: "Parla con il nostro team",
+      cta: "Parla con noi",
       menu: "Menu",
       close: "Chiudi",
       languageLabel: "Lingua",
