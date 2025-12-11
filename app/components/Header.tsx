@@ -19,25 +19,49 @@ export default function Header({
   onLanguageChange,
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
-  const navItems = content.navItems;
+  // Remove Services / Servizi from the nav (we assume it points to #services)
+  const navItems = content.navItems.filter(
+    (n) => n.href !== "#services" && n.href !== "/#services"
+  );
 
-  const languageButtons = (
-    <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] shadow-sm">
-      {(["en", "it"] as Language[]).map((lang) => (
-        <button
-          key={lang}
-          type="button"
-          onClick={() => onLanguageChange(lang)}
-          className={`rounded-full px-2 py-0.5 leading-none transition-colors ${
-            language === lang
-              ? "bg-violet-600 text-white"
-              : "text-slate-700 hover:bg-slate-100"
-          }`}
-        >
-          {languageNames[lang]}
-        </button>
-      ))}
+  const languageOptions: Language[] = ["en", "it"];
+
+  const languageSwitcher = (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setLangOpen((prev) => !prev)}
+        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+      >
+        {languageNames[language]}
+        <span className="text-[9px] text-slate-500">
+          ▾
+        </span>
+      </button>
+
+      {langOpen && (
+        <div className="absolute right-0 z-50 mt-1 w-24 rounded-2xl border border-slate-200 bg-white py-1 text-[11px] shadow-lg">
+          {languageOptions.map((lang) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => {
+                onLanguageChange(lang);
+                setLangOpen(false);
+              }}
+              className={`block w-full px-3 py-1 text-left ${
+                lang === language
+                  ? "bg-violet-50 font-semibold text-violet-700"
+                  : "text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              {languageNames[lang]}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -72,7 +96,10 @@ export default function Header({
         {/* Mobile menu button */}
         <button
           className="sm:hidden rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 shadow-sm"
-          onClick={() => setOpen(!open)}
+          onClick={() => {
+            setOpen(!open);
+            setLangOpen(false);
+          }}
           aria-label="Toggle navigation menu"
         >
           {open ? content.close : content.menu}
@@ -101,7 +128,7 @@ export default function Header({
             <span className="text-[10px] text-slate-500">
               {content.languageLabel}
             </span>
-            {languageButtons}
+            {languageSwitcher}
           </div>
         </div>
       </nav>
@@ -115,7 +142,10 @@ export default function Header({
                 key={n.href}
                 href={n.href}
                 className="block py-1 text-sm text-slate-700"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  setLangOpen(false);
+                }}
               >
                 {n.label}
               </Link>
@@ -124,7 +154,10 @@ export default function Header({
             <Link
               href="/#contact"
               className="mt-2 inline-block w-full rounded-full bg-violet-600 px-4 py-2 text-center text-sm font-medium text-white shadow-md shadow-violet-200"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                setLangOpen(false);
+              }}
             >
               {content.cta}
             </Link>
@@ -133,7 +166,7 @@ export default function Header({
               <p className="mb-1 text-[11px] text-slate-500">
                 {content.languageLabel}
               </p>
-              {languageButtons}
+              {languageSwitcher}
             </div>
           </div>
         </div>
