@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-export default function ContactSection() {
+type ContactProps = {
+  content: SiteContent["contact"];
+  common: SiteContent["common"];
+};
+
+export default function ContactSection({ content, common }: ContactProps) {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
@@ -17,7 +23,6 @@ export default function ContactSection() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // Extra fields for Formsubmit
     formData.append("_subject", "New contact from SheConnects website");
     formData.append("_captcha", "false");
 
@@ -46,7 +51,7 @@ export default function ContactSection() {
       }
     } catch {
       setStatus("error");
-      setErrorMessage("Network error. Please try again in a moment.");
+      setErrorMessage(content.error);
     }
   };
 
@@ -61,27 +66,24 @@ export default function ContactSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        {/* Left text column */}
         <div>
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Let&apos;s explore how we can work together
+            {content.title}
           </h2>
           <p className="mt-2 text-sm text-slate-700 sm:text-base">
-            Share a bit about your organization and the kind of digital support
-            you&apos;re looking for. We&apos;ll get back to you with next steps.
+            {content.subtitle}
           </p>
           <p className="mt-3 text-xs text-slate-500">
-            Prefer email?{" "}
+            {content.emailIntro}{" "}
             <a
-              href="mailto:hello@sheconnects.work"
+              href={`mailto:${common.contactEmail}`}
               className="font-medium text-violet-700 underline underline-offset-2"
             >
-              hello@sheconnects.work
+              {common.contactEmailLabel}
             </a>
           </p>
         </div>
 
-        {/* Right form column */}
         <form
           className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
           onSubmit={handleSubmit}
@@ -90,7 +92,7 @@ export default function ContactSection() {
             <input
               name="name"
               className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm text-slate-900"
-              placeholder="Full name"
+              placeholder={content.namePlaceholder}
               required
             />
           </div>
@@ -99,7 +101,7 @@ export default function ContactSection() {
             <input
               name="organization"
               className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm text-slate-900"
-              placeholder="Organization"
+              placeholder={content.organizationPlaceholder}
             />
           </div>
 
@@ -108,7 +110,7 @@ export default function ContactSection() {
               type="email"
               name="email"
               className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm text-slate-900"
-              placeholder="you@org.org"
+              placeholder={content.emailPlaceholder}
               required
             />
           </div>
@@ -118,7 +120,7 @@ export default function ContactSection() {
               name="message"
               className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm text-slate-900"
               rows={3}
-              placeholder="Short description of your needs"
+              placeholder={content.messagePlaceholder}
               required
             />
           </div>
@@ -128,34 +130,26 @@ export default function ContactSection() {
             disabled={status === "loading"}
             className="mt-1 w-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-sm font-medium text-white shadow-md shadow-violet-200 transition-transform hover:-translate-y-0.5 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {status === "loading" ? "Sending..." : "Send message"}
+            {status === "loading" ? content.sendingLabel : content.sendLabel}
           </button>
 
-          {/* Success / error messages */}
           {status === "success" && (
-            <p className="mt-2 text-[11px] text-emerald-600">
-              Thank you! Your message has been sent. We&apos;ll get back to you
-              soon.
-            </p>
+            <p className="mt-2 text-[11px] text-emerald-600">{content.success}</p>
           )}
 
           {status === "error" && (
             <p className="mt-2 text-[11px] text-rose-600">
-              Something went wrong.{" "}
-              {errorMessage
-                ? errorMessage
-                : "Please try again or email us directly at hello@sheconnects.work."}
+              {errorMessage ? errorMessage : content.error}
             </p>
           )}
 
           <p className="mt-2 text-[11px] text-slate-400">
-            By submitting, you agree that we may process your data in line with
-            our{" "}
+            {content.dataNotice}{" "}
             <a
               href="/privacy"
               className="underline underline-offset-2 hover:text-violet-700"
             >
-              Privacy Policy
+              {common.privacyPolicy}
             </a>
             .
           </p>

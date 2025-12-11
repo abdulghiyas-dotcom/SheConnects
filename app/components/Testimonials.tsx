@@ -1,22 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-const testimonials = [
-  {
-    q: "Working with SheConnects felt like an extension of our own team.",
-    n: "Program Manager, European NGO",
-  },
-  {
-    q: "Before SheConnects, I thought my career was over.",
-    n: "S., Virtual Assistant",
-  },
-  {
-    q: "The model is simple and compliant: one contract, one partner.",
-    n: "Director, Social Enterprise",
-  },
-];
+type TestimonialsProps = {
+  content: SiteContent["testimonials"];
+};
 
-export default function Testimonials() {
+export default function Testimonials({ content }: TestimonialsProps) {
   return (
     <section
       id="testimonials"
@@ -28,11 +18,11 @@ export default function Testimonials() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Stories from both sides
+          {content.title}
         </h2>
       </motion.div>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
-        {testimonials.map((t, i) => (
+        {content.items.map((t, i) => (
           <motion.figure
             key={i}
             className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 text-sm shadow-sm shadow-violet-100"
@@ -41,9 +31,9 @@ export default function Testimonials() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <p className="text-xs text-slate-800">“{t.q}”</p>
+            <p className="text-xs text-slate-800">“{t.quote}”</p>
             <figcaption className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-violet-700">
-              {t.n}
+              {t.author}
             </figcaption>
           </motion.figure>
         ))}

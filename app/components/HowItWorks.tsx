@@ -1,14 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-const steps = [
-  "Share your needs",
-  "We design your support package",
-  "Delivery through SheConnects",
-  "Impact & performance reports",
-];
+type HowProps = {
+  content: SiteContent["howItWorks"];
+};
 
-export default function HowItWorks() {
+export default function HowItWorks({ content }: HowProps) {
   return (
     <section
       id="how-it-works"
@@ -20,11 +18,11 @@ export default function HowItWorks() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          How partnering with SheConnects works
+          {content.title}
         </h2>
       </motion.div>
       <div className="mt-6 grid gap-4 md:grid-cols-4">
-        {steps.map((s, i) => (
+        {content.steps.map((s, i) => (
           <motion.div
             key={s}
             className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 text-sm shadow-sm shadow-violet-100"

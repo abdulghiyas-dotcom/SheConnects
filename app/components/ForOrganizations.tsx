@@ -1,25 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-export default function ForOrganizations() {
-  const items = [
-    {
-      t: "Ethical, impact-first outsourcing",
-      d: "Every project supports Afghan women.",
-    },
-    {
-      t: "Managed & compliant",
-      d: "We are your contractual partner.",
-    },
-    {
-      t: "Aligned time zones",
-      d: "Smooth communication with Europe.",
-    },
-    {
-      t: "Vetted talent",
-      d: "Professionals with NGO & admin experience.",
-    },
-  ];
+type OrgProps = {
+  content: SiteContent["organizations"];
+};
+
+export default function ForOrganizations({ content }: OrgProps) {
   return (
     <section
       id="organizations"
@@ -31,21 +18,21 @@ export default function ForOrganizations() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          For organizations across Europe
+          {content.title}
         </h2>
       </motion.div>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {items.map((it, i) => (
+        {content.items.map((it, i) => (
           <motion.article
-            key={it.t}
+            key={it.title}
             className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm shadow-violet-100"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
           >
-            <h3 className="text-sm font-semibold text-slate-900">{it.t}</h3>
-            <p className="mt-2 text-xs text-slate-700">{it.d}</p>
+            <h3 className="text-sm font-semibold text-slate-900">{it.title}</h3>
+            <p className="mt-2 text-xs text-slate-700">{it.description}</p>
           </motion.article>
         ))}
       </div>

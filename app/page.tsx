@@ -1,31 +1,12 @@
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import Services from "./components/Services";
-import HowItWorks from "./components/HowItWorks";
-import Impact from "./components/Impact";
-import ForOrganizations from "./components/ForOrganizations";
-import ForVAs from "./components/ForVAs";
-import Testimonials from "./components/Testimonials";
-import Faq from "./components/Faq";
-import ContactSection from "./components/ContactSection";
-import FinalCta from "./components/FinalCta";
-import Footer from "./components/Footer";
+import PageContent from "./components/PageContent";
+import { getPreferredLanguage } from "./lib/language";
 
 export default function HomePage() {
+  const initialLanguage = getPreferredLanguage();
+
   return (
     <main className="min-h-screen bg-transparent text-slate-900">
-      <Header />
-      <Hero />
-      <Services />
-      <HowItWorks />
-      <Impact />
-      <ForOrganizations />
-      <ForVAs />
-      <Testimonials />
-      <ContactSection />
-      <FinalCta />
-<Faq />        {/* ← FAQ section added here */}
-      <Footer />
+      <PageContent initialLanguage={initialLanguage} />
     </main>
   );
 }

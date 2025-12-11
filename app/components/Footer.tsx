@@ -1,13 +1,20 @@
 import Image from "next/image";
+import { SiteContent } from "../lib/translations";
 
-export default function Footer() {
+type FooterProps = {
+  content: SiteContent["footer"];
+};
+
+export default function Footer({ content }: FooterProps) {
+  const copyrightText = content.copyright.replace(
+    "{year}",
+    new Date().getFullYear().toString()
+  );
+
   return (
     <footer className="border-t border-violet-100 bg-gradient-to-r from-white via-white to-violet-50">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 text-xs text-slate-600 sm:flex-row sm:justify-between sm:items-center">
-        
-        {/* Left side */}
         <div>
-          {/* Logo + name */}
           <div className="flex items-center gap-2">
             <Image
               src="/icon.png"
@@ -19,36 +26,31 @@ export default function Footer() {
             <p className="font-semibold text-slate-800">SheConnects</p>
           </div>
 
-          <p className="mt-1">
-            Impact-driven remote service studio powered by Afghan women.
-          </p>
-          <p className="mt-1 text-slate-700">Milan, Italy</p>
+          <p className="mt-1">{content.tagline}</p>
+          <p className="mt-1 text-slate-700">{content.location}</p>
         </div>
 
-        {/* Right side */}
         <div className="flex flex-col items-start sm:items-end gap-3">
-
-          {/* Contact */}
           <p>
-            Contact:{" "}
-            <a href="mailto:hello@sheconnects.work" className="underline hover:text-violet-700">
+            {content.contact}{" "}
+            <a
+              href="mailto:hello@sheconnects.work"
+              className="underline hover:text-violet-700"
+            >
               hello@sheconnects.work
             </a>
           </p>
 
-          {/* Privacy */}
           <p>
             <a
               href="/privacy"
               className="underline hover:text-violet-700"
             >
-              Privacy Policy
+              {content.privacy}
             </a>
           </p>
 
-          {/* Social icons */}
           <div className="flex gap-4 mt-1">
-            {/* Instagram */}
             <a
               href="https://www.instagram.com/sheconnects.work"
               className="hover:opacity-80 transition"
@@ -63,7 +65,6 @@ export default function Footer() {
               </svg>
             </a>
 
-            {/* LinkedIn */}
             <a
               href="https://www.linkedin.com/company/sheconnects-work"
               className="hover:opacity-80 transition"
@@ -78,7 +79,6 @@ export default function Footer() {
               </svg>
             </a>
 
-            {/* Facebook */}
             <a
               href="https://www.facebook.com/people/SheConnects/61579434964386/"
               className="hover:opacity-80 transition"
@@ -94,10 +94,7 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Copyright */}
-          <p className="text-[11px] text-slate-700 mt-2">
-            © {new Date().getFullYear()} SheConnects
-          </p>
+          <p className="text-[11px] text-slate-700 mt-2">{copyrightText}</p>
         </div>
       </div>
     </footer>
