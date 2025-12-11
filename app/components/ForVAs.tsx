@@ -1,13 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-export default function ForVAs() {
-  const steps = [
-    "Apply online",
-    "Training & onboarding",
-    "Work through SheConnects",
-    "Earn with support",
-  ];
+type VaProps = {
+  content: SiteContent["vas"];
+};
+
+export default function ForVAs({ content }: VaProps) {
   return (
     <section
       id="vas"
@@ -19,11 +18,11 @@ export default function ForVAs() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Afghan women: build your remote career with us
+          {content.title}
         </h2>
       </motion.div>
       <div className="mt-6 grid gap-4 md:grid-cols-4">
-        {steps.map((s, i) => (
+        {content.steps.map((s, i) => (
           <motion.div
             key={s}
             className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-4 text-sm shadow-sm shadow-violet-100"

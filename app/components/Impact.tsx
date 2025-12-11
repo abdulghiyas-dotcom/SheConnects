@@ -1,29 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-export default function Impact() {
-  const stats = [
-    {
-      number: "150+",
-      label: "Applications received",
-      description:
-        "Talented women from across Afghanistan expressed interest in joining SheConnects.",
-    },
-    {
-      number: "40+",
-      label: "Interviews completed",
-      description:
-        "Rigorous screening to understand technical skills, communication, and project readiness.",
-    },
-    {
-      number: "20",
-      label: "Women selected & trained",
-      description:
-        "A cohort of motivated professionals trained to deliver digital and creative services internationally.",
-    },
-  ];
+type ImpactProps = {
+  content: SiteContent["impact"];
+};
 
+export default function Impact({ content }: ImpactProps) {
   return (
     <section
       id="impact"
@@ -36,16 +20,15 @@ export default function Impact() {
         className="text-center"
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Measurable impact for Afghan women
+          {content.title}
         </h2>
         <p className="mt-2 text-sm text-slate-700 sm:text-base max-w-2xl mx-auto">
-          Through careful screening, capability-building, and a managed workflow, SheConnects
-          supports Afghan women in gaining dignified, remote-friendly professional opportunities.
+          {content.subtitle}
         </p>
       </motion.div>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-3">
-        {stats.map((item, index) => (
+        {content.stats.map((item, index) => (
           <motion.div
             key={item.label}
             initial={{ opacity: 0, y: 20 }}

@@ -1,44 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-const services = [
-  {
-    title: "Programming",
-    bullets: [
-      "Back-end and front-end development",
-      "WordPress development and customization",
-    ],
-  },
-  {
-    title: "Document Translation",
-    bullets: [
-      "Translation between English ↔ Dari/Farsi/Pashto",
-      "Localization and cultural adaptation of materials",
-      "Subtitling and transcript services for NGOs and media",
-    ],
-  },
-  {
-    title: "Creative & Design",
-    bullets: [
-      "Graphic design (posters, infographics, presentations)",
-      "Branding & visual identity packages",
-      "Social media visuals and templates",
-      "Canva / Adobe-based design production",
-      "video editing for campaigns and storytelling",
-    ],
-  },
-  {
-    title: "Research & Data Studio",
-    bullets: [
-      "Market research & competitor analysis",
-      "Donor and partner mapping (for NGOs)",
-      "Desk-based studies and literature reviews",
-      "Data cleaning and structuring for reports",
-    ],
-  },
-];
+type ServicesProps = {
+  content: SiteContent["services"];
+};
 
-export default function Services() {
+export default function Services({ content }: ServicesProps) {
   return (
     <section
       id="services"
@@ -50,20 +18,15 @@ export default function Services() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          What we deliver
+          {content.title}
         </h2>
         <p className="mt-2 text-sm text-slate-700 sm:text-base">
-          These are our core studio capabilities – programming, translation,
-          creative production, and research. We also regularly design{" "}
-          <span className="font-medium">
-            custom support packages based on the specific needs
-          </span>{" "}
-          of NGOs, social enterprises, and impact-driven teams.
+          {content.description}
         </p>
       </motion.div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
-        {services.map((s, i) => (
+        {content.items.map((s, i) => (
           <motion.article
             key={s.title}
             className="rounded-2xl border border-violet-50 bg-gradient-to-br from-white to-slate-50 p-5 shadow-sm shadow-violet-100"
@@ -84,20 +47,18 @@ export default function Services() {
         ))}
       </div>
 
-      {/* Custom services callout */}
       <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white/70 px-4 py-3 text-sm text-slate-700">
         <p>
           <span className="font-semibold text-slate-900">
-            Need something different?
+            {content.customPrompt}
           </span>{" "}
-          Many of our collaborations start with a unique request.{" "}
           <a
             href="#contact"
             className="font-medium text-violet-700 underline underline-offset-2"
           >
-            Tell us what you need
-          </a>{" "}
-                 </p>
+            {content.customCta}
+          </a>
+        </p>
       </div>
     </section>
   );

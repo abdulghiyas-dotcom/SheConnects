@@ -1,8 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { SiteContent } from "../lib/translations";
 
-export default function FinalCta() {
+type FinalProps = {
+  content: SiteContent["finalCta"];
+  common: SiteContent["common"];
+};
+
+export default function FinalCta({ content, common }: FinalProps) {
   return (
     <section
       id="final-cta"
@@ -15,11 +21,10 @@ export default function FinalCta() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Ready to work with us?
+          {content.title}
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-slate-700 sm:text-base">
-          Whether you need translation, research, programming, or design
-          support, our trained freelancers are ready to collaborate.
+          {content.description}
         </p>
 
         <div className="mt-6 flex flex-wrap justify-center gap-4">
@@ -27,19 +32,17 @@ export default function FinalCta() {
             href="#contact"
             className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
           >
-            Request support
+            {common.requestSupport}
           </a>
 
-          {/* UPDATED BUTTON BELOW */}
           <a
             href="https://airtable.com/appTu7XehOpXfYbGs/pagFNaGNJuGLQXAuV/form"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full border border-slate-300 bg-white px-6 py-2.5 text-sm font-medium text-slate-700 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5"
           >
-            Join as a Freelancer
+            {common.joinFreelancer}
           </a>
-          {/* END UPDATE */}
         </div>
       </motion.div>
     </section>

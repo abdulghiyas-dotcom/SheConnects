@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import CookieConsent from "./components/CookieConsent";
+import { getPreferredLanguage } from "./lib/language";
 
 export const metadata: Metadata = {
   title: "SheConnects – Digital work with human impact",
@@ -13,12 +13,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const lang = getPreferredLanguage();
+
   return (
-    <html lang="en">
-      <body className="bg-slate-50 text-slate-900">
-        {children}
-        <CookieConsent />
-      </body>
+    <html lang={lang}>
+      <body className="bg-slate-50 text-slate-900">{children}</body>
     </html>
   );
 }
