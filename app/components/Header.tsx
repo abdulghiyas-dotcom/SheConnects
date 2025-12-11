@@ -44,7 +44,7 @@ export default function Header({
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 text-slate-800 shadow-sm backdrop-blur">
       <nav
-        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
+        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2"
         aria-label="Main navigation"
       >
         {/* Logo + brand + slogan */}
@@ -52,8 +52,8 @@ export default function Header({
           <Image
             src="/icon.png"
             alt="SheConnects logo"
-            width={48}
-            height={48}
+            width={44}
+            height={44}
             priority
             className="rounded-full"
           />
@@ -92,7 +92,7 @@ export default function Header({
 
           <Link
             href="/#contact"
-            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-3.5 py-1.5 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
           >
             {content.cta}
           </Link>
