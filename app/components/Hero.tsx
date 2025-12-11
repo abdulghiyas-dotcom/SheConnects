@@ -1,141 +1,91 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-import { Language, SiteContent } from "../lib/translations";
+import { motion } from "framer-motion";
 
-type HeaderProps = {
-  content: SiteContent["header"];
-  language: Language;
-  languageNames: Record<Language, string>;
-  onLanguageChange: (lang: Language) => void;
+type HeroProps = {
+  // We keep this flexible so TypeScript doesn't block deployment
+  content: Record<string, any>;
+  common?: any;
 };
 
-export default function Header({
-  content,
-  language,
-  languageNames,
-  onLanguageChange,
-}: HeaderProps) {
-  const [open, setOpen] = useState(false);
-
-  const navItems = content.navItems;
-
-  const languageButtons = (
-    <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1 py-0.5 text-xs shadow-sm">
-      {(["en", "it"] as Language[]).map((lang) => (
-        <button
-          key={lang}
-          type="button"
-          onClick={() => onLanguageChange(lang)}
-          className={`rounded-full px-2 py-1 transition-colors ${
-            language === lang
-              ? "bg-violet-600 text-white"
-              : "text-slate-700 hover:bg-slate-100"
-          }`}
-        >
-          {languageNames[lang]}
-        </button>
-      ))}
-    </div>
-  );
+export default function Hero({ content }: HeroProps) {
+  const primaryCta = content.primaryCta ?? "Request support";
+  const secondaryCta =
+    content.secondaryCta ?? "Join as a freelancer";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 text-slate-800 shadow-sm backdrop-blur">
-      <nav
-        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
-        aria-label="Main navigation"
+    <section
+      id="hero"
+      className="relative mx-auto mt-6 max-w-6xl overflow-hidden rounded-3xl border border-violet-100 bg-white/90 px-4 pt-12 pb-16 shadow-[0_25px_80px_rgba(99,102,241,0.08)] lg:flex lg:items-center lg:gap-16 lg:px-10"
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -left-14 -top-10 h-48 w-48 rounded-full bg-violet-200 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-fuchsia-200 blur-3xl" />
+      </div>
+
+      <motion.div
+        className="relative space-y-6 lg:flex-1"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
       >
-        {/* Logo + brand + slogan */}
-        <Link href="/#hero" className="flex items-center gap-3">
-          <Image
-            src="/icon.png"
-            alt="SheConnects logo"
-            width={48}
-            height={48}
-            priority
-            className="rounded-full"
-          />
+        {content.badge && (
+          <p className="inline-flex items-center rounded-full bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-violet-700 ring-1 ring-violet-100">
+            {content.badge}
+          </p>
+        )}
 
-          <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold tracking-tight">
-              {content.brand}
+        <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
+          {content.title}{" "}
+          {content.highlight && (
+            <span className="bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
+              {content.highlight}
             </span>
+          )}
+        </h1>
 
-            <span className="text-[10px] font-medium text-slate-500 -mt-0.5">
-              {content.tagline}
-            </span>
-          </div>
-        </Link>
+        <p className="max-w-xl text-sm text-slate-700 sm:text-base">
+          {content.description}
+        </p>
 
-        {/* Mobile menu button */}
-        <button
-          className="sm:hidden rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 shadow-sm"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle navigation menu"
-        >
-          {open ? content.close : content.menu}
-        </button>
-
-        {/* Desktop navigation */}
-        <div className="hidden items-center gap-6 text-sm text-slate-700 sm:flex">
-          {navItems.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className="transition-colors hover:text-violet-700"
-            >
-              {n.label}
-            </Link>
-          ))}
-
-          <Link
-            href="/#contact"
-            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="#contact"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
           >
-            {content.cta}
-          </Link>
+            {primaryCta}
+          </a>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-slate-500">{content.languageLabel}</span>
-            {languageButtons}
-          </div>
+          <a
+            href="https://airtable.com/appTu7XehOpXfYbGs/pagFNaGNJuGLQXAuV/form"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border border-slate-200 bg-white/70 px-5 py-2 text-sm text-slate-700 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5"
+          >
+            {secondaryCta}
+          </a>
         </div>
-      </nav>
+      </motion.div>
 
-      {/* Mobile dropdown */}
-      {open && (
-        <div className="border-t border-slate-200 bg-white sm:hidden">
-          <div className="px-4 py-3 space-y-2">
-            {navItems.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className="block py-1 text-sm text-slate-700"
-                onClick={() => setOpen(false)}
-              >
-                {n.label}
-              </Link>
-            ))}
-
-            <Link
-              href="/#contact"
-              className="mt-2 inline-block w-full rounded-full bg-violet-600 px-4 py-2 text-center text-sm font-medium text-white shadow-md shadow-violet-200"
-              onClick={() => setOpen(false)}
-            >
-              {content.cta}
-            </Link>
-
-            <div className="pt-2">
-              <p className="text-[11px] text-slate-500 mb-1">
-                {content.languageLabel}
-              </p>
-              {languageButtons}
-            </div>
-          </div>
+      <motion.div
+        className="relative mt-8 lg:mt-0 lg:flex-1"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-white to-violet-50 p-6 shadow-xl shadow-violet-100">
+          {content.whyTitle && (
+            <p className="text-xs font-semibold text-violet-700">
+              {content.whyTitle}
+            </p>
+          )}
+          {content.whyDescription && (
+            <p className="mt-3 text-sm text-slate-700">
+              {content.whyDescription}
+            </p>
+          )}
         </div>
-      )}
-    </header>
+      </motion.div>
+    </section>
   );
 }
