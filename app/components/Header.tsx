@@ -21,7 +21,7 @@ export default function Header({
   const [open, setOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
 
-  // Remove Services / Servizi from the nav (we assume it points to #services)
+  // Remove Services / Servizi to save space
   const navItems = content.navItems.filter(
     (n) => n.href !== "#services" && n.href !== "/#services"
   );
@@ -36,9 +36,7 @@ export default function Header({
         className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-sm hover:bg-slate-50"
       >
         {languageNames[language]}
-        <span className="text-[9px] text-slate-500">
-          ▾
-        </span>
+        <span className="text-[9px] text-slate-500">▾</span>
       </button>
 
       {langOpen && (
@@ -86,7 +84,6 @@ export default function Header({
             <span className="text-sm font-semibold tracking-tight">
               {content.brand}
             </span>
-
             <span className="text-[10px] font-medium text-slate-500 -mt-0.5">
               {content.tagline}
             </span>
@@ -106,7 +103,7 @@ export default function Header({
         </button>
 
         {/* Desktop navigation */}
-        <div className="hidden items-center gap-5 text-sm text-slate-700 sm:flex">
+        <div className="hidden items-center gap-4 text-sm text-slate-700 sm:flex">
           {navItems.map((n) => (
             <Link
               key={n.href}
@@ -124,12 +121,8 @@ export default function Header({
             {content.cta}
           </Link>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] text-slate-500">
-              {content.languageLabel}
-            </span>
-            {languageSwitcher}
-          </div>
+          {/* Language button (label removed) */}
+          {languageSwitcher}
         </div>
       </nav>
 
@@ -162,12 +155,8 @@ export default function Header({
               {content.cta}
             </Link>
 
-            <div className="pt-2">
-              <p className="mb-1 text-[11px] text-slate-500">
-                {content.languageLabel}
-              </p>
-              {languageSwitcher}
-            </div>
+            {/* Language dropdown also used in mobile */}
+            <div className="pt-2">{languageSwitcher}</div>
           </div>
         </div>
       )}
