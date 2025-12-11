@@ -1,14 +1,7 @@
 "use client";
-
 import { motion } from "framer-motion";
-import { SiteContent } from "../lib/translations";
 
-type HeroProps = {
-  content: SiteContent["hero"];   // ✅ Correct type for hero content
-  common: SiteContent["common"];  // (if you use shared text)
-};
-
-export default function Hero({ content }: HeroProps) {
+export default function Hero() {
   return (
     <section
       id="hero"
@@ -25,23 +18,23 @@ export default function Hero({ content }: HeroProps) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        {content.badge && (
-          <p className="inline-flex items-center rounded-full bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-violet-700 ring-1 ring-violet-100">
-            {content.badge}
-          </p>
-        )}
+        <p className="inline-flex items-center rounded-full bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-violet-700 ring-1 ring-violet-100">
+          Tech for good · woman-founded
+        </p>
 
         <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
-          {content.title}{" "}
-          {content.highlight && (
-            <span className="bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
-              {content.highlight}
-            </span>
-          )}
+          Remote support with{" "}
+          <span className="bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
+            impact
+          </span>
+          .
         </h1>
 
         <p className="max-w-xl text-sm text-slate-700 sm:text-base">
-          {content.description}
+          SheConnects is a managed service studio powered by professional women
+          in Afghanistan. We deliver remote support for programming, translation,
+          graphics, lead generation, and digital tasks — fully compliant and
+          impact-driven.
         </p>
 
         <div className="flex flex-wrap gap-3">
@@ -49,17 +42,19 @@ export default function Hero({ content }: HeroProps) {
             href="#contact"
             className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
           >
-            {content.primaryCta}
+            Request support
           </a>
 
+          {/* UPDATED BUTTON BELOW */}
           <a
             href="https://airtable.com/appTu7XehOpXfYbGs/pagFNaGNJuGLQXAuV/form"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full border border-slate-200 bg-white/70 px-5 py-2 text-sm text-slate-700 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5"
           >
-            {content.secondaryCta}
+            Join as a Freelancer
           </a>
+          {/* END UPDATE */}
         </div>
       </motion.div>
 
@@ -70,11 +65,12 @@ export default function Hero({ content }: HeroProps) {
         viewport={{ once: true }}
       >
         <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-white to-violet-50 p-6 shadow-xl shadow-violet-100">
-          <p className="text-xs font-semibold text-violet-700">
-            {content.whyTitle}
-          </p>
+          <p className="text-xs font-semibold text-violet-700">Why we exist</p>
           <p className="mt-3 text-sm text-slate-700">
-            {content.whyDescription}
+            Since 2021, hundreds of thousands of professional women in
+            Afghanistan have lost the right to work. SheConnects creates
+            dignified freelancing opportunities by connecting their skills to
+            international market.
           </p>
         </div>
       </motion.div>
