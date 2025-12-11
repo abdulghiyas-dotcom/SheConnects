@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SheConnects – Impact-Driven Remote Support Studio",
+  title: "SheConnects – Digital Work With Human Impact!",
   description:
     "SheConnects is a service studio powered by Afghan women professionals, delivering ethical, managed remote support for research, content, and digital tasks.",
 };
