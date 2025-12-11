@@ -23,13 +23,13 @@ export default function Header({
   const navItems = content.navItems;
 
   const languageButtons = (
-    <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1 py-0.5 text-xs shadow-sm">
+    <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] shadow-sm">
       {(["en", "it"] as Language[]).map((lang) => (
         <button
           key={lang}
           type="button"
           onClick={() => onLanguageChange(lang)}
-          className={`rounded-full px-2 py-1 transition-colors ${
+          className={`rounded-full px-2 py-0.5 leading-none transition-colors ${
             language === lang
               ? "bg-violet-600 text-white"
               : "text-slate-700 hover:bg-slate-100"
@@ -44,7 +44,7 @@ export default function Header({
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 text-slate-800 shadow-sm backdrop-blur">
       <nav
-        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
+        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2"
         aria-label="Main navigation"
       >
         {/* Logo + brand + slogan */}
@@ -52,8 +52,8 @@ export default function Header({
           <Image
             src="/icon.png"
             alt="SheConnects logo"
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             priority
             className="rounded-full"
           />
@@ -79,7 +79,7 @@ export default function Header({
         </button>
 
         {/* Desktop navigation */}
-        <div className="hidden items-center gap-6 text-sm text-slate-700 sm:flex">
+        <div className="hidden items-center gap-5 text-sm text-slate-700 sm:flex">
           {navItems.map((n) => (
             <Link
               key={n.href}
@@ -97,8 +97,10 @@ export default function Header({
             {content.cta}
           </Link>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-slate-500">{content.languageLabel}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] text-slate-500">
+              {content.languageLabel}
+            </span>
             {languageButtons}
           </div>
         </div>
@@ -107,7 +109,7 @@ export default function Header({
       {/* Mobile dropdown */}
       {open && (
         <div className="border-t border-slate-200 bg-white sm:hidden">
-          <div className="px-4 py-3 space-y-2">
+          <div className="space-y-2 px-4 py-3">
             {navItems.map((n) => (
               <Link
                 key={n.href}
@@ -128,7 +130,7 @@ export default function Header({
             </Link>
 
             <div className="pt-2">
-              <p className="text-[11px] text-slate-500 mb-1">
+              <p className="mb-1 text-[11px] text-slate-500">
                 {content.languageLabel}
               </p>
               {languageButtons}
