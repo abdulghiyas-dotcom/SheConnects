@@ -1,43 +1,52 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function ContactSection() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("loading");
+    setErrorMessage(null);
 
-    if (status === "submitting") return;
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
-    setStatus("submitting");
-
-    const formData = new FormData(event.currentTarget);
-
-    const payload = Object.fromEntries(formData.entries());
+    // Extra fields for Formsubmit
+    formData.append("_subject", "New contact from SheConnects website");
+    formData.append("_captcha", "false");
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/hello@sheconnects.work", {
+      const res = await fetch("https://formsubmit.co/hello@sheconnects.work", {
         method: "POST",
+        body: formData,
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error("Form submission failed");
+      if (res.ok) {
+        setStatus("success");
+        form.reset();
+      } else {
+        setStatus("error");
+        try {
+          const data = await res.json();
+          if (data?.message) {
+            setErrorMessage(data.message);
+          }
+        } catch {
+          // ignore JSON parse error
+        }
       }
-
-      setStatus("success");
-      event.currentTarget.reset();
-    } catch (error) {
-      console.error(error);
+    } catch {
       setStatus("error");
+      setErrorMessage("Network error. Please try again in a moment.");
     }
   };
 
@@ -77,16 +86,6 @@ export default function ContactSection() {
           className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
           onSubmit={handleSubmit}
         >
-          {/* Formsubmit settings */}
-          <input
-            type="hidden"
-            name="_subject"
-            value="New contact from SheConnects website"
-          />
-          <input type="hidden" name="_captcha" value="false" />
-          {/* If you later create a /thanks page, you can add: */}
-          {/* <input type="hidden" name="_next" value="https://sheconnects.work/thanks" /> */}
-
           <div className="mb-2">
             <input
               name="name"
@@ -126,20 +125,26 @@ export default function ContactSection() {
 
           <button
             type="submit"
-            className="mt-1 w-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-sm font-medium text-white shadow-md shadow-violet-200 transition-transform hover:-translate-y-0.5 hover:opacity-95"
-            disabled={status === "submitting"}
+            disabled={status === "loading"}
+            className="mt-1 w-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-sm font-medium text-white shadow-md shadow-violet-200 transition-transform hover:-translate-y-0.5 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {status === "submitting" ? "Sending..." : "Send message"}
+            {status === "loading" ? "Sending..." : "Send message"}
           </button>
 
+          {/* Success / error messages */}
           {status === "success" && (
-            <p className="mt-2 text-xs text-green-600">
-              Thanks! Your message has been sent.
+            <p className="mt-2 text-[11px] text-emerald-600">
+              Thank you! Your message has been sent. We&apos;ll get back to you
+              soon.
             </p>
           )}
+
           {status === "error" && (
-            <p className="mt-2 text-xs text-red-600">
-              Sorry, something went wrong. Please try again.
+            <p className="mt-2 text-[11px] text-rose-600">
+              Something went wrong.{" "}
+              {errorMessage
+                ? errorMessage
+                : "Please try again or email us directly at hello@sheconnects.work."}
             </p>
           )}
 
