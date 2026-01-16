@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Header from "./Header";
+import FreelancersPreview from "./FreelancersPreview";
 import Hero from "./Hero";
 import Services from "./Services";
 import HowItWorks from "./HowItWorks";
@@ -52,20 +53,32 @@ export default function PageContent({
         onLanguageChange={setLanguage}
         languageNames={content.languageNames}
       />
-      <Hero
-        content={content.hero}
-        common={content.common}
-      />
+
+      <Hero content={content.hero} common={content.common} />
+
       <Services content={content.services} />
+
+      {/* ✅ Meet our freelancers is now right after Services */}
+      <FreelancersPreview />
+
       <HowItWorks content={content.howItWorks} />
+
       <Impact content={content.impact} />
+
       <ForOrganizations content={content.organizations} />
+
       <ForVAs content={content.vas} />
+
       <Testimonials content={content.testimonials} />
+
       <ContactSection content={content.contact} common={content.common} />
+
       <FinalCta content={content.finalCta} common={content.common} />
+
       <Faq content={content.faq} />
+
       <Footer content={content.footer} />
+
       <CookieConsent content={content.cookie} />
     </>
   );
