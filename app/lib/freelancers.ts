@@ -2,11 +2,12 @@ export type FreelancerCategory =
   | "Programming"
   | "Translation"
   | "Creative & Design"
-  | "Research & Data";
+  | "Research & Data"
+  | "Online Teaching";
 
 export type PortfolioItem = {
   label: string;
-  url: string; // https://...
+  url: string; // must be https://...
 };
 
 export type Freelancer = {
@@ -20,20 +21,37 @@ export type Freelancer = {
 
 export const freelancers: Freelancer[] = [
   {
-    slug: "sample-freelancer",
-    name: "Sample Freelancer",
+    slug: "amina-online-teaching",
+    name: "Amina",
     bio:
-      "Sample Freelancer is an Afghan professional supporting international teams through translation and research. She has experience with NGO program content, donor-facing briefs, and multilingual materials (English ↔ Dari/Farsi). She is detail-oriented, reliable with deadlines, and comfortable collaborating remotely with European organizations under confidentiality.",
+      "Amina is an Afghan educator with experience delivering structured, learner-centered online lessons. She supports English learning and academic tutoring, adapting lesson plans to different levels and goals. She has worked with youth and adult learners and is comfortable collaborating with international teams and NGO programs. Her teaching style is clear, encouraging, and focused on measurable progress.",
+    categories: ["Online Teaching", "Translation"],
+    services: [
+      "Online English language instruction",
+      "Dari/Farsi language tutoring",
+      "Lesson planning and assessments",
+      "Localization support for learning materials",
+    ],
+    portfolio: [
+      { label: "Teaching syllabus (sample)", url: "https://example.com" },
+      { label: "Lesson sample (recording or notes)", url: "https://example.com" },
+    ],
+  },
+  {
+    slug: "sahar-translation-research",
+    name: "Sahar",
+    bio:
+      "Sahar supports NGOs and mission-driven teams through translation and desk research. She has experience working on program documents, donor-facing briefs, and multilingual materials (English ↔ Dari/Farsi/Pashto). She is detail-oriented, reliable with deadlines, and used to handling sensitive content under confidentiality while collaborating remotely across time zones.",
     categories: ["Translation", "Research & Data"],
     services: [
       "English ↔ Dari/Farsi/Pashto translation",
       "Localization & cultural adaptation",
-      "Desk research and data cleaning",
+      "Desk research and summarization",
+      "Data cleaning and structuring",
     ],
     portfolio: [
-      { label: "Portfolio (Google Drive)", url: "https://example.com" },
+      { label: "Portfolio (Drive folder)", url: "https://example.com" },
       { label: "Writing sample", url: "https://example.com" },
     ],
   },
 ];
-
