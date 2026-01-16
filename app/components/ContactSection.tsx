@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { SiteContent } from "../lib/translations";
+import { useSearchParams } from "next/navigation";
 
 type ContactProps = {
   content: SiteContent["contact"];
@@ -10,10 +11,29 @@ type ContactProps = {
 };
 
 export default function ContactSection({ content, common }: ContactProps) {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+  const searchParams = useSearchParams();
+
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
+    "idle"
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // ✅ Make message controlled so we can prefill it
+  const [message, setMessage] = useState("");
+
+  // ✅ Read query params from: /?freelancer=NAME&categories=CAT1,%20CAT2#contact
+  const freelancer = searchParams.get("freelancer");
+  const categories = searchParams.get("categories");
+
+  useEffect(() => {
+    // Only prefill if message is empty (never overwrite what user typed)
+    if (!message && freelancer) {
+      const catText = categories ? ` (${categories})` : "";
+      setMessage(
+        `Hello SheConnects,\n\nI’m interested in working with ${freelancer}${catText}. Please share availability, pricing, and next steps.\n\nThank you.`
+      );
+    }
+  }, [freelancer, categories, message]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,7 +43,14 @@ export default function ContactSection({ content, common }: ContactProps) {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    formData.append("_subject", "New contact from SheConnects website");
+    // ✅ Add context to the email subject if someone came from a freelancer profile
+    if (freelancer) {
+      const catText = categories ? ` | ${categories}` : "";
+      formData.append("_subject", `Hire request: ${freelancer}${catText}`);
+    } else {
+      formData.append("_subject", "New contact from SheConnects website");
+    }
+
     formData.append("_captcha", "false");
 
     try {
@@ -38,13 +65,12 @@ export default function ContactSection({ content, common }: ContactProps) {
       if (res.ok) {
         setStatus("success");
         form.reset();
+        setMessage(""); // ✅ reset controlled message too
       } else {
         setStatus("error");
         try {
           const data = await res.json();
-          if (data?.message) {
-            setErrorMessage(data.message);
-          }
+          if (data?.message) setErrorMessage(data.message);
         } catch {
           // ignore JSON parse error
         }
@@ -56,10 +82,7 @@ export default function ContactSection({ content, common }: ContactProps) {
   };
 
   return (
-    <section
-      id="contact"
-      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"
-    >
+    <section id="contact" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
       <motion.div
         className="grid gap-8 md:grid-cols-[1.5fr,2fr]"
         initial={{ opacity: 0, y: 20 }}
@@ -82,6 +105,20 @@ export default function ContactSection({ content, common }: ContactProps) {
               {common.contactEmailLabel}
             </a>
           </p>
+
+          {/* ✅ Optional: small hint if user came from a freelancer profile */}
+          {freelancer && (
+            <p className="mt-4 rounded-xl border border-violet-100 bg-violet-50 px-3 py-2 text-[12px] text-slate-700">
+              You’re requesting support for <span className="font-semibold">{freelancer}</span>
+              {categories ? (
+                <>
+                  {" "}
+                  <span className="text-slate-500">({categories})</span>
+                </>
+              ) : null}
+              .
+            </p>
+          )}
         </div>
 
         <form
@@ -119,9 +156,11 @@ export default function ContactSection({ content, common }: ContactProps) {
             <textarea
               name="message"
               className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm text-slate-900"
-              rows={3}
+              rows={5}
               placeholder={content.messagePlaceholder}
               required
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
           </div>
 
