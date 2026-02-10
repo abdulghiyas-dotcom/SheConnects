@@ -1,107 +1,103 @@
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { freelancers } from "../../lib/freelancers";
 
-export default function FreelancerProfilePage({
-  params,
-}: {
+type Props = {
   params: { slug: string };
-}) {
-  const freelancer = freelancers.find((f) => f.slug === params.slug);
+};
 
-  if (!freelancer) {
-    return (
-      <main className="min-h-screen bg-slate-50 text-slate-900">
-        <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-semibold">Profile not found</h1>
-          <p className="mt-2 text-slate-700">
-            The freelancer profile you’re looking for does not exist.
-          </p>
-          <Link href="/freelancers" className="mt-4 inline-block underline">
-            Back to freelancers
-          </Link>
-        </section>
-      </main>
-    );
-  }
+export default function FreelancerProfile({ params }: Props) {
+  const freelancer = freelancers.find(f => f.slug === params.slug);
 
-  // ✅ Option 1: go back to homepage contact section with prefill params
-  const hireLink = `/?freelancer=${encodeURIComponent(
-    freelancer.name
-  )}&categories=${encodeURIComponent(freelancer.categories.join(", "))}#contact`;
+  if (!freelancer) return notFound();
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <Link
-            href="/freelancers"
-            className="inline-flex rounded-full border border-slate-200 bg-white/70 px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-transform hover:-translate-y-0.5"
-          >
-            ← Back to freelancers
-          </Link>
+    <main className="min-h-screen bg-slate-50 px-4 py-12">
+      <div className="mx-auto max-w-3xl">
+        {/* Back */}
+        <Link
+          href="/freelancers"
+          className="mb-6 inline-block text-sm text-violet-700 underline underline-offset-2"
+        >
+          ← Back to freelancers
+        </Link>
 
-          <Link
-            href={hireLink}
-            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
-          >
-            Hire her
-          </Link>
-        </div>
-
-        <div className="mt-6 rounded-3xl border border-violet-100 bg-white/90 p-8 shadow-[0_25px_80px_rgba(99,102,241,0.08)]">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+        {/* Card */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h1 className="text-2xl font-semibold text-slate-900">
             {freelancer.name}
           </h1>
 
-          <div className="mt-3 flex flex-wrap gap-2">
-            {freelancer.categories.map((c) => (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {freelancer.categories.map(cat => (
               <span
-                key={c}
-                className="rounded-full bg-violet-50 px-3 py-1 text-[11px] font-semibold text-violet-700 ring-1 ring-violet-100"
+                key={cat}
+                className="rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700"
               >
-                {c}
+                {cat}
               </span>
             ))}
           </div>
 
-          <p className="mt-5 text-sm text-slate-700">{freelancer.bio}</p>
+          <p className="mt-4 text-sm leading-relaxed text-slate-700">
+            {freelancer.bio}
+          </p>
 
+          {/* Services */}
           <div className="mt-6">
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-sm font-semibold text-slate-900">
               Services offered
             </h2>
-            <ul className="mt-3 space-y-2 text-sm text-slate-700">
-              {freelancer.services.map((s) => (
-                <li key={s}>• {s}</li>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
+              {freelancer.services.map(service => (
+                <li key={service}>{service}</li>
               ))}
             </ul>
           </div>
 
+          {/* Portfolio */}
           <div className="mt-6">
-            <h2 className="text-lg font-semibold text-slate-900">Portfolio</h2>
-            <div className="mt-3 space-y-2">
-              {freelancer.portfolio.map((p) => (
-                <a
-                  key={p.url}
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-200"
-                >
-                  <span className="font-semibold text-slate-900">{p.label}</span>
-                  <span className="block text-xs text-slate-500 break-all">
-                    {p.url}
-                  </span>
-                </a>
-              ))}
-            </div>
+            <h2 className="text-sm font-semibold text-slate-900">
+              Portfolio samples
+            </h2>
 
-            <p className="mt-4 text-xs text-slate-500">
+            <p className="mt-1 text-[11px] text-slate-500">
+              PDF samples open in the same window.
+            </p>
+
+            <ul className="mt-3 space-y-2">
+              {freelancer.portfolio.map(item => (
+                <li key={item.url}>
+                  <a
+                    href={item.url}
+                    className="text-sm text-violet-700 underline underline-offset-2 hover:text-violet-900"
+                  >
+                    {item.label} — PDF
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Hire button */}
+          <div className="mt-8">
+            <Link
+              href={`/#contact?freelancer=${encodeURIComponent(
+                freelancer.name
+              )}&services=${encodeURIComponent(
+                freelancer.categories.join(", ")
+              )}`}
+              className="inline-block rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-2 text-sm font-medium text-white shadow-md shadow-violet-200 transition-transform hover:-translate-y-0.5"
+            >
+              Request collaboration
+            </Link>
+
+            <p className="mt-2 text-[11px] text-slate-500">
               Projects are managed through SheConnects to ensure quality and compliance.
             </p>
           </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
