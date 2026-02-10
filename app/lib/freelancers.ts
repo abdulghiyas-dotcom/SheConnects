@@ -1,57 +1,39 @@
-export type FreelancerCategory =
-  | "Programming"
-  | "Translation"
-  | "Creative & Design"
-  | "Research & Data"
-  | "Online Teaching";
-
 export type PortfolioItem = {
   label: string;
-  url: string; // must be https://...
+  url: string;
 };
 
 export type Freelancer = {
   slug: string;
   name: string;
-  bio: string; // ~75 words
-  categories: FreelancerCategory[];
+  bio: string;
+  categories: string[];
   services: string[];
   portfolio: PortfolioItem[];
 };
 
 export const freelancers: Freelancer[] = [
   {
-    slug: "amina-online-teaching",
-    name: "Amina",
+    slug: "gita",
+    name: "Gita",
     bio:
-      "Amina is an Afghan educator with experience delivering structured, learner-centered online lessons. She supports English learning and academic tutoring, adapting lesson plans to different levels and goals. She has worked with youth and adult learners and is comfortable collaborating with international teams and NGO programs. Her teaching style is clear, encouraging, and focused on measurable progress.",
-    categories: ["Online Teaching", "Translation"],
+      "My name is Gita. I am a freelance document translator working between English and Persian (Dari). I have a background in research, journalism, and women’s rights documentation, which gave me strong writing and analytical skills. Due to serious security risks and restrictions on women’s work in Afghanistan, I could not continue working locally and migrated to Pakistan. I now work remotely, focusing on accurate, professional, and confidential document translation to support myself and my family.",
+    categories: ["Translation"],
     services: [
-      "Online English language instruction",
-      "Dari/Farsi language tutoring",
-      "Lesson planning and assessments",
-      "Localization support for learning materials",
+      "Document translation (English ↔ Persian/Dari)",
+      "Confidential and sensitive document handling",
+      "Proofreading and editing",
+      "Localization for tone and cultural context",
     ],
     portfolio: [
-      { label: "Teaching syllabus (sample)", url: "https://example.com" },
-      { label: "Lesson sample (recording or notes)", url: "https://example.com" },
-    ],
-  },
-  {
-    slug: "sahar-translation-research",
-    name: "Sahar",
-    bio:
-      "Sahar supports NGOs and mission-driven teams through translation and desk research. She has experience working on program documents, donor-facing briefs, and multilingual materials (English ↔ Dari/Farsi/Pashto). She is detail-oriented, reliable with deadlines, and used to handling sensitive content under confidentiality while collaborating remotely across time zones.",
-    categories: ["Translation", "Research & Data"],
-    services: [
-      "English ↔ Dari/Farsi/Pashto translation",
-      "Localization & cultural adaptation",
-      "Desk research and summarization",
-      "Data cleaning and structuring",
-    ],
-    portfolio: [
-      { label: "Portfolio (Drive folder)", url: "https://example.com" },
-      { label: "Writing sample", url: "https://example.com" },
+      {
+        label: "Sample translation (English → Persian/Dari)",
+        url: "/portfolio/gita-en-to-dari.pdf",
+      },
+      {
+        label: "Sample translation (Persian/Dari → English)",
+        url: "/portfolio/gita-dari-to-en.pdf",
+      },
     ],
   },
 ];
