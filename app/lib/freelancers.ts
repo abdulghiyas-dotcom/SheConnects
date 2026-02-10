@@ -9,7 +9,7 @@ export type Freelancer = {
   slug: string;
   name: string;
   role: string;
-  categories: string[]; // Use these for filtering
+  categories: string[]; // These will be used for your filters: Programming, Graphic Design, Teaching Online, Market Research, Document Translation
   bio: string;
   services: string[];
   portfolio: PortfolioItem[];
