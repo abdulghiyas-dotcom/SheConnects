@@ -1,103 +1,136 @@
+"use client";
+
 import { notFound } from "next/navigation";
+import { motion } from "framer-motion";
 import Link from "next/link";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { freelancers } from "../../lib/freelancers";
+import { translations, defaultLanguage } from "../../lib/translations";
 
 type Props = {
-  params: { slug: string };
+  params: {
+    slug: string;
+  };
 };
 
-export default function FreelancerProfile({ params }: Props) {
-  const freelancer = freelancers.find(f => f.slug === params.slug);
+export default function FreelancerProfilePage({ params }: Props) {
+  const freelancer = freelancers.find((f) => f.slug === params.slug);
+  const content = translations[defaultLanguage];
 
-  if (!freelancer) return notFound();
+  if (!freelancer) {
+    notFound();
+  }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-12">
-      <div className="mx-auto max-w-3xl">
-        {/* Back */}
-        <Link
-          href="/freelancers"
-          className="mb-6 inline-block text-sm text-violet-700 underline underline-offset-2"
-        >
-          ← Back to freelancers
-        </Link>
+    <main className="min-h-screen bg-white text-slate-900">
+      <Header
+        content={content.header}
+        language="en"
+        onLanguageChange={() => {}}
+        languageNames={content.languageNames}
+      />
 
-        {/* Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h1 className="text-2xl font-semibold text-slate-900">
-            {freelancer.name}
-          </h1>
-
-          <div className="mt-2 flex flex-wrap gap-2">
-            {freelancer.categories.map(cat => (
-              <span
-                key={cat}
-                className="rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700"
-              >
-                {cat}
-              </span>
-            ))}
-          </div>
-
-          <p className="mt-4 text-sm leading-relaxed text-slate-700">
-            {freelancer.bio}
-          </p>
-
-          {/* Services */}
-          <div className="mt-6">
-            <h2 className="text-sm font-semibold text-slate-900">
-              Services offered
-            </h2>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
-              {freelancer.services.map(service => (
-                <li key={service}>{service}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Portfolio */}
-          <div className="mt-6">
-            <h2 className="text-sm font-semibold text-slate-900">
-              Portfolio samples
-            </h2>
-
-            <p className="mt-1 text-[11px] text-slate-500">
-              PDF samples open in the same window.
-            </p>
-
-            <ul className="mt-3 space-y-2">
-              {freelancer.portfolio.map(item => (
-                <li key={item.url}>
-                  <a
-                    href={item.url}
-                    className="text-sm text-violet-700 underline underline-offset-2 hover:text-violet-900"
-                  >
-                    {item.label} — PDF
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Hire button */}
-          <div className="mt-8">
-            <Link
-              href={`/#contact?freelancer=${encodeURIComponent(
-                freelancer.name
-              )}&services=${encodeURIComponent(
-                freelancer.categories.join(", ")
-              )}`}
-              className="inline-block rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-2 text-sm font-medium text-white shadow-md shadow-violet-200 transition-transform hover:-translate-y-0.5"
-            >
-              Request collaboration
-            </Link>
-
-            <p className="mt-2 text-[11px] text-slate-500">
-              Projects are managed through SheConnects to ensure quality and compliance.
+      {/* Modern Profile Hero */}
+      <div className="bg-gradient-to-b from-violet-50 to-white pt-20 pb-16">
+        <div className="mx-auto max-w-5xl px-4 flex flex-col md:flex-row items-center gap-12">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="relative h-64 w-64 md:h-80 md:w-80 overflow-hidden rounded-[3rem] shadow-2xl ring-8 ring-white"
+          >
+            <img 
+              src={`/freelancers/${freelancer.slug}.jpg`} 
+              alt={freelancer.name} 
+              className="h-full w-full object-cover" 
+            />
+          </motion.div>
+          
+          <div className="text-center md:text-left">
+            <span className="inline-block rounded-full bg-violet-100 px-4 py-1 text-xs font-bold uppercase tracking-widest text-violet-700">
+              Verified Expert
+            </span>
+            <h1 className="mt-4 text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
+              {freelancer.name}
+            </h1>
+            <p className="mt-2 text-2xl font-medium text-slate-500">
+              {freelancer.role}
             </p>
           </div>
         </div>
       </div>
+
+      <div className="mx-auto max-w-5xl px-4 py-16 grid md:grid-cols-3 gap-16">
+        {/* Left Content Area */}
+        <div className="md:col-span-2 space-y-12">
+          <section>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 underline decoration-violet-200 decoration-4 underline-offset-8">
+              About
+            </h2>
+            <p className="text-lg leading-relaxed text-slate-600">
+              {freelancer.bio}
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 underline decoration-violet-200 decoration-4 underline-offset-8">
+              Services Offered
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {freelancer.services.map((service) => (
+                <span key={service} className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold text-slate-700">
+                  {service}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 underline decoration-violet-200 decoration-4 underline-offset-8">
+              Portfolio & Work Samples
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {freelancer.portfolio.map((item) => (
+                <a
+                  key={item.title}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-3xl border border-slate-200 p-6 transition-all hover:border-violet-300 hover:bg-violet-50/50"
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-violet-600 mb-2">
+                    {item.type}
+                  </p>
+                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-violet-700">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-500">
+                    {item.description}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Sidebar */}
+        <aside>
+          <div className="sticky top-28 rounded-[2.5rem] border border-violet-100 bg-violet-50/30 p-8 text-center">
+            <h3 className="text-xl font-bold text-slate-900 mb-3">Hire {freelancer.name}</h3>
+            <p className="text-sm text-slate-600 mb-8 leading-relaxed">
+              Every project is managed through our studio to ensure the highest quality and safety standards.
+            </p>
+            <Link 
+              href="/#contact"
+              className="block w-full rounded-2xl bg-slate-900 py-4 text-sm font-bold text-white shadow-xl hover:bg-violet-700 transition-all active:scale-95"
+            >
+              Request Collaboration
+            </Link>
+          </div>
+        </aside>
+      </div>
+
+      <Footer content={content.footer} />
     </main>
   );
 }
