@@ -723,4 +723,124 @@ export const translations: Record<Language, SiteContent> = {
     contact: {
       title: "Esploriamo come collaborare",
       subtitle:
-        "Raccontaci qualcosa sulla tua organizz
+        "Raccontaci qualcosa sulla tua organizzazione e sul tipo di supporto digitale che cerchi. Ti ricontatteremo con i prossimi passi.",
+      emailIntro: "Preferisci l'email?",
+      namePlaceholder: "Nome e cognome",
+      organizationPlaceholder: "Organizzazione",
+      emailPlaceholder: "tu@org.org",
+      messagePlaceholder: "Breve descrizione delle tue necessità",
+      sendLabel: "Invia messaggio",
+      sendingLabel: "Invio...",
+      success:
+        "Grazie! Il tuo messaggio è stato inviato. Ti risponderemo al più presto.",
+      error:
+        "Qualcosa è andato storto. Riprova o scrivici direttamente a hello@sheconnects.work.",
+      dataNotice:
+        "Inviando il form accetti che trattiamo i tuoi dati in linea con la nostra Informativa sulla privacy.",
+    },
+    finalCta: {
+      title: "Pronti a lavorare insieme?",
+      description:
+        "Che tu abbia bisogno di traduzione, ricerca, programmazione o design, le nostre freelance sono pronte a collaborare.",
+    },
+    footer: {
+      tagline: "Studio di servizi remoti a impatto, guidato da donne afghane.",
+      location: "Milano, Italia",
+      contact: "Contatto:",
+      privacy: "Informativa sulla privacy",
+      copyright: "© {year} SheConnects",
+    },
+    cookie: {
+      message:
+        "Utilizziamo cookie di analisi anonimi per capire come viene usato SheConnects e migliorare i nostri servizi. Puoi scegliere se accettarli o rifiutarli. Non usiamo cookie di marketing o tracciamento.",
+      reject: "Rifiuta analytics",
+      accept: "Accetta analytics",
+      learnMorePrefix: "Per saperne di più consulta la nostra",
+      learnMore: "Informativa sulla privacy",
+    },
+    privacy: {
+      title: "Informativa sulla privacy",
+      intro:
+        "Scopri come SheConnects raccoglie, utilizza e protegge le tue informazioni quando visiti il nostro sito o utilizzi i nostri servizi, incluso l'uso di cookie e analytics in linea con il GDPR.",
+      effectiveLabel: "Data di efficacia:",
+      effectiveDate: "2 dicembre 2024",
+      sections: [
+        {
+          title: "Dati che raccogliamo",
+          description:
+            "Raccogliamo informazioni che ci aiutano a offrire servizi affidabili ed etici, proteggendo al contempo i tuoi dati.",
+          items: [
+            {
+              label: "Dati personali",
+              content:
+                "Nome, email, numero di telefono, Paese, ruolo professionale, dettagli del CV per le freelance, e nome e contatti dell'azienda per i clienti.",
+            },
+            {
+              label: "Dati di utilizzo",
+              content:
+                "Indirizzo IP, tipo di browser, pagine visitate, tempo trascorso sulle pagine e URL di provenienza per capire come viene utilizzato il sito.",
+            },
+            {
+              label: "Cookie e analytics",
+              content:
+                "Utilizziamo cookie e tecnologie simili per capire come viene usato il sito e migliorare i nostri servizi. Usiamo Google Analytics 4 (GA4) per raccogliere statistiche di utilizzo anonime. I cookie di analytics si attivano solo dopo il tuo consenso tramite il banner. Puoi disabilitare i cookie in qualsiasi momento dalle impostazioni del browser.",
+            },
+          ],
+        },
+        {
+          title: "Come utilizziamo le informazioni",
+          items: [
+            "Fornire e gestire i nostri servizi di freelance e supporto remoto",
+            "Abbinare i clienti a freelance e team di servizio idonei in modo gestito",
+            "Comunicare con te riguardo alla piattaforma, ai progetti o alle opportunità",
+            "Migliorare il sito e i servizi, anche tramite analytics anonimizzati (quando c'è consenso)",
+            "Rispondere ad obblighi legali e normativi",
+          ],
+        },
+        {
+          title: "Condivisione e divulgazione dei dati",
+          items: [
+            "Non vendiamo le tue informazioni personali.",
+            "Possiamo condividere dati con fornitori di servizi terzi di fiducia (es. hosting, email, analytics) che trattano i dati per nostro conto e secondo le nostre istruzioni.",
+            "Possiamo divulgare informazioni alle autorità competenti quando richiesto dalla legge.",
+            "Durante il processo di matching, possiamo condividere dettagli rilevanti con clienti e freelance con la tua conoscenza e consenso.",
+          ],
+        },
+        {
+          title: "Sicurezza dei dati",
+          description:
+            "Applichiamo misure tecniche e organizzative adeguate per proteggere i dati da accessi non autorizzati, perdita, uso improprio o divulgazione. Nessun sistema è però al 100% sicuro, e non possiamo garantire sicurezza assoluta delle informazioni trasmesse o archiviate elettronicamente.",
+        },
+        {
+          title: "I tuoi diritti (ai sensi del GDPR)",
+          items: [
+            "Accedere ai tuoi dati",
+            "Correggere o cancellare i tuoi dati",
+            "Opporti o limitare il trattamento",
+            "Portabilità dei dati, dove applicabile",
+            "Presentare un reclamo a un'autorità di controllo",
+          ],
+          description:
+            "Per esercitare questi diritti, contattaci su hello@sheconnects.work e risponderemo il prima possibile.",
+        },
+        {
+          title: "Link a terze parti",
+          description:
+            "Il sito può contenere link a siti o servizi di terzi. Non siamo responsabili delle loro pratiche sulla privacy o dei loro contenuti. Ti invitiamo a leggere le informative sulla privacy di ogni sito di terze parti che visiti.",
+        },
+        {
+          title: "Modifiche a questa informativa",
+          description:
+            "Possiamo aggiornare periodicamente questa informativa per riflettere cambiamenti nelle pratiche, nelle tecnologie o nei requisiti legali. In caso di modifiche rilevanti aggiorneremo la data di efficacia in alto e, se necessario, forniremo ulteriori avvisi.",
+        },
+        {
+          title: "Contatti",
+          description:
+            "Se hai domande su questa informativa o su come trattiamo i dati, contattaci a hello@sheconnects.work.",
+        },
+      ],
+      contact:
+        "Se hai domande su questa informativa o su come trattiamo i dati, contattaci a hello@sheconnects.work.",
+    },
+  },
+};
