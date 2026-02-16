@@ -10,7 +10,7 @@ import { translations, defaultLanguage } from "../../lib/translations";
 
 type Props = { params: { slug: string } };
 
-// Privacy-focused Icon to replace profile pictures
+// Privacy-focused Icon
 const UserIcon = () => (
   <svg className="w-10 h-10 text-violet-300" fill="currentColor" viewBox="0 0 24 24">
     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -28,15 +28,14 @@ export default function FreelancerProfile({ params }: Props) {
 
   const handleSampleClick = (link: string) => {
     setActiveSample(link);
-    // Smooth scroll to the previewer so the user sees the document
-    previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    previewRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
       <Header content={content.header} language="en" onLanguageChange={() => {}} languageNames={content.languageNames} />
 
-      {/* Modern Compact Header with smaller text */}
+      {/* Modern Compact Header */}
       <div className="border-b border-slate-100 bg-slate-50/50 pt-24 pb-8">
         <div className="mx-auto max-w-5xl px-6 flex items-center gap-6">
           <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center border border-slate-200 shadow-sm">
@@ -75,7 +74,7 @@ export default function FreelancerProfile({ params }: Props) {
                     <span className="text-[9px] font-bold text-slate-400 px-2">DOCUMENT PREVIEW</span>
                     <button onClick={() => setActiveSample(null)} className="text-[9px] font-bold text-red-400 hover:text-red-600 px-2">CLOSE PREVIEW ×</button>
                   </div>
-                  <div className="h-[500px] overflow-y-auto bg-white">
+                  <div className="h-[450px] overflow-y-auto bg-white">
                     <iframe src={activeSample} className="w-full h-full" title="PDF Preview" />
                   </div>
                 </motion.div>
@@ -114,14 +113,14 @@ export default function FreelancerProfile({ params }: Props) {
           </section>
         </div>
 
-        {/* Sidebar with Integrated Hire Form */}
+        {/* Sidebar with Direct Hire Form */}
         <aside>
           <div className="sticky top-28 rounded-2xl bg-slate-900 p-6 text-white shadow-xl">
             {!isFormOpen ? (
               <div className="text-center">
                 <h3 className="text-sm font-bold mb-2">Hire {freelancer.name}</h3>
                 <p className="text-[10px] text-slate-400 mb-6 leading-relaxed">
-                  Submit a project request for this expert. Our studio handles the management to ensure quality and safety.
+                  Submit a request to collaborate with this expert. Our studio handles the management for you.
                 </p>
                 <button 
                   onClick={() => setIsFormOpen(true)}
@@ -132,20 +131,16 @@ export default function FreelancerProfile({ params }: Props) {
               </div>
             ) : (
               <form action="https://formsubmit.co/hello@sheconnects.work" method="POST" className="space-y-3">
-                {/* Subject for the email you receive */}
                 <input type="hidden" name="_subject" value={`New Hire Request: ${freelancer.name}`} />
-                
                 <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider">Project Request</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider">Project Details</h3>
                   <button type="button" onClick={() => setIsFormOpen(false)} className="text-[10px] text-slate-400 hover:text-white">Cancel</button>
                 </div>
-                
                 <input required name="name" type="text" placeholder="Your Name" className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
                 <input required name="email" type="email" placeholder="Your Email" className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
-                <textarea required name="message" rows={4} placeholder={`Describe the project you'd like ${freelancer.name} to work on...`} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
-                
+                <textarea required name="message" rows={3} placeholder={`Tell us about your project for ${freelancer.name}...`} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
                 <button type="submit" className="w-full py-2.5 bg-violet-600 text-white rounded-lg text-xs font-bold hover:bg-violet-500 transition-all">
-                  Send Request
+                  Submit Request
                 </button>
               </form>
             )}
