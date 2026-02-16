@@ -1,152 +1,147 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { freelancers } from "../../lib/freelancers";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { freelancers } from "../../lib/freelancers";
 import { translations, defaultLanguage } from "../../lib/translations";
 
 type Props = { params: { slug: string } };
 
-// Privacy-focused Icon
-const UserIcon = () => (
-  <svg className="w-10 h-10 text-violet-300" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-  </svg>
-);
-
 export default function FreelancerProfile({ params }: Props) {
   const freelancer = freelancers.find((f) => f.slug === params.slug);
   const content = translations[defaultLanguage];
-  const [activeSample, setActiveSample] = useState<string | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const previewRef = useRef<HTMLDivElement>(null);
 
   if (!freelancer) notFound();
 
-  const handleSampleClick = (link: string) => {
-    setActiveSample(link);
-    previewRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <main className="min-h-screen bg-white text-slate-900">
-      <Header content={content.header} language="en" onLanguageChange={() => {}} languageNames={content.languageNames} />
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <Header
+        content={content.header}
+        language="en"
+        onLanguageChange={() => {}}
+        languageNames={content.languageNames}
+      />
 
-      {/* Modern Compact Header */}
-      <div className="border-b border-slate-100 bg-slate-50/50 pt-24 pb-8">
-        <div className="mx-auto max-w-5xl px-6 flex items-center gap-6">
-          <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center border border-slate-200 shadow-sm">
-            <UserIcon />
-          </div>
-          <div>
-            <div className="flex gap-2 mb-1">
-              {freelancer.categories.map(cat => (
-                <span key={cat} className="text-[9px] font-bold uppercase tracking-wider text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+      {/* HERO SECTION */}
+      <section className="pt-28 pb-14 bg-white border-b border-slate-100">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="max-w-3xl">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {freelancer.categories.map((cat) => (
+                <span
+                  key={cat}
+                  className="px-3 py-1 text-xs font-semibold bg-violet-50 text-violet-700 rounded-full"
+                >
                   {cat}
                 </span>
               ))}
             </div>
-            <h1 className="text-xl font-bold text-slate-900">{freelancer.name}</h1>
-            <p className="text-xs text-slate-500 font-medium">{freelancer.role}</p>
+
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+              {freelancer.name}
+            </h1>
+
+            <p className="mt-4 text-base text-slate-600 leading-relaxed">
+              {freelancer.bio}
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="mx-auto max-w-5xl px-6 py-10 grid md:grid-cols-3 gap-12">
-        <div className="md:col-span-2 space-y-10">
-          
-          {/* Portfolio Section with Scrollable Viewer */}
-          <section ref={previewRef}>
-            <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Work Samples</h2>
-            
-            <AnimatePresence>
-              {activeSample && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }} 
-                  animate={{ opacity: 1, height: "auto" }} 
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mb-6 border border-slate-200 rounded-xl overflow-hidden bg-slate-100 shadow-inner"
+      {/* MAIN CONTENT */}
+      <section className="mx-auto max-w-6xl px-6 py-14 grid lg:grid-cols-[2fr,1fr] gap-14">
+        
+        {/* LEFT SIDE */}
+        <div className="space-y-12">
+
+          {/* SERVICES */}
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">
+              Services
+            </h2>
+
+            <div className="flex flex-wrap gap-3">
+              {freelancer.services.map((service) => (
+                <span
+                  key={service}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 shadow-sm"
                 >
-                  <div className="bg-white p-2 border-b border-slate-200 flex justify-between items-center">
-                    <span className="text-[9px] font-bold text-slate-400 px-2">DOCUMENT PREVIEW</span>
-                    <button onClick={() => setActiveSample(null)} className="text-[9px] font-bold text-red-400 hover:text-red-600 px-2">CLOSE PREVIEW ×</button>
-                  </div>
-                  <div className="h-[450px] overflow-y-auto bg-white">
-                    <iframe src={activeSample} className="w-full h-full" title="PDF Preview" />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="grid gap-2">
-              {freelancer.portfolio.map((item) => (
-                <button
-                  key={item.title}
-                  onClick={() => handleSampleClick(item.link)}
-                  className={`flex items-center justify-between text-left p-3 rounded-lg border transition-all ${
-                    activeSample === item.link ? "border-violet-400 bg-violet-50/50" : "border-slate-100 bg-white hover:border-slate-200"
-                  }`}
-                >
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800">{item.title}</h3>
-                    <p className="text-[10px] text-slate-500">{item.description}</p>
-                  </div>
-                  <span className="text-[9px] font-bold text-violet-500 px-2 uppercase">View Sample</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Bio & Services</h2>
-            <p className="text-xs leading-relaxed text-slate-600 mb-4">{freelancer.bio}</p>
-            <div className="flex flex-wrap gap-2">
-              {freelancer.services.map((s) => (
-                <span key={s} className="px-2 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-medium text-slate-600">
-                  {s}
+                  {service}
                 </span>
               ))}
             </div>
-          </section>
+          </div>
+
+          {/* PORTFOLIO */}
+          {freelancer.portfolio.length > 0 && (
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">
+                Work Samples
+              </h2>
+
+              <div className="space-y-3">
+                {freelancer.portfolio.map((item) => (
+                  <a
+                    key={item.link}
+                    href={item.link}
+                    className="block p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-800">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-slate-500">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <span className="text-xs font-semibold text-violet-600">
+                        View PDF →
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              <p className="mt-3 text-xs text-slate-400">
+                PDF files open in the same window.
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Sidebar with Direct Hire Form */}
+        {/* RIGHT SIDE – HIRE CARD */}
         <aside>
-          <div className="sticky top-28 rounded-2xl bg-slate-900 p-6 text-white shadow-xl">
-            {!isFormOpen ? (
-              <div className="text-center">
-                <h3 className="text-sm font-bold mb-2">Hire {freelancer.name}</h3>
-                <p className="text-[10px] text-slate-400 mb-6 leading-relaxed">
-                  Submit a request to collaborate with this expert. Our studio handles the management for you.
-                </p>
-                <button 
-                  onClick={() => setIsFormOpen(true)}
-                  className="w-full py-2.5 bg-violet-600 text-white rounded-lg text-xs font-bold hover:bg-violet-500 transition-all"
-                >
-                  Start Collaboration
-                </button>
-              </div>
-            ) : (
-              <form action="https://formsubmit.co/hello@sheconnects.work" method="POST" className="space-y-3">
-                <input type="hidden" name="_subject" value={`New Hire Request: ${freelancer.name}`} />
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider">Project Details</h3>
-                  <button type="button" onClick={() => setIsFormOpen(false)} className="text-[10px] text-slate-400 hover:text-white">Cancel</button>
-                </div>
-                <input required name="name" type="text" placeholder="Your Name" className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
-                <input required name="email" type="email" placeholder="Your Email" className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
-                <textarea required name="message" rows={3} placeholder={`Tell us about your project for ${freelancer.name}...`} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-violet-500" />
-                <button type="submit" className="w-full py-2.5 bg-violet-600 text-white rounded-lg text-xs font-bold hover:bg-violet-500 transition-all">
-                  Submit Request
-                </button>
-              </form>
-            )}
+          <div className="sticky top-32 bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+            <h3 className="text-lg font-semibold mb-3">
+              Work with {freelancer.name}
+            </h3>
+
+            <p className="text-sm text-slate-600 mb-6">
+              Submit a project request and our studio will coordinate scope,
+              timeline, and delivery to ensure quality and security.
+            </p>
+
+            <a
+              href={`/#contact?freelancer=${encodeURIComponent(
+                freelancer.name
+              )}`}
+              className="block w-full text-center rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-3 text-sm font-medium text-white shadow-lg hover:opacity-95 transition"
+            >
+              Request Collaboration
+            </a>
+
+            <div className="mt-6 border-t border-slate-100 pt-6">
+              <p className="text-xs text-slate-500 leading-relaxed">
+                SheConnects manages communication, payments, and project
+                coordination to protect both client and freelancer.
+              </p>
+            </div>
           </div>
         </aside>
-      </div>
+      </section>
 
       <Footer content={content.footer} />
     </main>
