@@ -58,8 +58,8 @@ export default function PageContent({
 
       <Services content={content.services} />
 
-      {/* ✅ Meet our freelancers is now right after Services */}
-      <FreelancersPreview />
+      {/* ✅ Pass the current language to the preview component to fix build errors */}
+      <FreelancersPreview language={language} />
 
       <HowItWorks content={content.howItWorks} />
 
