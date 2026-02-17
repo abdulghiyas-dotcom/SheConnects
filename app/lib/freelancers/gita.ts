@@ -3,7 +3,7 @@ import { Freelancer } from "../freelancers";
 export const gita: Freelancer = {
   slug: "gita",
   name: "Gita",
-  categories: ["Translation"],
+  categories: ["Translation", "Graphic Design"],
   en: {
     role: "Graphic Designer & Document Translation Specialist",
     bio: "My name is Gita. I am a freelance document translator working between English and Persian (Dari). I have a background in research, journalism, and women’s rights documentation, which gave me strong writing and analytical skills. Due to serious security risks and restrictions on women’s work in Afghanistan, I could not continue working locally and migrated to Pakistan. I now work remotely, focusing on accurate, professional, and confidential document translation to support myself and my family.",
@@ -26,14 +26,14 @@ export const gita: Freelancer = {
   },
   portfolio: [
     {
-      title: "Sample translation (English → Persian/Dari)",
+      title: "English to Dari Translation Sample",
       link: "/portfolio/gita-en-to-dari.pdf",
-      type: "pdf"
+      type: "pdf",
     },
     {
-      title: "Sample translation (Persian/Dari → English)",
+      title: "Dari to English Translation Sample",
       link: "/portfolio/gita-dari-to-en.pdf",
-      type: "pdf"
+      type: "pdf",
     },
   ],
 };
