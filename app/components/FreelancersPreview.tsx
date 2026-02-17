@@ -3,9 +3,16 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { freelancers } from "../lib/freelancers";
+import { Language, translations } from "../lib/translations";
 
-export default function FreelancersPreview() {
+// We need to know the language to show the correct bio
+type Props = {
+  language: Language;
+};
+
+export default function FreelancersPreview({ language }: Props) {
   const preview = freelancers.slice(0, 3);
+  const t = translations[language].header; // Using header translations for general UI if needed
 
   return (
     <section
@@ -20,12 +27,12 @@ export default function FreelancersPreview() {
         <div className="flex items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Meet our freelancers
+              {language === "it" ? "Incontra le nostre freelance" : "Meet our freelancers"}
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-700 sm:text-base">
-              Vetted Afghan women professionals offering programming, translation,
-              creative support, online teaching, and research — delivered through a
-              managed studio model.
+              {language === "it" 
+                ? "Professioniste afghane esperte che offrono programmazione, traduzione, supporto creativo, insegnamento online e ricerca — forniti attraverso un modello di studio gestito."
+                : "Vetted Afghan women professionals offering programming, translation, creative support, online teaching, and research — delivered through a managed studio model."}
             </p>
           </div>
 
@@ -33,7 +40,7 @@ export default function FreelancersPreview() {
             href="/freelancers"
             className="hidden sm:inline-flex rounded-full border border-slate-200 bg-white/70 px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-transform hover:-translate-y-0.5"
           >
-            View all →
+            {language === "it" ? "Vedi tutto →" : "View all →"}
           </Link>
         </div>
       </motion.div>
@@ -61,13 +68,16 @@ export default function FreelancersPreview() {
               ))}
             </div>
 
-            <p className="mt-3 text-sm text-slate-700 line-clamp-4">{f.bio}</p>
+            {/* FIX: Access the bio through the current language block */}
+            <p className="mt-3 text-sm text-slate-700 line-clamp-4">
+              {f[language].bio}
+            </p>
 
             <Link
               href={`/freelancers/${f.slug}`}
               className="mt-4 inline-flex text-sm font-semibold text-violet-700 hover:text-violet-800"
             >
-              View profile →
+              {language === "it" ? "Vedi profilo →" : "View profile →"}
             </Link>
           </motion.article>
         ))}
@@ -78,7 +88,7 @@ export default function FreelancersPreview() {
           href="/freelancers"
           className="inline-flex rounded-full border border-slate-200 bg-white/70 px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-transform hover:-translate-y-0.5"
         >
-          View all →
+          {language === "it" ? "Vedi tutto →" : "View all →"}
         </Link>
       </div>
     </section>
