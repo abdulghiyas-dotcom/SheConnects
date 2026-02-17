@@ -1,6 +1,5 @@
 import { gita } from "./freelancers/gita";
 
-// This definition must match the data in gita.ts exactly
 export type PortfolioItem = {
   title: string;
   link: string;
@@ -17,12 +16,11 @@ export type Freelancer = {
   slug: string;
   name: string;
   categories: string[];
-  en: FreelancerContent;
-  it: FreelancerContent;
+  en: FreelancerContent; // English block
+  it: FreelancerContent; // Italian block
   portfolio: PortfolioItem[];
 };
 
-// This array exports all freelancers to the rest of the app
 export const freelancers: Freelancer[] = [
   gita,
 ];
