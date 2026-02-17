@@ -10,13 +10,10 @@ import { translations, Language } from "../../lib/translations";
 type Props = { params: { slug: string } };
 
 export default function FreelancerProfile({ params }: Props) {
-  // Global language state, controlled by the Header switcher
   const [language, setLanguage] = useState<Language>("en");
-  
   const freelancer = freelancers.find((f) => f.slug === params.slug);
   const content = translations[language];
 
-  // Automatically pick the right language block (en or it)
   const localData = useMemo(() => freelancer ? freelancer[language] : null, [freelancer, language]);
 
   if (!freelancer || !localData) notFound();
@@ -77,7 +74,6 @@ export default function FreelancerProfile({ params }: Props) {
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="text-sm font-semibold text-slate-800">{item.title}</h3>
-                        <p className="text-xs text-slate-500">{item.description}</p>
                       </div>
                       <span className="text-xs font-semibold text-violet-600">
                         {language === "it" ? "Vedi PDF →" : "View PDF →"}
