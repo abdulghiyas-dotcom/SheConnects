@@ -27,11 +27,13 @@ export const gita: Freelancer = {
   portfolio: [
     {
       title: "English to Dari Translation Sample",
+      description: "Sample of technical translation from English to Dari.",
       link: "/portfolio/gita-en-to-dari.pdf",
       type: "pdf",
     },
     {
       title: "Dari to English Translation Sample",
+      description: "Sample of technical translation from Dari to English.",
       link: "/portfolio/gita-dari-to-en.pdf",
       type: "pdf",
     },
