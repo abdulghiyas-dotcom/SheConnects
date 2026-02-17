@@ -26,12 +26,14 @@ export const gita: Freelancer = {
   },
   portfolio: [
     {
-      label: "Sample translation (English → Persian/Dari)",
-      url: "/portfolio/gita-en-to-dari.pdf",
+      title: "Sample translation (English → Persian/Dari)",
+      link: "/portfolio/gita-en-to-dari.pdf",
+      type: "pdf"
     },
     {
-      label: "Sample translation (Persian/Dari → English)",
-      url: "/portfolio/gita-dari-to-en.pdf",
+      title: "Sample translation (Persian/Dari → English)",
+      link: "/portfolio/gita-dari-to-en.pdf",
+      type: "pdf"
     },
   ],
 };
