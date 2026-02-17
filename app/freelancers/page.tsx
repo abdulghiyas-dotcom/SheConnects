@@ -46,7 +46,6 @@ export default function FreelancersPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
-        {/* Filter Bar */}
         <div className="mb-12 flex flex-wrap justify-center gap-3">
           {categories.map((cat) => (
             <button
@@ -61,7 +60,6 @@ export default function FreelancersPage() {
           ))}
         </div>
 
-        {/* Freelancer Grid */}
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {filteredFreelancers.map((f) => (
             <div key={f.slug} className="rounded-3xl bg-white border border-slate-200 p-8 shadow-sm hover:shadow-md transition">
