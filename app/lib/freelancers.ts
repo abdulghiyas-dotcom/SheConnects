@@ -1,4 +1,5 @@
 import { gita } from "./freelancers/gita";
+import { zahra } from "./freelancers/zahra"; // New import
 
 export type PortfolioItem = {
   title: string;
@@ -10,7 +11,7 @@ export type PortfolioItem = {
 export type FreelancerContent = {
   role: string;
   bio: string;
-  languages: string; // Added this line to fix the build error
+  languages: string;
   services: string[];
 };
 
@@ -25,4 +26,5 @@ export type Freelancer = {
 
 export const freelancers: Freelancer[] = [
   gita,
+  zahra, // Zahra is now added to the list
 ];
