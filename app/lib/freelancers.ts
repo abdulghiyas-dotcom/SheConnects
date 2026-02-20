@@ -10,6 +10,7 @@ export type PortfolioItem = {
 export type FreelancerContent = {
   role: string;
   bio: string;
+  languages: string; // Added this line to fix the build error
   services: string[];
 };
 
@@ -17,8 +18,8 @@ export type Freelancer = {
   slug: string;
   name: string;
   categories: string[];
-  en: FreelancerContent; // English block
-  it: FreelancerContent; // Italian block
+  en: FreelancerContent;
+  it: FreelancerContent;
   portfolio: PortfolioItem[];
 };
 
