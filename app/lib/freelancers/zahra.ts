@@ -6,10 +6,10 @@ export const zahra: Freelancer = {
   categories: ["Translation", "Online Teacher"],
   en: {
     role: "Document Translator & Online Educator",
-    bio: "Zahra Ayobi is a professional translator and educator proficient in English, Dari, and Pashto. With a background in academic writing and international debates, she possesses strong communication and digital skills. Currently working as an administrative assistant, she specializes in teaching school subjects online and preparing professional documents. Zahra seeks remote opportunities due to restrictions on women’s work in Afghanistan.",
-    languages: "English, Dari, Pashto",
+    bio: "Zahra Ayobi is a professional translator and educator proficient in English and Dari. With a background in academic writing and international debates, she possesses strong communication and digital skills. Currently working as an administrative assistant, she specializes in teaching school subjects online and preparing professional documents. Zahra seeks remote opportunities due to restrictions on women’s work in Afghanistan.",
+    languages: "English, Dari",
     services: [
-      "Document Translation (English, Dari, Pashto)",
+      "Document Translation (English, Dari)",
       "Online Teaching (School Subjects)",
       "Professional Document Formatting",
       "Administrative Support",
@@ -17,10 +17,10 @@ export const zahra: Freelancer = {
   },
   it: {
     role: "Traduttrice e Insegnante Online",
-    bio: "Zahra Ayobi è una traduttrice e educatrice professionale esperta in inglese, dari e pashtu. Con un background in scrittura accademica e dibattiti internazionali, possiede forti capacità comunicative e digitali. Attualmente assistente amministrativa, è specializzata nell'insegnamento online di materie scolastiche e nella redazione di documenti professionali. Zahra cerca opportunità remote a causa delle restrizioni al lavoro femminile in Afghanistan.",
-    languages: "Inglese, Dari, Pashto",
+    bio: "Zahra Ayobi è una traduttrice e educatrice professionale esperta in inglese e dari. Con un background in scrittura accademica e dibattiti internazionali, possiede forti capacità comunicative e digitali. Attualmente assistente amministrativa, è specializzata nell'insegnamento online di materie scolastiche e nella redazione di documenti professionali. Zahra cerca opportunità remote a causa delle restrizioni al lavoro femminile in Afghanistan.",
+    languages: "Inglese, Dari",
     services: [
-      "Traduzione di documenti (Inglese, Dari, Pashto)",
+      "Traduzione di documenti (Inglese, Dari)",
       "Insegnamento Online (Materie Scolastiche)",
       "Formattazione Documenti Professionali",
       "Supporto Amministrativo",
@@ -31,6 +31,12 @@ export const zahra: Freelancer = {
       title: "Professional Resume",
       description: "Zahra's professional background and qualifications.",
       link: "/portfolio/zahra-resume.png",
+      type: "link",
+    },
+    {
+      title: "English to Dari Translation Sample",
+      description: "A sample of professional translation work.",
+      link: "/portfolio/zahra-translation-sample.png",
       type: "link",
     },
     {
