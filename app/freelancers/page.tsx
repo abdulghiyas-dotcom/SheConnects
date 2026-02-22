@@ -13,22 +13,29 @@ export default function FreelancersPage() {
   const [activeFilter, setActiveFilter] = useState<string>("All");
 
   const categories = useMemo(() => {
-    const allCategories = freelancers.flatMap((f) => f.categories);
+    const allCategories = freelancers.flatMap((f) => f.categories[language]);
     const unique = Array.from(new Set(allCategories));
-    return ["All", ...unique];
-  }, []);
+    return [language === "it" ? "Tutto" : "All", ...unique];
+  }, [language]);
 
   const filteredFreelancers = useMemo(() => {
-    if (activeFilter === "All") return freelancers;
-    return freelancers.filter((f) => f.categories.includes(activeFilter));
-  }, [activeFilter]);
+    const allLabel = language === "it" ? "Tutto" : "All";
+    if (activeFilter === allLabel || (!categories.includes(activeFilter) && activeFilter === "All")) {
+      return freelancers;
+    }
+
+    return freelancers.filter((f) => f.categories[language].includes(activeFilter));
+  }, [activeFilter, categories, language]);
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <Header
         content={content.header}
         language={language}
-        onLanguageChange={setLanguage}
+        onLanguageChange={(newLanguage) => {
+          setLanguage(newLanguage);
+          setActiveFilter(newLanguage === "it" ? "Tutto" : "All");
+        }}
         languageNames={content.languageNames}
       />
 
@@ -38,7 +45,7 @@ export default function FreelancersPage() {
             {language === "it" ? "Incontra le nostre freelance" : "Meet Our Freelancers"}
           </h1>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            {language === "it" 
+            {language === "it"
               ? "Una rete curata di professioniste afghane che offrono servizi remoti di alta qualità attraverso SheConnects."
               : "A curated network of Afghan women professionals delivering high-quality remote services through SheConnects."}
           </p>
@@ -55,7 +62,7 @@ export default function FreelancersPage() {
                 activeFilter === cat ? "bg-violet-600 text-white shadow-md" : "bg-white text-slate-600 border border-slate-200 hover:border-violet-300"
               }`}
             >
-              {cat === "All" ? (language === "it" ? "Tutto" : "All") : cat}
+              {cat}
             </button>
           ))}
         </div>

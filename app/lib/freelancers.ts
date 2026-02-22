@@ -2,8 +2,14 @@ import { gita } from "./freelancers/gita";
 import { zahra } from "./freelancers/zahra"; // New import
 
 export type PortfolioItem = {
-  title: string;
-  description: string;
+  title: {
+    en: string;
+    it: string;
+  };
+  description: {
+    en: string;
+    it: string;
+  };
   link: string;
   type: "pdf" | "link";
 };
@@ -18,7 +24,10 @@ export type FreelancerContent = {
 export type Freelancer = {
   slug: string;
   name: string;
-  categories: string[];
+  categories: {
+    en: string[];
+    it: string[];
+  };
   en: FreelancerContent;
   it: FreelancerContent;
   portfolio: PortfolioItem[];

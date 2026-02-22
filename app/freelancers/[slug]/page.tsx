@@ -60,10 +60,10 @@ export default function FreelancerProfile({ params }: Props) {
                 <a key={item.link} href={item.link} className="block p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h3 className="text-sm font-semibold text-slate-800">{item.title}</h3>
-                      <p className="text-xs text-slate-500">{item.description}</p>
+                      <h3 className="text-sm font-semibold text-slate-800">{item.title[language]}</h3>
+                      <p className="text-xs text-slate-500">{item.description[language]}</p>
                     </div>
-                    <span className="text-xs font-semibold text-violet-600">{language === "it" ? "Vedi PDF →" : "View PDF →"}</span>
+                    <span className="text-xs font-semibold text-violet-600">{language === "it" ? "Apri →" : "Open →"}</span>
                   </div>
                 </a>
               ))}

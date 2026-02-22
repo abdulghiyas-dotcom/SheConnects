@@ -3,8 +3,10 @@ import { Freelancer } from "../freelancers";
 export const gita: Freelancer = {
   slug: "gita",
   name: "Gita",
-  // Updated to show only Translation
-  categories: ["Translation"], 
+  categories: {
+    en: ["Translation"],
+    it: ["Traduzione"],
+  },
   en: {
     role: "Document Translation Specialist",
     bio: "My name is Gita. I am a freelance document translator working between English, Dari, and Uzbeki. I have a background in research, journalism, and women’s rights documentation, which gave me strong writing and analytical skills. Due to serious security risks and restrictions on women’s work in Afghanistan, I migrated to Pakistan. I now work remotely, focusing on accurate, professional, and confidential document translation to support myself and my family.",
@@ -31,14 +33,26 @@ export const gita: Freelancer = {
   },
   portfolio: [
     {
-      title: "English to Dari Translation Sample",
-      description: "Sample of technical translation from English to Dari.",
+      title: {
+        en: "English to Dari Translation Sample",
+        it: "Esempio di traduzione da Inglese a Dari",
+      },
+      description: {
+        en: "Sample of technical translation from English to Dari.",
+        it: "Esempio di traduzione tecnica dall'inglese al dari.",
+      },
       link: "/portfolio/gita-en-to-dari.pdf",
       type: "pdf",
     },
     {
-      title: "Dari to English Translation Sample",
-      description: "Sample of technical translation from Dari to English.",
+      title: {
+        en: "Dari to English Translation Sample",
+        it: "Esempio di traduzione da Dari a Inglese",
+      },
+      description: {
+        en: "Sample of technical translation from Dari to English.",
+        it: "Esempio di traduzione tecnica dal dari all'inglese.",
+      },
       link: "/portfolio/gita-dari-to-en.pdf",
       type: "pdf",
     },
