@@ -40,7 +40,7 @@ export const farwa: Freelancer = {
         it: "Una dimostrazione video dello stile di insegnamento di Farwa e dei metodi di istruzione bilingue.",
       },
       link: "/portfolio/Farwa_teaching.mp4",
-      type: "link", // Set to link for video playback compatibility
+      type: "link",
     },
   ],
 };
