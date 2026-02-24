@@ -1,39 +1,11 @@
 import { gita } from "./freelancers/gita";
-import { zahra } from "./freelancers/zahra"; // New import
+import { zahra } from "./freelancers/zahra";
+import { farwa } from "./freelancers/farwa"; // 1. Import Farwa
 
-export type PortfolioItem = {
-  title: {
-    en: string;
-    it: string;
-  };
-  description: {
-    en: string;
-    it: string;
-  };
-  link: string;
-  type: "pdf" | "link";
-};
-
-export type FreelancerContent = {
-  role: string;
-  bio: string;
-  languages: string;
-  services: string[];
-};
-
-export type Freelancer = {
-  slug: string;
-  name: string;
-  categories: {
-    en: string[];
-    it: string[];
-  };
-  en: FreelancerContent;
-  it: FreelancerContent;
-  portfolio: PortfolioItem[];
-};
+// ... (keep the types as they are)
 
 export const freelancers: Freelancer[] = [
   gita,
-  zahra, // Zahra is now added to the list
+  zahra,
+  farwa, // 2. Add Farwa to the list
 ];
