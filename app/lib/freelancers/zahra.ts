@@ -3,7 +3,10 @@ import { Freelancer } from "../freelancers";
 export const zahra: Freelancer = {
   slug: "zahra",
   name: "Zahra",
-  categories: ["Translation", "Online Teacher"],
+  categories: {
+    en: ["Translation", "Online Teacher"],
+    it: ["Traduzione", "Insegnante Online"],
+  },
   en: {
     role: "Document Translator & Online Educator",
     bio: "Zahra Ayobi is a professional translator and educator proficient in English and Dari. With a background in academic writing and international debates, she possesses strong communication and digital skills. Currently working as an online educator, she specializes in teaching school subjects and preparing professional documents. Zahra seeks remote opportunities due to restrictions on women’s work in Afghanistan.",
@@ -28,26 +31,50 @@ export const zahra: Freelancer = {
   },
   portfolio: [
     {
-      title: "Professional Resume",
-      description: "Zahra's professional background and qualifications.",
+      title: {
+        en: "Professional Resume",
+        it: "Curriculum Professionale",
+      },
+      description: {
+        en: "Zahra's professional background and qualifications.",
+        it: "Background professionale e qualifiche di Zahra.",
+      },
       link: "/portfolio/zahra-resume.png",
       type: "link",
     },
     {
-      title: "English to Dari Translation Sample",
-      description: "A sample of professional translation work.",
+      title: {
+        en: "English to Dari Translation Sample",
+        it: "Esempio di traduzione da Inglese a Dari",
+      },
+      description: {
+        en: "A sample of professional translation work.",
+        it: "Un esempio di lavoro di traduzione professionale.",
+      },
       link: "/portfolio/zahra-translation-sample.png",
       type: "link",
     },
     {
-      title: "Lesson Presentation Sample",
-      description: "A sample of academic materials prepared for online teaching.",
+      title: {
+        en: "Lesson Presentation Sample",
+        it: "Esempio di presentazione didattica",
+      },
+      description: {
+        en: "A sample of academic materials prepared for online teaching.",
+        it: "Un esempio di materiali accademici preparati per l'insegnamento online.",
+      },
       link: "/portfolio/zahra-lesson-sample.pdf",
       type: "pdf",
     },
     {
-      title: "Digital Document Design",
-      description: "Example of professional document formatting and design.",
+      title: {
+        en: "Digital Document Design",
+        it: "Progettazione di documenti digitali",
+      },
+      description: {
+        en: "Example of professional document formatting and design.",
+        it: "Esempio di formattazione e design professionale di documenti.",
+      },
       link: "/portfolio/zahra-design-sample.png",
       type: "link",
     },
