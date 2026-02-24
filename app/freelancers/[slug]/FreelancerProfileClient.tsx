@@ -90,6 +90,11 @@ export default function FreelancerProfileClient({ slug, initialLanguage = defaul
             >
               {language === "it" ? "Richiedi Collaborazione" : "Request Collaboration"}
             </Link>
+            <p className="mt-4 text-xs text-slate-500 leading-relaxed">
+              {language === "it"
+                ? "Per tutelare la privacy delle professioniste, alcuni dati identificativi del profilo possono essere condivisi in forma protetta."
+                : "To protect freelancer privacy, some identifying profile details may be shared in a protected form."}
+            </p>
           </div>
         </aside>
       </section>

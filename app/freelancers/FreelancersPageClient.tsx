@@ -86,6 +86,12 @@ export default function FreelancersPageClient({ initialLanguage = defaultLanguag
             </div>
           ))}
         </div>
+
+        <p className="mt-10 text-center text-sm text-slate-500">
+          {language === "it"
+            ? "Stiamo ampliando il network: nuove liste di freelance in arrivo presto."
+            : "We are expanding our network: more freelancer lists are coming soon."}
+        </p>
       </section>
 
       <Footer content={content.footer} />
