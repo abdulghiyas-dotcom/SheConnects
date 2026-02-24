@@ -56,10 +56,9 @@ export default function PageContent({
 
       <Hero content={content.hero} common={content.common} />
 
-      <Services content={content.services} />
-
-      {/* ✅ Pass the current language to the preview component to fix build errors */}
       <FreelancersPreview language={language} />
+
+      <Services content={content.services} />
 
       <HowItWorks content={content.howItWorks} />
 
