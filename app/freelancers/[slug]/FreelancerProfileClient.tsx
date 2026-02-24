@@ -83,9 +83,9 @@ export default function FreelancerProfileClient({ slug, initialLanguage = defaul
             <h3 className="text-lg font-semibold mb-3">
               {language === "it" ? `Lavora con ${freelancer.name}` : `Work with ${freelancer.name}`}
             </h3>
-            {/* Updated link to pass the freelancer name as a query parameter */}
+            {/* Send users to the contact section with the freelancer name in query params */}
             <Link 
-              href={`/#contact?freelancer=${encodeURIComponent(freelancer.name)}`} 
+              href={`/?freelancer=${encodeURIComponent(freelancer.name)}#contact`} 
               className="block w-full text-center rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-3 text-sm font-medium text-white transition shadow-lg hover:opacity-90"
             >
               {language === "it" ? "Richiedi Collaborazione" : "Request Collaboration"}
