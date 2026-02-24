@@ -2,10 +2,11 @@
 
 import { notFound } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { freelancers } from "../../lib/freelancers";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { defaultLanguage, translations, Language } from "../../lib/translations";
+import Link from "next/link"; //
+import { freelancers } from "../../lib/freelancers"; //
+import Header from "../../components/Header"; //
+import Footer from "../../components/Footer"; //
+import { defaultLanguage, translations, Language } from "../../lib/translations"; //
 
 type Props = {
   slug: string;
@@ -14,14 +15,14 @@ type Props = {
 
 export default function FreelancerProfileClient({ slug, initialLanguage = defaultLanguage }: Props) {
   const [language, setLanguage] = useState<Language>(initialLanguage);
-  const freelancer = freelancers.find((f) => f.slug === slug);
-  const content = translations[language];
+  const freelancer = freelancers.find((f) => f.slug === slug); //
+  const content = translations[language]; //
 
   useEffect(() => {
     document.cookie = `lang=${language}; path=/; max-age=31536000`;
   }, [language]);
 
-  const localData = useMemo(() => freelancer ? freelancer[language] : null, [freelancer, language]);
+  const localData = useMemo(() => freelancer ? freelancer[language] : null, [freelancer, language]); //
 
   if (!freelancer || !localData) notFound();
 
@@ -63,7 +64,7 @@ export default function FreelancerProfileClient({ slug, initialLanguage = defaul
             </h2>
             <div className="space-y-3">
               {freelancer.portfolio.map((item) => (
-                <a key={item.link} href={item.link} className="block p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
+                <a key={item.link} href={item.link} target="_blank" rel="noopener noreferrer" className="block p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-sm font-semibold text-slate-800">{item.title[language]}</h3>
@@ -82,9 +83,13 @@ export default function FreelancerProfileClient({ slug, initialLanguage = defaul
             <h3 className="text-lg font-semibold mb-3">
               {language === "it" ? `Lavora con ${freelancer.name}` : `Work with ${freelancer.name}`}
             </h3>
-            <a href="/#contact" className="block w-full text-center rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-3 text-sm font-medium text-white transition shadow-lg">
+            {/* Updated link to pass the freelancer name as a query parameter */}
+            <Link 
+              href={`/#contact?freelancer=${encodeURIComponent(freelancer.name)}`} 
+              className="block w-full text-center rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-3 text-sm font-medium text-white transition shadow-lg hover:opacity-90"
+            >
               {language === "it" ? "Richiedi Collaborazione" : "Request Collaboration"}
-            </a>
+            </Link>
           </div>
         </aside>
       </section>
