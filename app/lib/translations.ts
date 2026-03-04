@@ -112,6 +112,20 @@ export type SiteContent = {
     learnMorePrefix: string;
     learnMore: string;
   };
+  about: {
+    label: string;
+    title: string;
+    badge: string;
+    missionTitle: string;
+    missionParagraphs: string[];
+    visionTitle: string;
+    visionIntro: string;
+    visionWorldLabel: string;
+    visionBullets: string[];
+    visionClosing: string;
+    valuesTitle: string;
+    coreValues: { title: string; description: string }[];
+  };
   privacy: {
     title: string;
     intro: string;
@@ -396,6 +410,67 @@ export const translations: Record<Language, SiteContent> = {
       accept: "Accept analytics",
       learnMorePrefix: "You can learn more in our",
       learnMore: "Privacy Policy",
+    },
+    about: {
+      label: "About",
+      title: "SheConnects",
+      badge: "Women-led · Impact-driven",
+      missionTitle: "Mission",
+      missionParagraphs: [
+        "SheConnects connects highly skilled Afghan women who have been excluded from the workforce to global clients seeking high-quality digital services.",
+        "We transform talent into opportunity — delivering exceptional digital work while enabling women to earn dignified, independent income.",
+        "We exist to rewrite the narrative: Afghan women are not defined by restriction, but by resilience, capability, and professionalism.",
+      ],
+      visionTitle: "Vision",
+      visionIntro:
+        "To become a globally recognized ethical outsourcing company — trusted for excellence, chosen for impact.",
+      visionWorldLabel: "We envision a world where:",
+      visionBullets: [
+        "Talent matters more than geography or politics",
+        "Afghan women are seen as global professionals",
+        "Ethical outsourcing becomes a mainstream standard",
+        "Excluded communities can compete and thrive in the global digital economy",
+      ],
+      visionClosing:
+        "In 10 years, SheConnects will be the go-to global partner for impactful, high-quality project delivery.",
+      valuesTitle: "Core Values",
+      coreValues: [
+        {
+          title: "Women First",
+          description:
+            "SheConnects is built around the economic empowerment of women. We prioritize their safety, dignity, growth, and long-term independence in every decision we make.",
+        },
+        {
+          title: "Dignity Over Charity",
+          description:
+            "We do not provide aid — we create opportunity. Every contract is earned through skill, competence, and measurable performance.",
+        },
+        {
+          title: "Excellence Without Compromise",
+          description:
+            "Impact does not excuse mediocrity. We compete on quality, reliability, and professional standards at a global level.",
+        },
+        {
+          title: "Transparency",
+          description:
+            "Our freelancers set their own rates. We operate with clear pricing, honest communication, and fair margins. Clients know what they pay for, and women know what they earn.",
+        },
+        {
+          title: "Scalable Impact",
+          description:
+            "We design systems that grow sustainably — because meaningful change requires scale.",
+        },
+        {
+          title: "Courage & Responsibility",
+          description:
+            "Operating in complex environments requires integrity and bold leadership. We protect our freelancers and honor our commitments to clients.",
+        },
+        {
+          title: "Inclusion Beyond Borders",
+          description:
+            "We begin with Afghan women — but our long-term vision is to empower excluded communities worldwide.",
+        },
+      ],
     },
     privacy: {
       title: "Privacy Policy",
@@ -759,6 +834,67 @@ export const translations: Record<Language, SiteContent> = {
       accept: "Accetta analytics",
       learnMorePrefix: "Per saperne di più consulta la nostra",
       learnMore: "Informativa sulla privacy",
+    },
+    about: {
+      label: "Chi siamo",
+      title: "SheConnects",
+      badge: "Guidata da donne · Orientata all'impatto",
+      missionTitle: "Missione",
+      missionParagraphs: [
+        "SheConnects collega donne afghane altamente qualificate, escluse dal mercato del lavoro, con clienti globali che cercano servizi digitali di alta qualità.",
+        "Trasformiamo il talento in opportunità — offrendo un lavoro digitale eccellente e permettendo alle donne di ottenere un reddito dignitoso e indipendente.",
+        "Esistiamo per riscrivere la narrazione: le donne afghane non sono definite dalle restrizioni, ma da resilienza, competenza e professionalità.",
+      ],
+      visionTitle: "Visione",
+      visionIntro:
+        "Diventare un'azienda di outsourcing etico riconosciuta a livello globale — affidabile per l'eccellenza, scelta per l'impatto.",
+      visionWorldLabel: "Immaginiamo un mondo in cui:",
+      visionBullets: [
+        "Il talento conta più della geografia o della politica",
+        "Le donne afghane sono riconosciute come professioniste globali",
+        "L'outsourcing etico diventa uno standard diffuso",
+        "Le comunità escluse possono competere e prosperare nell'economia digitale globale",
+      ],
+      visionClosing:
+        "Tra 10 anni, SheConnects sarà il partner globale di riferimento per una delivery di progetti ad alto impatto e di alta qualità.",
+      valuesTitle: "Valori fondamentali",
+      coreValues: [
+        {
+          title: "Donne al primo posto",
+          description:
+            "SheConnects è costruita attorno all'empowerment economico delle donne. In ogni decisione priorizziamo sicurezza, dignità, crescita e indipendenza di lungo periodo.",
+        },
+        {
+          title: "Dignità prima della carità",
+          description:
+            "Non forniamo aiuti — creiamo opportunità. Ogni contratto è guadagnato tramite competenza, abilità e risultati misurabili.",
+        },
+        {
+          title: "Eccellenza senza compromessi",
+          description:
+            "L'impatto non giustifica la mediocrità. Competiamo su qualità, affidabilità e standard professionali a livello globale.",
+        },
+        {
+          title: "Trasparenza",
+          description:
+            "Le nostre freelance stabiliscono le proprie tariffe. Operiamo con prezzi chiari, comunicazione onesta e margini equi. I clienti sanno cosa pagano e le donne sanno quanto guadagnano.",
+        },
+        {
+          title: "Impatto scalabile",
+          description:
+            "Progettiamo sistemi che crescono in modo sostenibile — perché il cambiamento significativo richiede scala.",
+        },
+        {
+          title: "Coraggio e responsabilità",
+          description:
+            "Operare in contesti complessi richiede integrità e leadership coraggiosa. Proteggiamo le nostre freelance e rispettiamo gli impegni verso i clienti.",
+        },
+        {
+          title: "Inclusione oltre i confini",
+          description:
+            "Partiamo dalle donne afghane — ma la nostra visione di lungo periodo è dare potere alle comunità escluse in tutto il mondo.",
+        },
+      ],
     },
     privacy: {
       title: "Informativa sulla privacy",
