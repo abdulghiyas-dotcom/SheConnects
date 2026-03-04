@@ -441,12 +441,7 @@ export const translations: Record<Language, SiteContent> = {
             "SheConnects is built around the economic empowerment of women. We prioritize their safety, dignity, growth, and long-term independence in every decision we make.",
         },
         {
-          title: "Dignity Over Charity",
-          description:
-            "We do not provide aid — we create opportunity. Every contract is earned through skill, competence, and measurable performance.",
-        },
-        {
-          title: "Excellence Without Compromise",
+          title: "Excellence",
           description:
             "Impact does not excuse mediocrity. We compete on quality, reliability, and professional standards at a global level.",
         },
@@ -456,17 +451,17 @@ export const translations: Record<Language, SiteContent> = {
             "Our freelancers set their own rates. We operate with clear pricing, honest communication, and fair margins. Clients know what they pay for, and women know what they earn.",
         },
         {
-          title: "Scalable Impact",
+          title: "Impact",
           description:
             "We design systems that grow sustainably — because meaningful change requires scale.",
         },
         {
-          title: "Courage & Responsibility",
+          title: "Courage",
           description:
             "Operating in complex environments requires integrity and bold leadership. We protect our freelancers and honor our commitments to clients.",
         },
         {
-          title: "Inclusion Beyond Borders",
+          title: "Inclusion",
           description:
             "We begin with Afghan women — but our long-term vision is to empower excluded communities worldwide.",
         },
@@ -860,17 +855,12 @@ export const translations: Record<Language, SiteContent> = {
       valuesTitle: "Valori fondamentali",
       coreValues: [
         {
-          title: "Donne al primo posto",
+          title: "Donne",
           description:
             "SheConnects è costruita attorno all'empowerment economico delle donne. In ogni decisione priorizziamo sicurezza, dignità, crescita e indipendenza di lungo periodo.",
         },
         {
-          title: "Dignità prima della carità",
-          description:
-            "Non forniamo aiuti — creiamo opportunità. Ogni contratto è guadagnato tramite competenza, abilità e risultati misurabili.",
-        },
-        {
-          title: "Eccellenza senza compromessi",
+          title: "Eccellenza",
           description:
             "L'impatto non giustifica la mediocrità. Competiamo su qualità, affidabilità e standard professionali a livello globale.",
         },
@@ -880,17 +870,17 @@ export const translations: Record<Language, SiteContent> = {
             "Le nostre freelance stabiliscono le proprie tariffe. Operiamo con prezzi chiari, comunicazione onesta e margini equi. I clienti sanno cosa pagano e le donne sanno quanto guadagnano.",
         },
         {
-          title: "Impatto scalabile",
+          title: "Impatto",
           description:
             "Progettiamo sistemi che crescono in modo sostenibile — perché il cambiamento significativo richiede scala.",
         },
         {
-          title: "Coraggio e responsabilità",
+          title: "Coraggio",
           description:
             "Operare in contesti complessi richiede integrità e leadership coraggiosa. Proteggiamo le nostre freelance e rispettiamo gli impegni verso i clienti.",
         },
         {
-          title: "Inclusione oltre i confini",
+          title: "Inclusione",
           description:
             "Partiamo dalle donne afghane — ma la nostra visione di lungo periodo è dare potere alle comunità escluse in tutto il mondo.",
         },
