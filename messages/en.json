@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "freelancers": "Freelancers",
+    "findMatch": "Find a match",
+    "dashboard": "Dashboard",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign in to SheConnects",
+      "subtitle": "Welcome back",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "forgotPassword": "Forgot password?",
+      "errors": {
+        "invalidCredentials": "Invalid email or password",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Join as an organisation",
+      "email": "Work email address",
+      "password": "Password",
+      "passwordHint": "At least 8 characters",
+      "organizationName": "Organisation name",
+      "organizationType": "Organisation type",
+      "organizationTypes": {
+        "ngo": "NGO / Non-profit",
+        "sme": "Small or medium business",
+        "social_enterprise": "Social enterprise",
+        "foundation": "Foundation",
+        "other": "Other"
+      },
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "freelancerLink": "Are you an Afghan woman professional?",
+      "applyLink": "Apply here",
+      "errors": {
+        "emailInUse": "An account with this email already exists",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
+  },
+  "freelancers": {
+    "directory": {
+      "title": "Find a freelancer",
+      "subtitle": "Browse verified Afghan women professionals",
+      "searchPlaceholder": "Search by name or skill",
+      "filters": {
+        "track": "Studio track",
+        "skills": "Skills",
+        "language": "Language",
+        "rating": "Minimum rating",
+        "availability": "Available now",
+        "allTracks": "All tracks"
+      },
+      "tracks": {
+        "PROGRAMMING": "Programming",
+        "CREATIVE_DESIGN": "Creative design",
+        "TRANSLATION": "Translation",
+        "RESEARCH_DATA": "Research & data"
+      },
+      "card": {
+        "verifiedAlias": "Verified alias",
+        "projects": "projects",
+        "sendOffer": "Send offer",
+        "viewProfile": "View profile"
+      },
+      "empty": {
+        "title": "No freelancers found",
+        "subtitle": "Try adjusting your filters or search terms"
+      }
+    },
+    "profile": {
+      "about": "About",
+      "skills": "Skills",
+      "portfolio": "Portfolio",
+      "languages": "Languages",
+      "sendOffer": "Send offer",
+      "verifiedAlias": "Verified alias",
+      "verifiedAliasTooltip": "This freelancer's identity has been verified by SheConnects. Their real name is kept private for their safety.",
+      "completedProjects": "completed projects",
+      "rating": "rating"
+    }
+  },
+  "dashboard": {
+    "client": {
+      "title": "Dashboard",
+      "welcome": "Welcome back",
+      "activeOffers": "Active offers",
+      "activeProjects": "Active projects",
+      "totalSpent": "Total invested",
+      "impactTitle": "Your impact",
+      "womenSupported": "women supported",
+      "quickActions": {
+        "browse": "Browse freelancers",
+        "find": "AI matching",
+        "offers": "View offers",
+        "projects": "View projects"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "confirm": "Confirm",
+    "currency": "EUR",
+    "or": "or"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "PENDING": "Pending",
+    "SUSPENDED": "Suspended",
+    "APPLIED": "Applied",
+    "SCREENING": "In review",
+    "INTERVIEW": "Interview",
+    "TRAINING": "Training",
+    "ON_BREAK": "On break",
+    "REJECTED": "Not accepted",
+    "CONTRACTED": "Contracted",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled"
+  }
+}

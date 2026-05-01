@@ -1,0 +1,1171 @@
+// =====================================================================
+// SheConnects — Platform Database Schema
+// PostgreSQL via Supabase, with pgvector for AI semantic matching
+// =====================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "fullTextSearch"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [pgcrypto, vector, pg_trgm]
+}
+
+// =====================================================================
+// ENUMS
+// =====================================================================
+
+enum UserRole {
+  ADMIN
+  TEAM
+  CLIENT
+  FREELANCER
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum FreelancerStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW
+  TRAINING
+  ACTIVE
+  ON_BREAK
+  REJECTED
+  REMOVED
+}
+
+enum StudioTrack {
+  PROGRAMMING
+  CREATIVE_DESIGN
+  TRANSLATION
+  RESEARCH_DATA
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum LanguageProficiency {
+  BASIC
+  CONVERSATIONAL
+  FLUENT
+  NATIVE
+}
+
+enum OfferStatus {
+  DRAFT
+  SENT
+  COUNTERED
+  CLIENT_REVIEWING
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
+  EXPIRED
+  CONTRACTED
+}
+
+enum OfferOriginPath {
+  DIRECT_PICK
+  AI_MATCHED
+  REPEAT_CLIENT
+}
+
+enum NegotiationActor {
+  CLIENT
+  FREELANCER
+  SHECONNECTS
+}
+
+enum ProjectStatus {
+  AWAITING_KICKOFF
+  IN_PROGRESS
+  IN_REVIEW
+  REVISION_REQUESTED
+  AWAITING_APPROVAL
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  APPROVED
+  REVISION_REQUESTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PayoutStatus {
+  SCHEDULED
+  QUEUED
+  PROCESSING
+  SENT
+  DELIVERED
+  FAILED
+  CANCELLED
+}
+
+enum VatRegime {
+  IT_DOMESTIC
+  EU_B2C
+  EU_B2B
+  EXTRA_EU
+  NON_TAXABLE
+}
+
+enum NotificationChannel {
+  EMAIL
+  IN_APP
+  WHATSAPP
+  SMS
+}
+
+enum NotificationCategory {
+  OFFER_RECEIVED
+  OFFER_COUNTERED
+  OFFER_ACCEPTED
+  OFFER_DECLINED
+  PROJECT_KICKOFF
+  MILESTONE_DUE
+  MILESTONE_SUBMITTED
+  REVISION_REQUESTED
+  PAYMENT_RECEIVED
+  PAYOUT_SENT
+  MESSAGE_RECEIVED
+  TRAINING_ASSIGNED
+  ADMIN_ALERT
+  SYSTEM
+}
+
+enum AiTaskType {
+  BRIEF_BUILDER
+  TRACK_CLASSIFICATION
+  FREELANCER_MATCHING
+  PRICE_SUGGESTION
+  PROPOSAL_DRAFT
+  TRANSLATION
+  QUALITY_GATE
+  PORTFOLIO_DESCRIPTION
+  CAREER_COACH
+  IMPACT_STORY
+  COLD_OUTREACH
+  CONTRACT_DRAFT
+  IMPACT_CERTIFICATE
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  IDENTITY_VERIFIED
+  ALIAS_CHANGED
+  STATUS_CHANGED
+  PAYMENT_PROCESSED
+  PAYOUT_PROCESSED
+  EXPORT
+}
+
+// =====================================================================
+// CORE: USERS, AUTH, ACCOUNTS
+// =====================================================================
+
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  emailVerified  DateTime?
+  phone          String?
+  phoneVerified  DateTime?
+  role           UserRole
+  status         AccountStatus @default(PENDING)
+  locale         String        @default("en")
+  timezone       String        @default("Europe/Rome")
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  lastLoginAt    DateTime?
+
+  identity              UserIdentity?
+  freelancer            Freelancer?
+  client                Client?
+  sessions              Session[]
+  notifications         Notification[]
+  notificationPrefs     NotificationPreference?
+  authoredMessages      Message[]              @relation("AuthoredMessages")
+  auditLogs             AuditLog[]
+  uploadedFiles         File[]
+  consents              Consent[]
+
+  @@index([role, status])
+  @@index([email])
+}
+
+// PRIVATE — never exposed to clients
+model UserIdentity {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  legalFirstName     String
+  legalLastName      String
+  dateOfBirth        DateTime?
+  nationality        String?
+  countryOfResidence String?
+  cityOfResidence    String?
+  addressLine        String?
+
+  verifiedAt         DateTime?
+  verifiedById       String?
+  idDocumentUrl      String?
+  idDocumentType     String?
+
+  emergencyContact   String?
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String   @unique
+  ipAddress  String?
+  userAgent  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+// =====================================================================
+// FREELANCER
+// =====================================================================
+
+model Freelancer {
+  id                    String           @id @default(cuid())
+  userId                String           @unique
+  user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  alias                 String           @unique
+  aliasSlug             String           @unique
+  displayCity           String?
+  displayCountry        String?
+
+  tagline               String?
+  bio                   String?          @db.Text
+  bioFa                 String?          @db.Text
+  bioPs                 String?          @db.Text
+
+  track                 StudioTrack
+  status                FreelancerStatus @default(APPLIED)
+  acceptingOffers       Boolean          @default(false)
+
+  applicationData       Json?
+  appliedAt             DateTime         @default(now())
+  screenedAt            DateTime?
+  acceptedAt            DateTime?
+
+  averageRating         Float?           @default(0)
+  ratingCount           Int              @default(0)
+  completedProjectCount Int              @default(0)
+  totalEarningsCents    BigInt           @default(0)
+
+  baseHourlyRateCents   Int?
+  currency              String           @default("EUR")
+  preferredCurrencyForPayout String      @default("USD")
+
+  embedding             Unsupported("vector(384)")?
+
+  showCity              Boolean          @default(true)
+  showCountry           Boolean          @default(true)
+
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  deletedAt             DateTime?
+
+  skills                FreelancerSkill[]
+  languages             FreelancerLanguage[]
+  portfolioItems        PortfolioItem[]
+  receivedOffers        Offer[]          @relation("FreelancerOffers")
+  projects              Project[]        @relation("FreelancerProjects")
+  ratings               Rating[]         @relation("FreelancerRatings")
+  payouts               Payout[]
+  trainingProgress      TrainingProgress[]
+  earningsRecords       EarningsRecord[]
+  unavailability        Unavailability[]
+
+  @@index([track, status])
+  @@index([acceptingOffers])
+  @@index([averageRating])
+}
+
+model Skill {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  slug        String            @unique
+  track       StudioTrack
+  category    String?
+  description String?
+
+  freelancers FreelancerSkill[]
+  briefSkills BriefSkill[]
+
+  createdAt   DateTime          @default(now())
+
+  @@index([track])
+  @@index([name])
+}
+
+model FreelancerSkill {
+  freelancerId    String
+  freelancer      Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  skillId         String
+  skill           Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  level           SkillLevel @default(INTERMEDIATE)
+  yearsExperience Int?
+  isPrimary       Boolean    @default(false)
+
+  @@id([freelancerId, skillId])
+  @@index([skillId])
+}
+
+model FreelancerLanguage {
+  freelancerId String
+  freelancer   Freelancer          @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  language     String
+  proficiency  LanguageProficiency
+
+  @@id([freelancerId, language])
+}
+
+model PortfolioItem {
+  id              String     @id @default(cuid())
+  freelancerId    String
+  freelancer      Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  title           String
+  description     String     @db.Text
+  category        String?
+  thumbnailFileId String?
+  thumbnail       File?      @relation("PortfolioThumbnail", fields: [thumbnailFileId], references: [id])
+
+  isAnonymised        Boolean @default(true)
+  clientNameRedacted  Boolean @default(true)
+
+  aiGeneratedDescription String? @db.Text
+  aiGeneratedAt          DateTime?
+
+  files        PortfolioFile[]
+
+  displayOrder Int     @default(0)
+  isPublic     Boolean @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([freelancerId, displayOrder])
+}
+
+model PortfolioFile {
+  id              String        @id @default(cuid())
+  portfolioItemId String
+  portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id], onDelete: Cascade)
+  fileId          String
+  file            File          @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  caption         String?
+  displayOrder    Int           @default(0)
+}
+
+model Unavailability {
+  id           String     @id @default(cuid())
+  freelancerId String
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  startsAt     DateTime
+  endsAt       DateTime
+  reason       String?
+
+  @@index([freelancerId, startsAt])
+}
+
+// =====================================================================
+// CLIENT
+// =====================================================================
+
+model Client {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  organizationName String
+  organizationType String?
+  website          String?
+
+  billingCountry   String?
+  vatNumber        String?
+  vatNumberValidatedAt DateTime?
+  vatRegime        VatRegime?
+  isNonProfit      Boolean   @default(false)
+  exemptionCertUrl String?
+
+  billingAddress   Json?
+
+  stripeCustomerId String?   @unique
+
+  totalSpentCents     BigInt @default(0)
+  projectCount        Int    @default(0)
+  freelancersEngaged  Int    @default(0)
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  offers             Offer[]
+  projects           Project[]
+  payments           Payment[]
+  briefs             Brief[]
+  ratingsGiven       Rating[]           @relation("ClientRatings")
+  invoices           Invoice[]
+  subscriptions      Subscription[]
+  impactCertificates ImpactCertificate[]
+
+  @@index([organizationName])
+  @@index([billingCountry])
+}
+
+// =====================================================================
+// BRIEFS, OFFERS, NEGOTIATION
+// =====================================================================
+
+model Brief {
+  id              String      @id @default(cuid())
+  clientId        String
+  client          Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  title           String
+  description     String      @db.Text
+  suggestedTrack  StudioTrack?
+  trackConfidence Float?
+
+  estimatedHours  Int?
+  budgetMinCents  Int?
+  budgetMaxCents  Int?
+  currency        String      @default("EUR")
+
+  desiredStartAt  DateTime?
+  deadlineAt      DateTime?
+
+  workingLanguages String[]
+
+  builtByAi       Boolean     @default(false)
+  aiConversationId String?
+  aiSummary       String?     @db.Text
+
+  embedding       Unsupported("vector(384)")?
+
+  attachments     File[]      @relation("BriefAttachments")
+  briefSkills     BriefSkill[]
+  offers          Offer[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([clientId])
+  @@index([suggestedTrack])
+}
+
+model BriefSkill {
+  briefId  String
+  brief    Brief  @relation(fields: [briefId], references: [id], onDelete: Cascade)
+  skillId  String
+  skill    Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  weight   Float  @default(1.0)
+
+  @@id([briefId, skillId])
+}
+
+model Offer {
+  id           String          @id @default(cuid())
+  briefId      String?
+  brief        Brief?          @relation(fields: [briefId], references: [id])
+  clientId     String
+  client       Client          @relation(fields: [clientId], references: [id])
+  freelancerId String
+  freelancer   Freelancer      @relation("FreelancerOffers", fields: [freelancerId], references: [id])
+
+  status       OfferStatus     @default(SENT)
+  originPath   OfferOriginPath @default(DIRECT_PICK)
+
+  currentRoundId String?       @unique
+  currentRound   NegotiationRound? @relation("CurrentRound", fields: [currentRoundId], references: [id])
+
+  acceptedFreelancerPriceCents Int?
+  acceptedCommissionCents      Int?
+  acceptedVatCents             Int?
+  acceptedTotalCents           Int?
+  acceptedCurrency             String?
+  acceptedTimeline             String?
+  acceptedAt                   DateTime?
+  vatRegime                    VatRegime?
+
+  expiresAt       DateTime?
+  declinedReason  String?
+  withdrawnReason String?
+
+  rounds          NegotiationRound[] @relation("OfferRounds")
+  project         Project?
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([clientId, status])
+  @@index([freelancerId, status])
+  @@index([status, createdAt])
+}
+
+model NegotiationRound {
+  id           String           @id @default(cuid())
+  offerId      String
+  offer        Offer            @relation("OfferRounds", fields: [offerId], references: [id], onDelete: Cascade)
+  roundNumber  Int
+
+  proposedBy   NegotiationActor
+  proposedById String?
+
+  freelancerPriceCents Int
+  commissionCents      Int
+  subtotalCents        Int
+  vatCents             Int
+  totalCents           Int
+  currency             String   @default("EUR")
+  vatRegime            VatRegime
+  vatRate              Float
+
+  proposedTimeline     String?
+  proposedScope        String?  @db.Text
+  message              String?  @db.Text
+  messageTranslated    Json?
+
+  translatedAt         DateTime?
+
+  createdAt            DateTime @default(now())
+  asCurrentOf          Offer?   @relation("CurrentRound")
+
+  @@unique([offerId, roundNumber])
+  @@index([offerId])
+}
+
+// =====================================================================
+// PROJECTS, MILESTONES, DELIVERY
+// =====================================================================
+
+model Project {
+  id             String        @id @default(cuid())
+  offerId        String        @unique
+  offer          Offer         @relation(fields: [offerId], references: [id])
+  clientId       String
+  client         Client        @relation(fields: [clientId], references: [id])
+  freelancerId   String
+  freelancer     Freelancer    @relation("FreelancerProjects", fields: [freelancerId], references: [id])
+
+  title          String
+  description    String        @db.Text
+  track          StudioTrack
+  freelancerPriceCents Int
+  commissionCents      Int
+  vatCents             Int
+  totalCents           Int
+  currency             String  @default("EUR")
+  vatRegime            VatRegime
+
+  status         ProjectStatus @default(AWAITING_KICKOFF)
+
+  startedAt      DateTime?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  cancelledReason String?
+
+  coordinatorId  String?
+
+  maxRevisionRounds  Int       @default(2)
+  revisionRoundsUsed Int       @default(0)
+
+  milestones    Milestone[]
+  messages      Message[]
+  deliverables  Deliverable[]
+  payment       Payment?
+  payouts       Payout[]
+  ratings       Rating[]
+  qaReviews     QaReview[]
+  files         File[]        @relation("ProjectFiles")
+  invoice       Invoice?
+  impactRecord  ImpactRecord?
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([clientId, status])
+  @@index([freelancerId, status])
+  @@index([status])
+}
+
+model Milestone {
+  id           String          @id @default(cuid())
+  projectId    String
+  project      Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  title        String
+  description  String?         @db.Text
+  orderIndex   Int
+  status       MilestoneStatus @default(PENDING)
+
+  dueAt        DateTime?
+  startedAt    DateTime?
+  submittedAt  DateTime?
+  approvedAt   DateTime?
+
+  payoutPercentage Int?
+
+  deliverables Deliverable[]
+
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([projectId, orderIndex])
+  @@index([projectId])
+}
+
+model Deliverable {
+  id          String     @id @default(cuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  milestoneId String?
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id])
+
+  title       String
+  notes       String?    @db.Text
+  version     Int        @default(1)
+
+  qaPassed    Boolean?
+  qaReviewId  String?
+  qaReview    QaReview?  @relation(fields: [qaReviewId], references: [id])
+
+  files       File[]     @relation("DeliverableFiles")
+
+  submittedAt DateTime   @default(now())
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+  rejectionReason String?
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([projectId])
+  @@index([milestoneId])
+}
+
+model QaReview {
+  id           String        @id @default(cuid())
+  projectId    String
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  checkType    String
+  passed       Boolean
+  score        Float?
+  issues       Json?
+  aiSummary    String?       @db.Text
+
+  reviewedById String?
+  reviewedAt   DateTime?
+  humanNotes   String?       @db.Text
+
+  deliverables Deliverable[]
+
+  createdAt    DateTime      @default(now())
+
+  @@index([projectId])
+}
+
+// =====================================================================
+// MESSAGING
+// =====================================================================
+
+model Message {
+  id               String   @id @default(cuid())
+  projectId        String?
+  project          Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  offerId          String?
+  authorId         String
+  author           User     @relation("AuthoredMessages", fields: [authorId], references: [id])
+
+  bodyOriginal     String   @db.Text
+  originalLanguage String
+  bodyTranslations Json?
+
+  attachments      File[]   @relation("MessageAttachments")
+
+  readBy           Json?
+
+  threadId         String?
+  replyToId        String?
+
+  createdAt        DateTime @default(now())
+  editedAt         DateTime?
+
+  @@index([projectId, createdAt])
+  @@index([offerId, createdAt])
+  @@index([authorId])
+}
+
+// =====================================================================
+// PAYMENTS, PAYOUTS, INVOICING
+// =====================================================================
+
+model Payment {
+  id             String        @id @default(cuid())
+  projectId      String?       @unique
+  project        Project?      @relation(fields: [projectId], references: [id])
+  clientId       String
+  client         Client        @relation(fields: [clientId], references: [id])
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  freelancerPriceCents Int
+  commissionCents      Int
+  vatCents             Int
+  totalCents           Int
+  currency             String @default("EUR")
+  vatRegime            VatRegime
+  vatRate              Float
+
+  stripePaymentIntentId String? @unique
+  stripeChargeId        String?
+  stripeFee             Int?
+
+  status        PaymentStatus @default(PENDING)
+  paidAt        DateTime?
+  failureReason String?
+
+  refundedCents Int           @default(0)
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([clientId, status])
+  @@index([status])
+}
+
+model Subscription {
+  id            String   @id @default(cuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id])
+
+  packageName   String
+  monthlyHours  Int
+  monthlyPriceCents Int
+  currency      String   @default("EUR")
+
+  stripeSubscriptionId String? @unique
+  status        String
+
+  startedAt     DateTime
+  cancelledAt   DateTime?
+
+  payments      Payment[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([clientId, status])
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id])
+  projectId     String?  @unique
+  project       Project? @relation(fields: [projectId], references: [id])
+
+  fiscalCode    String?
+  pecEmail      String?
+
+  issuedAt      DateTime
+  dueAt         DateTime?
+  paidAt        DateTime?
+
+  subtotalCents Int
+  vatCents      Int
+  totalCents    Int
+  currency      String   @default("EUR")
+  vatRegime     VatRegime
+  vatRate       Float
+
+  pdfFileId     String?
+  pdfFile       File?    @relation("InvoicePdf", fields: [pdfFileId], references: [id])
+
+  xmlFileId     String?
+  sdiSubmittedAt DateTime?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([clientId])
+  @@index([invoiceNumber])
+}
+
+model Payout {
+  id            String       @id @default(cuid())
+  freelancerId  String
+  freelancer    Freelancer   @relation(fields: [freelancerId], references: [id])
+  projectId     String?
+  project       Project?     @relation(fields: [projectId], references: [id])
+
+  amountCents      Int
+  currency         String
+  exchangeRate     Float?
+  feeCents         Int      @default(0)
+
+  wiseTransferId   String?  @unique
+  wiseQuoteId      String?
+  recipientCountry String?
+
+  status        PayoutStatus @default(SCHEDULED)
+  scheduledAt   DateTime?
+  sentAt        DateTime?
+  deliveredAt   DateTime?
+  failureReason String?
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([freelancerId, status])
+  @@index([status])
+}
+
+model EarningsRecord {
+  id           String     @id @default(cuid())
+  freelancerId String
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  projectId    String?
+
+  amountCents  Int
+  currency     String     @default("EUR")
+  description  String?
+  earnedAt     DateTime
+
+  createdAt    DateTime   @default(now())
+
+  @@index([freelancerId, earnedAt])
+}
+
+// =====================================================================
+// RATINGS
+// =====================================================================
+
+model Rating {
+  id           String     @id @default(cuid())
+  projectId    String
+  project      Project    @relation(fields: [projectId], references: [id])
+
+  clientId     String
+  client       Client     @relation("ClientRatings", fields: [clientId], references: [id])
+  freelancerId String
+  freelancer   Freelancer @relation("FreelancerRatings", fields: [freelancerId], references: [id])
+
+  clientStars        Int?
+  clientReview       String?  @db.Text
+  clientReviewPublic Boolean  @default(true)
+
+  freelancerStars    Int?
+  freelancerNotes    String?  @db.Text
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([projectId])
+  @@index([freelancerId])
+}
+
+// =====================================================================
+// TRAINING
+// =====================================================================
+
+model TrainingModule {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  track           StudioTrack?
+  description     String   @db.Text
+  contentUrl      String?
+  durationMinutes Int?
+  isRequired      Boolean  @default(false)
+  orderIndex      Int      @default(0)
+
+  progress        TrainingProgress[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TrainingProgress {
+  id           String         @id @default(cuid())
+  freelancerId String
+  freelancer   Freelancer     @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  moduleId     String
+  module       TrainingModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  startedAt    DateTime?
+  completedAt  DateTime?
+  score        Int?
+
+  @@unique([freelancerId, moduleId])
+}
+
+// =====================================================================
+// FILES
+// =====================================================================
+
+model File {
+  id            String   @id @default(cuid())
+  uploadedById  String
+  uploadedBy    User     @relation(fields: [uploadedById], references: [id])
+
+  bucket        String
+  key           String   @unique
+  url           String?
+  signedUrlExpiresAt DateTime?
+
+  originalName   String
+  mimeType       String
+  sizeBytes      Int
+  checksumSha256 String?
+
+  category  String?
+  isPublic  Boolean  @default(false)
+  encrypted Boolean  @default(false)
+
+  briefAttachments    Brief[]         @relation("BriefAttachments")
+  messageAttachments  Message[]       @relation("MessageAttachments")
+  deliverableFiles    Deliverable[]   @relation("DeliverableFiles")
+  projectFiles        Project[]       @relation("ProjectFiles")
+  portfolioFiles      PortfolioFile[]
+  portfolioThumbnails PortfolioItem[] @relation("PortfolioThumbnail")
+  invoicePdfs         Invoice[]       @relation("InvoicePdf")
+
+  createdAt   DateTime @default(now())
+  deletedAt   DateTime?
+
+  @@index([uploadedById])
+  @@index([category])
+}
+
+// =====================================================================
+// NOTIFICATIONS
+// =====================================================================
+
+model Notification {
+  id          String               @id @default(cuid())
+  userId      String
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  category    NotificationCategory
+  title       String
+  body        String               @db.Text
+  bodyTranslations Json?
+
+  entityType  String?
+  entityId    String?
+
+  deliveredChannels NotificationChannel[]
+
+  readAt      DateTime?
+  actionUrl   String?
+
+  createdAt   DateTime             @default(now())
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+}
+
+model NotificationPreference {
+  userId      String  @id
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  emailEnabled    Boolean @default(true)
+  inAppEnabled    Boolean @default(true)
+  whatsappEnabled Boolean @default(false)
+  smsEnabled      Boolean @default(false)
+
+  categoryPreferences Json?
+
+  quietHoursStart String?
+  quietHoursEnd   String?
+  timezone        String  @default("Europe/Rome")
+
+  updatedAt   DateTime @updatedAt
+}
+
+// =====================================================================
+// AI TASKS
+// =====================================================================
+
+model AiTask {
+  id           String     @id @default(cuid())
+  taskType     AiTaskType
+  initiatorId  String?
+
+  entityType   String?
+  entityId     String?
+
+  model        String
+  inputTokens  Int?
+  outputTokens Int?
+  costUsd      Float?
+
+  input        Json?
+  output       Json?
+  status       String     @default("pending")
+  errorMessage String?
+
+  langfuseTraceId String?
+  durationMs      Int?
+
+  qualityScore Float?
+
+  createdAt   DateTime   @default(now())
+  completedAt DateTime?
+
+  @@index([taskType, status])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+// =====================================================================
+// IMPACT
+// =====================================================================
+
+model ImpactRecord {
+  id               String      @id @default(cuid())
+  projectId        String      @unique
+  project          Project     @relation(fields: [projectId], references: [id])
+
+  womenEmployed    Int         @default(1)
+  hoursCommissioned Float
+  countryOfOrigin  String
+  studioTrack      StudioTrack
+  incomeGeneratedCents BigInt
+  currency         String      @default("EUR")
+
+  recordedAt       DateTime    @default(now())
+
+  @@index([recordedAt])
+  @@index([countryOfOrigin])
+}
+
+model ImpactCertificate {
+  id                String   @id @default(cuid())
+  clientId          String
+  client            Client   @relation(fields: [clientId], references: [id])
+
+  certificateNumber String   @unique
+  periodStart       DateTime
+  periodEnd         DateTime
+
+  womenSupported    Int
+  hoursCommissioned Float
+  projectCount      Int
+  totalSpentCents   BigInt
+
+  pdfFileId         String?
+  imageUrl          String?
+
+  issuedAt          DateTime @default(now())
+
+  @@index([clientId])
+}
+
+// =====================================================================
+// CONSENT, AUDIT, ADMIN
+// =====================================================================
+
+model Consent {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType String
+  version     String
+  givenAt     DateTime @default(now())
+  withdrawnAt DateTime?
+  ipAddress   String?
+
+  @@index([userId, consentType])
+}
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  actorId    String?
+  actor      User?       @relation(fields: [actorId], references: [id])
+
+  action     AuditAction
+  entityType String
+  entityId   String
+
+  before     Json?
+  after      Json?
+  metadata   Json?
+
+  ipAddress  String?
+  userAgent  String?
+
+  createdAt  DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+}
+
+model FeatureFlag {
+  id                String   @id @default(cuid())
+  key               String   @unique
+  description       String?
+  enabled           Boolean  @default(false)
+  rolloutPercentage Int      @default(0)
+  conditions        Json?
+
+  updatedAt         DateTime @updatedAt
+}
+
+model SystemConfig {
+  key         String   @id
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt
+}

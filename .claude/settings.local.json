@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm prisma *)",
+      "Bash(pnpm dotenv *)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm db:seed)",
+      "Bash(pnpm build *)",
+      "Bash(git add *)"
+    ]
+  }
+}

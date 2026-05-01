@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "freelancers": "Professioniste",
+    "findMatch": "Trova un match",
+    "dashboard": "Dashboard",
+    "signIn": "Accedi",
+    "signUp": "Registrati",
+    "signOut": "Esci"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Accedi a SheConnects",
+      "subtitle": "Bentornato",
+      "email": "Indirizzo email",
+      "password": "Password",
+      "submit": "Accedi",
+      "noAccount": "Non hai un account?",
+      "signUpLink": "Registrati",
+      "forgotPassword": "Password dimenticata?",
+      "errors": {
+        "invalidCredentials": "Email o password non validi",
+        "generic": "Qualcosa è andato storto. Riprova."
+      }
+    },
+    "signUp": {
+      "title": "Crea il tuo account",
+      "subtitle": "Registrati come organizzazione",
+      "email": "Email di lavoro",
+      "password": "Password",
+      "passwordHint": "Almeno 8 caratteri",
+      "organizationName": "Nome dell'organizzazione",
+      "organizationType": "Tipo di organizzazione",
+      "organizationTypes": {
+        "ngo": "ONG / Non profit",
+        "sme": "Piccola o media impresa",
+        "social_enterprise": "Impresa sociale",
+        "foundation": "Fondazione",
+        "other": "Altro"
+      },
+      "submit": "Crea account",
+      "hasAccount": "Hai già un account?",
+      "signInLink": "Accedi",
+      "freelancerLink": "Sei una professionista afghana?",
+      "applyLink": "Candidati qui",
+      "errors": {
+        "emailInUse": "Esiste già un account con questa email",
+        "generic": "Qualcosa è andato storto. Riprova."
+      }
+    }
+  },
+  "freelancers": {
+    "directory": {
+      "title": "Trova una professionista",
+      "subtitle": "Sfoglia le professioniste afghane verificate",
+      "searchPlaceholder": "Cerca per nome o competenza",
+      "filters": {
+        "track": "Area professionale",
+        "skills": "Competenze",
+        "language": "Lingua",
+        "rating": "Valutazione minima",
+        "availability": "Disponibile ora",
+        "allTracks": "Tutte le aree"
+      },
+      "tracks": {
+        "PROGRAMMING": "Programmazione",
+        "CREATIVE_DESIGN": "Design creativo",
+        "TRANSLATION": "Traduzione",
+        "RESEARCH_DATA": "Ricerca e dati"
+      },
+      "card": {
+        "verifiedAlias": "Alias verificato",
+        "projects": "progetti",
+        "sendOffer": "Invia offerta",
+        "viewProfile": "Vedi profilo"
+      },
+      "empty": {
+        "title": "Nessuna professionista trovata",
+        "subtitle": "Prova a modificare i filtri o i termini di ricerca"
+      }
+    },
+    "profile": {
+      "about": "Chi sono",
+      "skills": "Competenze",
+      "portfolio": "Portfolio",
+      "languages": "Lingue",
+      "sendOffer": "Invia offerta",
+      "verifiedAlias": "Alias verificato",
+      "verifiedAliasTooltip": "L'identità di questa professionista è stata verificata da SheConnects. Il suo vero nome è tenuto privato per la sua sicurezza.",
+      "completedProjects": "progetti completati",
+      "rating": "valutazione"
+    }
+  },
+  "dashboard": {
+    "client": {
+      "title": "Dashboard",
+      "welcome": "Bentornato",
+      "activeOffers": "Offerte attive",
+      "activeProjects": "Progetti attivi",
+      "totalSpent": "Totale investito",
+      "impactTitle": "Il tuo impatto",
+      "womenSupported": "donne supportate",
+      "quickActions": {
+        "browse": "Sfoglia professioniste",
+        "find": "Matching AI",
+        "offers": "Vedi offerte",
+        "projects": "Vedi progetti"
+      }
+    }
+  },
+  "common": {
+    "loading": "Caricamento…",
+    "error": "Qualcosa è andato storto",
+    "retry": "Riprova",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "back": "Indietro",
+    "next": "Avanti",
+    "submit": "Invia",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "view": "Visualizza",
+    "close": "Chiudi",
+    "confirm": "Conferma",
+    "currency": "EUR",
+    "or": "o"
+  },
+  "status": {
+    "ACTIVE": "Attivo",
+    "PENDING": "In attesa",
+    "SUSPENDED": "Sospeso",
+    "APPLIED": "Candidata",
+    "SCREENING": "In revisione",
+    "INTERVIEW": "Colloquio",
+    "TRAINING": "Formazione",
+    "ON_BREAK": "In pausa",
+    "REJECTED": "Non accettata",
+    "CONTRACTED": "Contrattualizzato",
+    "COMPLETED": "Completato",
+    "CANCELLED": "Annullato"
+  }
+}
