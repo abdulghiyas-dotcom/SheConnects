@@ -6,6 +6,7 @@ const inter = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
+  preload: false,
 })
 
 const mono = JetBrains_Mono({
