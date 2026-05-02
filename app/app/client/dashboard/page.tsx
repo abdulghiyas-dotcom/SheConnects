@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/auth/server"
 import { prismaPublic } from "@/lib/db/prisma-public"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { ClientNav } from "@/components/features/client-nav"
 import { Users, FolderOpen, Sparkles, Search } from "lucide-react"
 
 export default async function ClientDashboardPage() {
@@ -34,20 +34,7 @@ export default async function ClientDashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <span className="text-lg font-semibold text-foreground">SheConnects</span>
-          </div>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/app/client/dashboard" className="text-foreground font-medium">Dashboard</Link>
-            <Link href="/app/freelancers" className="text-muted-foreground hover:text-foreground">Freelancers</Link>
-            <Link href="/app/offers" className="text-muted-foreground hover:text-foreground">Offers</Link>
-            <Link href="/app/sign-in" className="text-muted-foreground hover:text-foreground">Sign out</Link>
-          </nav>
-        </div>
-      </header>
+      <ClientNav active="dashboard" />
 
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-8">
         {/* Welcome */}
