@@ -87,14 +87,14 @@ export default async function FreelancerProfilePage({
   ].filter(Boolean).join(", ")
 
   // Group skills by category
-  const skillsByCategory = freelancer.skills.reduce<Record<string, typeof freelancer.skills>>(
+  const skillsByCategory = freelancer.skills.reduce(
     (acc, s) => {
       const cat = s.skill.category ?? "Other"
       if (!acc[cat]) acc[cat] = []
       acc[cat].push(s)
       return acc
     },
-    {}
+    {} as Record<string, typeof freelancer.skills>
   )
 
   return (
