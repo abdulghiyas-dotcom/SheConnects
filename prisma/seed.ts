@@ -66,17 +66,17 @@ const SKILLS = [
 const TEST_USERS = [
   {
     email: "admin@sheconnects.work",
-    password: "Test1234!",
+    password: "Admin1234!",
     role: "ADMIN" as const,
   },
   {
     email: "client@test.com",
-    password: "Test1234!",
+    password: "Client1234!",
     role: "CLIENT" as const,
   },
   {
     email: "freelancer@test.com",
-    password: "Test1234!",
+    password: "Freelancer1234!",
     role: "FREELANCER" as const,
   },
 ]
@@ -144,20 +144,27 @@ async function main() {
   for (const testUser of TEST_USERS) {
     await createSupabaseUser(testUser.email, testUser.password)
 
-    const existing = await prisma.user.findUnique({ where: { email: testUser.email } })
+    const existing = await prisma.user.findUnique({
+      where: { email: testUser.email },
+      include: { freelancer: true },
+    })
 
     if (existing) {
       console.log(`  ↩ DB user already exists: ${testUser.email}`)
+      // Ensure freelancer record matches the current spec
+      if (testUser.role === "FREELANCER" && existing.freelancer && existing.freelancer.alias !== "Aaida K.") {
+        await prisma.freelancer.update({
+          where: { userId: existing.id },
+          data: { alias: "Aaida K.", aliasSlug: "aaida-k", track: "PROGRAMMING", status: "APPLIED" },
+        })
+        console.log(`  ✓ Updated freelancer: alias=Aaida K., track=PROGRAMMING`)
+      }
       continue
     }
 
     if (testUser.role === "ADMIN") {
       await prisma.user.create({
-        data: {
-          email: testUser.email,
-          role: "ADMIN",
-          status: "ACTIVE",
-        },
+        data: { email: testUser.email, role: "ADMIN", status: "ACTIVE" },
       })
     }
 
@@ -183,14 +190,14 @@ async function main() {
         data: {
           email: testUser.email,
           role: "FREELANCER",
-          status: "PENDING",
+          status: "ACTIVE",
           freelancer: {
             create: {
-              alias: "Test F.",
-              aliasSlug: "test-f",
-              track: "TRANSLATION",
+              alias: "Aaida K.",
+              aliasSlug: "aaida-k",
+              track: "PROGRAMMING",
               status: "APPLIED",
-              tagline: "Test freelancer account — Dari/English translation",
+              tagline: "Test freelancer account — web development",
               bio: "This is a test account for the SheConnects platform.",
             },
           },
@@ -203,9 +210,9 @@ async function main() {
 
   console.log("\n✅ Seed complete!")
   console.log("\nTest credentials:")
-  console.log("  Admin:      admin@sheconnects.work / Test1234!")
-  console.log("  Client:     client@test.com / Test1234!")
-  console.log("  Freelancer: freelancer@test.com / Test1234!")
+  console.log("  Admin:      admin@sheconnects.work / Admin1234!")
+  console.log("  Client:     client@test.com / Client1234!")
+  console.log("  Freelancer: freelancer@test.com / Freelancer1234!")
 }
 
 main()
