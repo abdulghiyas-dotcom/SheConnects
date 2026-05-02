@@ -87,15 +87,12 @@ export default async function FreelancerProfilePage({
   ].filter(Boolean).join(", ")
 
   // Group skills by category
-  const skillsByCategory = freelancer.skills.reduce(
-    (acc, s) => {
-      const cat = s.skill.category ?? "Other"
-      if (!acc[cat]) acc[cat] = []
-      acc[cat].push(s)
-      return acc
-    },
-    {} as Record<string, typeof freelancer.skills>
-  )
+  const skillsByCategory: Record<string, typeof freelancer.skills> = {}
+  for (const s of freelancer.skills) {
+    const cat = s.skill.category ?? "Other"
+    if (!skillsByCategory[cat]) skillsByCategory[cat] = []
+    skillsByCategory[cat].push(s)
+  }
 
   return (
     <div className="min-h-screen bg-secondary/30">
@@ -156,13 +153,13 @@ export default async function FreelancerProfilePage({
               <div className="bg-white rounded-xl border border-border p-6">
                 <h2 className="font-semibold mb-4">Skills</h2>
                 <div className="space-y-4">
-                  {Object.entries(skillsByCategory).map(([category, skills]) => (
+                  {Object.keys(skillsByCategory).map((category) => (
                     <div key={category}>
                       <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
                         {category}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {skills.map((s) => (
+                        {skillsByCategory[category].map((s) => (
                           <span
                             key={s.skill.name}
                             className="text-sm px-3 py-1 rounded-full bg-secondary text-foreground"
