@@ -7,7 +7,7 @@ import { createClient } from "@/lib/auth/supabase-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { WizardShell } from "@/components/features/application-wizard"
 
 export default function ApplyPage() {
   const router = useRouter()
@@ -27,21 +27,18 @@ export default function ApplyPage() {
       const { error: authError } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: { role: "FREELANCER" },
-        },
+        options: { data: { role: "FREELANCER" } },
       })
 
       if (authError) {
-        if (authError.message.includes("already registered")) {
-          setError("An account with this email already exists. Sign in instead.")
-        } else {
-          setError(authError.message)
-        }
+        setError(
+          authError.message.includes("already registered")
+            ? "An account with this email already exists. Sign in instead."
+            : authError.message
+        )
         return
       }
 
-      // Create the freelancer record
       const res = await fetch("/api/auth/create-freelancer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,8 +50,7 @@ export default function ApplyPage() {
         return
       }
 
-      router.push("/app/freelancer/dashboard")
-      router.refresh()
+      router.push("/app/apply/about-you")
     } catch {
       setError("Something went wrong. Please try again.")
     } finally {
@@ -63,72 +59,51 @@ export default function ApplyPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary/30 px-4 py-8">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-foreground">SheConnects</h1>
-          <p className="text-sm text-muted-foreground mt-1">Apply as a freelancer</p>
+    <WizardShell currentStep={1} title="Create your account" subtitle="Your identity stays private — clients will only see an alias.">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email address</Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            required
+            autoComplete="email"
+          />
+          <p className="text-xs text-muted-foreground">
+            Use a personal email. Work emails linked to organisations in Afghanistan may not be safe.
+          </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Start your application</CardTitle>
-            <CardDescription>
-              Create your account to begin. Your identity is kept private — clients will only see an alias.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                  autoComplete="email"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Use a personal email. Work emails connected to organisations in Afghanistan may not be safe.
-                </p>
-              </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="At least 8 characters"
+            minLength={8}
+            required
+            autoComplete="new-password"
+          />
+        </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 8 characters"
-                  minLength={8}
-                  required
-                  autoComplete="new-password"
-                />
-              </div>
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-              {error && (
-                <p className="text-sm text-destructive">{error}</p>
-              )}
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Creating account…" : "Start application"}
+        </Button>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating account…" : "Start application"}
-              </Button>
-            </form>
-
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              <p>
-                Already applied?{" "}
-                <Link href="/app/sign-in" className="text-primary hover:underline">
-                  Sign in to continue
-                </Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <p className="text-center text-sm text-muted-foreground">
+          Already applied?{" "}
+          <Link href="/app/sign-in" className="text-primary hover:underline">
+            Sign in to continue
+          </Link>
+        </p>
+      </form>
+    </WizardShell>
   )
 }
