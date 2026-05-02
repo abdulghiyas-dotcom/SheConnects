@@ -53,6 +53,7 @@ export default async function FreelancerDashboardPage() {
           <span className="text-lg font-semibold text-foreground">SheConnects</span>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/app/freelancer/dashboard" className="text-foreground font-medium">Dashboard</Link>
+            <Link href="/app/freelancer/offers" className="text-muted-foreground hover:text-foreground">Offers</Link>
             <Link href="/app/sign-in" className="text-muted-foreground hover:text-foreground">Sign out</Link>
           </nav>
         </div>
