@@ -28,6 +28,7 @@ export default async function ClientOfferDetailPage({ params }: { params: { id: 
     where: { id: params.id, clientId: client!.id },
     include: {
       freelancer: { select: { alias: true, aliasSlug: true } },
+      project: { select: { id: true } },
       rounds: {
         orderBy: { roundNumber: "asc" },
         select: {
@@ -95,6 +96,11 @@ export default async function ClientOfferDetailPage({ params }: { params: { id: 
               </div>
               {offer.acceptedTimeline && (
                 <p className="text-xs text-trust-700 mt-2">Timeline: {offer.acceptedTimeline}</p>
+              )}
+              {offer.project && (
+                <Link href={`/app/projects/${offer.project.id}`} className="mt-3 inline-block text-xs font-medium text-trust-700 underline">
+                  View project →
+                </Link>
               )}
             </div>
           )}

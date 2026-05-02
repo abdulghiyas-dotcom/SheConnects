@@ -5,6 +5,8 @@ import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { FreelancerNav } from "@/components/features/freelancer-nav"
 import { MilestoneSubmitForm } from "./submit-form"
+import { MessageThread } from "@/components/features/message-thread"
+import { MessageInput } from "@/components/features/message-input"
 import { formatEur } from "@/lib/utils/pricing"
 import { cn } from "@/lib/utils/cn"
 
@@ -130,6 +132,15 @@ export default async function FreelancerProjectDetailPage({ params }: { params: 
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div>
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Messages</h2>
+          <MessageThread projectId={project.id} />
+          <div className="mt-3">
+            <MessageInput projectId={project.id} />
           </div>
         </div>
       </main>

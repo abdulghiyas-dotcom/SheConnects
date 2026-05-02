@@ -9,7 +9,10 @@ function getResend(): Resend {
   return _resend
 }
 
-const FROM = process.env.EMAIL_FROM ?? "SheConnects <hello@sheconnects.work>"
+const FROM = process.env.EMAIL_FROM
+  ?? (process.env.RESEND_FROM_EMAIL
+      ? `${process.env.RESEND_FROM_NAME ?? "SheConnects"} <${process.env.RESEND_FROM_EMAIL}>`
+      : "SheConnects <hello@sheconnects.work>")
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
 
 async function send(to: string, subject: string, html: string) {
