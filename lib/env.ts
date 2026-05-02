@@ -45,4 +45,11 @@ export const env = {
 
   // Auth
   authSecret: () => required("AUTH_SECRET"),
+
+  // R2 Storage
+  r2AccountId: optional("R2_ACCOUNT_ID"),
+  r2AccessKeyId: optional("R2_ACCESS_KEY_ID"),
+  r2SecretAccessKey: optional("R2_SECRET_ACCESS_KEY"),
+  r2BucketName: optional("R2_BUCKET_NAME"),
+  r2PublicUrl: optional("R2_PUBLIC_URL"),
 } as const
