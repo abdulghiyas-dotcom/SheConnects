@@ -45,6 +45,7 @@ export default async function ClientProjectDetailPage({ params }: { params: { id
       freelancer: { select: { alias: true, aliasSlug: true } },
       milestones: { orderBy: { orderIndex: "asc" } },
       offer: { select: { id: true } },
+      payment: { select: { status: true, totalCents: true } },
     },
   })
 
@@ -60,6 +61,40 @@ export default async function ClientProjectDetailPage({ params }: { params: { id
         <Link href="/app/projects" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft size={14} /> All projects
         </Link>
+
+        {/* Payment banner */}
+        {project.payment && project.payment.status !== "SUCCEEDED" && (
+          <div className={cn(
+            "rounded-xl border p-4 flex items-center justify-between gap-4",
+            project.payment.status === "FAILED"
+              ? "bg-red-50 border-red-200"
+              : "bg-amber-50 border-amber-200"
+          )}>
+            <div>
+              <p className={cn(
+                "text-sm font-medium",
+                project.payment.status === "FAILED" ? "text-red-800" : "text-amber-800"
+              )}>
+                {project.payment.status === "FAILED"
+                  ? "Payment failed — please try again."
+                  : `Payment of ${formatEur(project.payment.totalCents)} is due.`}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">Work can begin once payment is confirmed.</p>
+            </div>
+            <Link
+              href={`/app/projects/${project.id}/pay`}
+              className="shrink-0 text-xs font-medium bg-amber-700 text-white px-3 py-1.5 rounded-lg hover:bg-amber-800 transition-colors"
+            >
+              Pay now
+            </Link>
+          </div>
+        )}
+
+        {project.payment?.status === "SUCCEEDED" && (
+          <div className="rounded-xl border border-trust-200 bg-trust-50 px-4 py-3 text-sm text-trust-700 font-medium">
+            Payment received — thank you.
+          </div>
+        )}
 
         {/* Header */}
         <div className="bg-white rounded-xl border border-border p-6">

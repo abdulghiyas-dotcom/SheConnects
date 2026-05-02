@@ -87,6 +87,15 @@ export async function POST(
             where: { id: project.id },
             data: { status: "COMPLETED", completedAt: new Date() },
           })
+          await tx.payout.create({
+            data: {
+              freelancerId: project.freelancerId,
+              projectId: project.id,
+              amountCents: project.freelancerPriceCents,
+              currency: project.currency,
+              status: "SCHEDULED",
+            },
+          })
         }
       })
       return NextResponse.json({ ok: true })

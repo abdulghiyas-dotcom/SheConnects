@@ -87,6 +87,20 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             status: "PENDING",
           },
         })
+        await tx.payment.create({
+          data: {
+            projectId: project.id,
+            clientId: offer.clientId,
+            freelancerPriceCents: round.freelancerPriceCents,
+            commissionCents: round.commissionCents,
+            vatCents: round.vatCents,
+            totalCents: round.totalCents,
+            currency: round.currency,
+            vatRegime: round.vatRegime,
+            vatRate: round.vatRate,
+            status: "PENDING",
+          },
+        })
       })
       return NextResponse.json({ ok: true, status: "ACCEPTED" })
     }

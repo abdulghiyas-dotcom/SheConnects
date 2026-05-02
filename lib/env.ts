@@ -52,4 +52,9 @@ export const env = {
   r2SecretAccessKey: optional("R2_SECRET_ACCESS_KEY"),
   r2BucketName: optional("R2_BUCKET_NAME"),
   r2PublicUrl: optional("R2_PUBLIC_URL"),
+
+  // Stripe
+  stripeSecretKey: optional("STRIPE_SECRET_KEY"),
+  stripeWebhookSecret: optional("STRIPE_WEBHOOK_SECRET"),
+  stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
 } as const
