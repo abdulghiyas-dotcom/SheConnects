@@ -1,9 +1,8 @@
-import { redirect } from "next/navigation"
 import Link from "next/link"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { AdminNav } from "@/components/features/admin-nav"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Users, ClipboardList, FolderOpen, CreditCard } from "lucide-react"
 
 export default async function AdminPage() {
@@ -18,23 +17,7 @@ export default async function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <span className="text-lg font-semibold">SheConnects</span>
-            <Badge variant="secondary" className="ml-2 text-xs">Admin</Badge>
-          </div>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/app/admin" className="text-foreground font-medium">Overview</Link>
-            <Link href="/app/admin/applications" className="text-muted-foreground hover:text-foreground">Applications</Link>
-            <Link href="/app/admin/freelancers" className="text-muted-foreground hover:text-foreground">Freelancers</Link>
-            <Link href="/app/admin/clients" className="text-muted-foreground hover:text-foreground">Clients</Link>
-            <Link href="/app/admin/projects" className="text-muted-foreground hover:text-foreground">Projects</Link>
-            <Link href="/app/sign-in" className="text-muted-foreground hover:text-foreground">Sign out</Link>
-          </nav>
-        </div>
-      </header>
+      <AdminNav active="overview" />
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
         <div>
