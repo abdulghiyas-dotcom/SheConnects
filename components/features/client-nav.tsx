@@ -2,7 +2,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils/cn"
 
 interface ClientNavProps {
-  active?: "dashboard" | "freelancers" | "offers" | "projects"
+  active?: "dashboard" | "freelancers" | "offers" | "projects" | "brief"
 }
 
 function NavLink({
@@ -37,6 +37,7 @@ export function ClientNav({ active }: ClientNavProps) {
           <NavLink href="/app/freelancers" isActive={active === "freelancers"}>Freelancers</NavLink>
           <NavLink href="/app/offers" isActive={active === "offers"}>Offers</NavLink>
           <NavLink href="/app/projects" isActive={active === "projects"}>Projects</NavLink>
+          <NavLink href="/app/brief/new" isActive={active === "brief"}>New brief</NavLink>
           <NavLink href="/app/sign-in" isActive={false}>Sign out</NavLink>
         </nav>
       </div>
