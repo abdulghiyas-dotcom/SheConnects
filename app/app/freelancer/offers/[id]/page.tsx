@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { FreelancerNav } from "@/components/features/freelancer-nav"
 import { formatEur, getVatInfo } from "@/lib/utils/pricing"
 import { RespondForm } from "./respond-form"
 import { cn } from "@/lib/utils/cn"
@@ -35,6 +36,7 @@ export default async function FreelancerOfferDetailPage({ params }: { params: { 
         },
       },
       currentRound: { select: { freelancerPriceCents: true } },
+      project: { select: { id: true } },
     },
   })
 
@@ -50,16 +52,7 @@ export default async function FreelancerOfferDetailPage({ params }: { params: { 
 
   return (
     <div className="min-h-screen bg-secondary/30">
-      <header className="border-b bg-white sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-base font-semibold">SheConnects</span>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/app/freelancer/dashboard" className="text-muted-foreground hover:text-foreground">Dashboard</Link>
-            <Link href="/app/freelancer/offers" className="text-foreground font-medium">Offers</Link>
-            <Link href="/app/sign-in" className="text-muted-foreground hover:text-foreground">Sign out</Link>
-          </nav>
-        </div>
-      </header>
+      <FreelancerNav active="offers" />
 
       <main className="max-w-3xl mx-auto px-6 py-8 space-y-6">
         <Link href="/app/freelancer/offers" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
@@ -133,7 +126,16 @@ export default async function FreelancerOfferDetailPage({ params }: { params: { 
         ) : (
           <div className="bg-white rounded-xl border border-border p-5 text-sm text-muted-foreground text-center">
             {offer.status === "COUNTERED" && "Your counter-offer has been sent. Waiting for the client."}
-            {offer.status === "ACCEPTED" && "This offer has been accepted. Your project will begin shortly."}
+            {offer.status === "ACCEPTED" && (
+              <span>
+                This offer has been accepted.{" "}
+                {offer.project && (
+                  <Link href={`/app/freelancer/projects/${offer.project.id}`} className="underline">
+                    View your project →
+                  </Link>
+                )}
+              </span>
+            )}
             {offer.status === "DECLINED" && "You declined this offer."}
             {offer.status === "WITHDRAWN" && "The client withdrew this offer."}
           </div>

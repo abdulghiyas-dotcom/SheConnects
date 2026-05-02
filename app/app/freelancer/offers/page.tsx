@@ -1,8 +1,9 @@
-import Link from "next/link"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { FreelancerNav } from "@/components/features/freelancer-nav"
 import { formatEur } from "@/lib/utils/pricing"
 import { cn } from "@/lib/utils/cn"
+import Link from "next/link"
 
 const STATUS_LABEL: Record<string, string> = {
   SENT:      "New offer",
@@ -70,16 +71,7 @@ export default async function FreelancerOffersPage() {
 
   return (
     <div className="min-h-screen bg-secondary/30">
-      <header className="border-b bg-white sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-base font-semibold">SheConnects</span>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/app/freelancer/dashboard" className="text-muted-foreground hover:text-foreground">Dashboard</Link>
-            <Link href="/app/freelancer/offers" className="text-foreground font-medium">Offers</Link>
-            <Link href="/app/sign-in" className="text-muted-foreground hover:text-foreground">Sign out</Link>
-          </nav>
-        </div>
-      </header>
+      <FreelancerNav active="offers" />
 
       <main className="max-w-3xl mx-auto px-6 py-8 space-y-8">
         <h1 className="text-3xl font-semibold tracking-tight">Offers</h1>

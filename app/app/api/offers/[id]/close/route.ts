@@ -22,7 +22,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const offer = await prismaAdmin.offer.findUnique({
       where: { id: params.id },
-      include: { currentRound: true },
+      include: {
+        currentRound: true,
+        freelancer: { select: { id: true, alias: true, track: true } },
+      },
     })
 
     if (!offer) return NextResponse.json({ error: "Offer not found" }, { status: 404 })
@@ -35,19 +38,50 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         return NextResponse.json({ error: "No counter-offer to accept" }, { status: 409 })
       }
       const round = offer.currentRound!
-      await prismaAdmin.offer.update({
-        where: { id: offer.id },
-        data: {
-          status: "ACCEPTED",
-          acceptedFreelancerPriceCents: round.freelancerPriceCents,
-          acceptedCommissionCents: round.commissionCents,
-          acceptedVatCents: round.vatCents,
-          acceptedTotalCents: round.totalCents,
-          acceptedCurrency: round.currency,
-          acceptedTimeline: round.proposedTimeline,
-          acceptedAt: new Date(),
-          vatRegime: round.vatRegime,
-        },
+      const freelancer = offer.freelancer!
+      const scope = round.proposedScope?.trim() || null
+      const titleLine = scope?.split("\n")[0].slice(0, 80) ?? null
+
+      await prismaAdmin.$transaction(async (tx) => {
+        await tx.offer.update({
+          where: { id: offer.id },
+          data: {
+            status: "ACCEPTED",
+            acceptedFreelancerPriceCents: round.freelancerPriceCents,
+            acceptedCommissionCents: round.commissionCents,
+            acceptedVatCents: round.vatCents,
+            acceptedTotalCents: round.totalCents,
+            acceptedCurrency: round.currency,
+            acceptedTimeline: round.proposedTimeline,
+            acceptedAt: new Date(),
+            vatRegime: round.vatRegime,
+          },
+        })
+        const project = await tx.project.create({
+          data: {
+            offerId: offer.id,
+            clientId: offer.clientId,
+            freelancerId: freelancer.id,
+            title: titleLine ?? `Project with ${freelancer.alias}`,
+            description: scope ?? "No scope provided.",
+            track: freelancer.track,
+            freelancerPriceCents: round.freelancerPriceCents,
+            commissionCents: round.commissionCents,
+            vatCents: round.vatCents,
+            totalCents: round.totalCents,
+            currency: round.currency,
+            vatRegime: round.vatRegime,
+          },
+        })
+        await tx.milestone.create({
+          data: {
+            projectId: project.id,
+            title: "Project Delivery",
+            orderIndex: 0,
+            payoutPercentage: 100,
+            status: "PENDING",
+          },
+        })
       })
       return NextResponse.json({ ok: true, status: "ACCEPTED" })
     }

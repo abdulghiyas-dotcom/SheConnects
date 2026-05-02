@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { FreelancerNav } from "@/components/features/freelancer-nav"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -47,17 +48,7 @@ export default async function FreelancerDashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-lg font-semibold text-foreground">SheConnects</span>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/app/freelancer/dashboard" className="text-foreground font-medium">Dashboard</Link>
-            <Link href="/app/freelancer/offers" className="text-muted-foreground hover:text-foreground">Offers</Link>
-            <Link href="/app/sign-in" className="text-muted-foreground hover:text-foreground">Sign out</Link>
-          </nav>
-        </div>
-      </header>
+      <FreelancerNav active="dashboard" />
 
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-8">
         {/* Welcome */}
