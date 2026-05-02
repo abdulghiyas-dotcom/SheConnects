@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServerSupabaseClient } from "@/lib/auth/supabase-server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { emailOfferAcceptedClient, emailOfferAcceptedFreelancer } from "@/lib/services/email"
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const dbUser = await prismaAdmin.user.findUnique({
       where: { email: authUser.email },
-      include: { client: { select: { id: true } } },
+      include: { client: { select: { id: true, organizationName: true } } },
     })
     if (!dbUser?.client) return NextResponse.json({ error: "Client not found" }, { status: 404 })
 
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       where: { id: params.id },
       include: {
         currentRound: true,
-        freelancer: { select: { id: true, alias: true, track: true } },
+        freelancer: { select: { id: true, alias: true, track: true, user: { select: { email: true } } } },
       },
     })
 
@@ -97,6 +98,13 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           },
         })
       })
+
+      const project = await prismaAdmin.project.findUnique({ where: { offerId: offer.id }, select: { id: true, title: true } })
+      if (project) {
+        emailOfferAcceptedClient(dbUser.email!, dbUser.client!.organizationName ?? "", project.title, project.id)
+        emailOfferAcceptedFreelancer(freelancer.user.email, freelancer.alias ?? "there", project.title, project.id)
+      }
+
       return NextResponse.json({ ok: true, status: "ACCEPTED" })
     }
 

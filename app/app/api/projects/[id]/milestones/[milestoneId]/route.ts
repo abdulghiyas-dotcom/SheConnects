@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServerSupabaseClient } from "@/lib/auth/supabase-server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { emailMilestoneSubmitted, emailMilestoneApproved, emailMilestoneRevision } from "@/lib/services/email"
 
 export async function POST(
   req: NextRequest,
@@ -27,6 +28,8 @@ export async function POST(
       where: { id: params.id },
       include: {
         milestones: { orderBy: { orderIndex: "asc" } },
+        client: { select: { organizationName: true, user: { select: { email: true } } } },
+        freelancer: { select: { alias: true, user: { select: { email: true } } } },
       },
     })
     if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 })
@@ -66,6 +69,7 @@ export async function POST(
         where: { id: milestone.id },
         data: { status: "SUBMITTED", submittedAt: new Date() },
       })
+      emailMilestoneSubmitted(project.client.user.email, project.client.organizationName ?? "", project.title, milestone.title, project.id)
       return NextResponse.json({ ok: true })
     }
 
@@ -98,6 +102,7 @@ export async function POST(
           })
         }
       })
+      emailMilestoneApproved(project.freelancer.user.email, project.freelancer.alias ?? "there", project.title, milestone.title, project.id)
       return NextResponse.json({ ok: true })
     }
 
@@ -110,6 +115,7 @@ export async function POST(
         where: { id: milestone.id },
         data: { status: "REVISION_REQUESTED" },
       })
+      emailMilestoneRevision(project.freelancer.user.email, project.freelancer.alias ?? "there", project.title, milestone.title, project.id)
       return NextResponse.json({ ok: true })
     }
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createServerSupabaseClient } from "@/lib/auth/supabase-server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { calculatePricing, getVatInfo } from "@/lib/utils/pricing"
+import { emailOfferAcceptedClient, emailOfferAcceptedFreelancer, emailCounterReceived, emailOfferDeclined } from "@/lib/services/email"
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       include: {
         currentRound: true,
         rounds: { orderBy: { roundNumber: "desc" }, take: 1 },
-        client: { select: { billingCountry: true } },
+        client: { select: { billingCountry: true, organizationName: true, user: { select: { email: true } } } },
       },
     })
 
@@ -102,6 +103,13 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           },
         })
       })
+
+      const project = await prismaAdmin.project.findUnique({ where: { offerId: offer.id }, select: { id: true, title: true } })
+      if (project) {
+        emailOfferAcceptedClient(offer.client.user.email, offer.client.organizationName ?? "", project.title, project.id)
+        emailOfferAcceptedFreelancer(dbUser.email!, freelancer.alias ?? "there", project.title, project.id)
+      }
+
       return NextResponse.json({ ok: true, status: "ACCEPTED" })
     }
 
@@ -110,6 +118,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         where: { id: offer.id },
         data: { status: "DECLINED", declinedReason: declinedReason?.trim() || null },
       })
+      emailOfferDeclined(offer.client.user.email, offer.client.organizationName ?? "", dbUser.freelancer!.alias ?? "The freelancer")
       return NextResponse.json({ ok: true, status: "DECLINED" })
     }
 
@@ -147,6 +156,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         })
       })
 
+      emailCounterReceived(offer.client.user.email, offer.client.organizationName ?? "", dbUser.freelancer!.alias ?? "The freelancer", offer.id)
       return NextResponse.json({ ok: true, status: "COUNTERED" })
     }
 

@@ -57,4 +57,8 @@ export const env = {
   stripeSecretKey: optional("STRIPE_SECRET_KEY"),
   stripeWebhookSecret: optional("STRIPE_WEBHOOK_SECRET"),
   stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+
+  // Email
+  resendApiKey: optional("RESEND_API_KEY"),
+  emailFrom: process.env.EMAIL_FROM ?? "SheConnects <hello@sheconnects.work>",
 } as const

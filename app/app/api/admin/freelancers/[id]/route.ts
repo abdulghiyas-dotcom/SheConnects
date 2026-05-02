@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServerSupabaseClient } from "@/lib/auth/supabase-server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { emailApplicationStatusChanged } from "@/lib/services/email"
 
 const VALID_STATUSES = ["SCREENING", "INTERVIEW", "TRAINING", "ACTIVE", "ON_BREAK", "REJECTED", "REMOVED"]
 
@@ -25,14 +26,17 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (status === "SCREENING")  timestamps.screenedAt = now
     if (status === "ACTIVE")     timestamps.acceptedAt = now
 
-    await prismaAdmin.freelancer.update({
+    const freelancer = await prismaAdmin.freelancer.update({
       where: { id: params.id },
       data: {
         status: status as never,
         acceptingOffers: status === "ACTIVE",
         ...timestamps,
       },
+      include: { user: { select: { email: true } } },
     })
+
+    emailApplicationStatusChanged(freelancer.user.email, status)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

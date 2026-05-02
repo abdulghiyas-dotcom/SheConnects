@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { constructWebhookEvent, isStripeConfigured } from "@/lib/services/stripe"
+import { emailPaymentConfirmedClient, emailPaymentConfirmedFreelancer } from "@/lib/services/email"
 
 export async function POST(req: NextRequest) {
   if (!isStripeConfigured) {
@@ -31,6 +32,24 @@ export async function POST(req: NextRequest) {
           paidAt: new Date(),
         },
       })
+      const payment = await prismaAdmin.payment.findFirst({
+        where: { stripePaymentIntentId: pi.id },
+        include: {
+          project: {
+            select: {
+              id: true,
+              title: true,
+              client: { select: { user: { select: { email: true } } } },
+              freelancer: { select: { alias: true, user: { select: { email: true } } } },
+            },
+          },
+        },
+      })
+      if (payment?.project) {
+        const { project } = payment
+        emailPaymentConfirmedClient(project.client.user.email, project.title, project.id)
+        emailPaymentConfirmedFreelancer(project.freelancer.user.email, project.freelancer.alias ?? "there", project.title, project.id)
+      }
     }
 
     if (event.type === "payment_intent.payment_failed") {
