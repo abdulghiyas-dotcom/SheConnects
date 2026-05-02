@@ -1,19 +1,29 @@
 import OpenAI from "openai"
 import { env } from "@/lib/env"
 
-// Primary LLM — Groq (free, fast)
-// Uses the openai-compatible API
-export const groq = new OpenAI({
-  apiKey: env.groqApiKey(),
-  baseURL: "https://api.groq.com/openai/v1",
-})
+let _groq: OpenAI | undefined
+let _gemini: OpenAI | undefined
 
-// Fallback LLM — Google Gemini (free, kicks in when Groq is rate-limited)
-export const gemini = new OpenAI({
-  apiKey: env.googleAiApiKey(),
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-})
+export function getGroqClient(): OpenAI {
+  if (!_groq) {
+    _groq = new OpenAI({
+      apiKey: env.groqApiKey(),
+      baseURL: "https://api.groq.com/openai/v1",
+    })
+  }
+  return _groq
+}
 
-export const defaultModel = env.groqDefaultModel   // smart tasks
-export const fastModel    = env.groqFastModel       // fast/cheap tasks
-export const geminiModel  = env.geminiModel         // fallback
+export function getGeminiClient(): OpenAI {
+  if (!_gemini) {
+    _gemini = new OpenAI({
+      apiKey: env.googleAiApiKey(),
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    })
+  }
+  return _gemini
+}
+
+export const defaultModel = env.groqDefaultModel
+export const fastModel    = env.groqFastModel
+export const geminiModel  = env.geminiModel

@@ -1,4 +1,4 @@
-import { groq, gemini, defaultModel, fastModel, geminiModel } from "./client"
+import { getGroqClient, getGeminiClient, defaultModel, fastModel, geminiModel } from "./client"
 
 type Message = {
   role: "user" | "system" | "assistant"
@@ -14,13 +14,13 @@ export async function callLLM(
   const model = opts?.fast ? fastModel : defaultModel
 
   try {
-    const res = await groq.chat.completions.create({ model, messages })
+    const res = await getGroqClient().chat.completions.create({ model, messages })
     return res.choices[0].message.content ?? ""
   } catch (err: unknown) {
     const error = err as { status?: number }
     if (error?.status === 429) {
       // Groq rate-limited — fall back to Gemini automatically
-      const res = await gemini.chat.completions.create({
+      const res = await getGeminiClient().chat.completions.create({
         model: geminiModel,
         messages,
       })

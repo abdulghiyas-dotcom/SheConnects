@@ -1,12 +1,14 @@
 import { HfInference } from "@huggingface/inference"
 import { env } from "@/lib/env"
 
-const hf = new HfInference(env.huggingFaceApiKey())
+let _hf: HfInference | undefined
 
 // Converts text into a 384-number vector for semantic search and matching.
 // Used to match freelancer profiles to client briefs.
 export async function embedText(text: string): Promise<number[]> {
-  const result = await hf.featureExtraction({
+  if (!_hf) _hf = new HfInference(env.huggingFaceApiKey())
+
+  const result = await _hf.featureExtraction({
     model: "sentence-transformers/all-MiniLM-L6-v2",
     inputs: text,
   })
