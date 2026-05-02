@@ -115,10 +115,17 @@ export default function Header({
           ))}
 
           <Link
-            href="/#contact"
+            href="/app/sign-in"
+            className="text-sm text-slate-600 transition-colors hover:text-violet-700"
+          >
+            Sign in
+          </Link>
+
+          <Link
+            href="/app/sign-up"
             className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
           >
-            {content.cta}
+            Get started
           </Link>
 
           {/* Language button (label removed) */}
@@ -145,14 +152,19 @@ export default function Header({
             ))}
 
             <Link
-              href="/#contact"
-              className="mt-2 inline-block w-full rounded-full bg-violet-600 px-4 py-2 text-center text-sm font-medium text-white shadow-md shadow-violet-200"
-              onClick={() => {
-                setOpen(false);
-                setLangOpen(false);
-              }}
+              href="/app/sign-in"
+              className="block py-1 text-sm text-slate-700"
+              onClick={() => { setOpen(false); setLangOpen(false); }}
             >
-              {content.cta}
+              Sign in
+            </Link>
+
+            <Link
+              href="/app/sign-up"
+              className="mt-2 inline-block w-full rounded-full bg-violet-600 px-4 py-2 text-center text-sm font-medium text-white shadow-md shadow-violet-200"
+              onClick={() => { setOpen(false); setLangOpen(false); }}
+            >
+              Get started
             </Link>
 
             {/* Language dropdown also used in mobile */}

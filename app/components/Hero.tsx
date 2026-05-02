@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { SiteContent } from "../lib/translations";
 
@@ -47,23 +48,19 @@ export default function Hero({ content, common }: HeroProps) {
         </p>
 
         <div className="flex flex-wrap gap-3">
-          {/* ✅ Uses translated label: en/it */}
-          <a
-            href="#contact"
+          <Link
+            href="/app/sign-up"
             className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
           >
             {common.requestSupport}
-          </a>
+          </Link>
 
-          {/* ✅ Uses translated label + Airtable link */}
-          <a
-            href="https://airtable.com/appTu7XehOpXfYbGs/pagFNaGNJuGLQXAuV/form"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/app/apply"
             className="rounded-full border border-slate-200 bg-white/70 px-5 py-2 text-sm text-slate-700 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5"
           >
             {common.joinFreelancer}
-          </a>
+          </Link>
         </div>
       </motion.div>
 
