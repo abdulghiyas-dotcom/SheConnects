@@ -68,6 +68,14 @@ export default async function FreelancerDashboardPage() {
             <p className="text-muted-foreground mt-1">
               {freelancer.track?.replace("_", " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} track
             </p>
+            {freelancer.status === "ACTIVE" && (
+              <Link
+                href="/app/freelancer/alias"
+                className="text-xs text-muted-foreground hover:text-primary underline-offset-2 hover:underline mt-1 inline-block"
+              >
+                Change alias
+              </Link>
+            )}
           </div>
           <Badge variant={freelancer.status === "ACTIVE" ? "default" : "secondary"}>
             {STATUS_LABELS[freelancer.status] ?? freelancer.status}
