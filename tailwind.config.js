@@ -34,10 +34,12 @@ module.exports = {
         },
         trust: {
           50:  "#ecfdf5",
+          100: "#d1fae5",
           500: "#10b981",
           600: "#059669",
           700: "#047857",
         },
+        dark: "#0f172a",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -76,6 +78,58 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+      },
+      keyframes: {
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(16px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "slide-in-right": {
+          "0%": { opacity: "0", transform: "translateX(16px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "pulse-ring": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "100%": { transform: "scale(1.5)", opacity: "0" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "count-up": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.5s ease-out forwards",
+        "fade-in": "fade-in 0.4s ease-out forwards",
+        "slide-in-right": "slide-in-right 0.4s ease-out forwards",
+        "float": "float 3s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 1.5s ease-out infinite",
+        "shimmer": "shimmer 2s linear infinite",
+        "count-up": "count-up 0.6s ease-out forwards",
+      },
+      backgroundImage: {
+        "hero-gradient": "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)",
+        "brand-gradient": "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
+        "card-gradient": "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+        "shimmer-gradient": "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
+      },
+      boxShadow: {
+        "card": "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
+        "card-hover": "0 4px 24px rgba(79,70,229,0.12), 0 1px 3px rgba(0,0,0,0.06)",
+        "brand": "0 4px 16px rgba(79,70,229,0.3)",
+        "brand-lg": "0 8px 32px rgba(79,70,229,0.4)",
+        "glow": "0 0 40px rgba(79,70,229,0.2)",
       },
     },
   },

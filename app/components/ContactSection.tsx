@@ -70,52 +70,63 @@ function ContactForm({ content, common }: ContactProps) {
 
   return (
     <motion.div
-      className="grid gap-8 md:grid-cols-[1.5fr,2fr]"
+      className="grid gap-10 md:grid-cols-[1.5fr,2fr]"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <span className="inline-block rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-700 mb-4">
+          Contact
+        </span>
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           {content.title}
         </h2>
-        <p className="mt-2 text-sm text-slate-700 sm:text-base">
+        <p className="mt-3 text-base text-slate-500 leading-relaxed">
           {content.subtitle}
         </p>
-        
-        {/* Visual Confirmation Badge */}
+
         {freelancerName && (
-          <div className="mt-6 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-50 border border-violet-100 text-violet-700 text-xs font-medium animate-in fade-in slide-in-from-top-2">
+          <div className="mt-6 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-brand-50 border border-brand-100 text-brand-700 text-xs font-medium">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
             </span>
             Inquiry for <span className="font-bold ml-1">{freelancerName}</span>
           </div>
         )}
 
-        <p className="mt-4 text-xs text-slate-500">
+        <p className="mt-5 text-sm text-slate-500">
           {content.emailIntro}{" "}
-          <a href={`mailto:${common.contactEmail}`} className="font-medium text-violet-700 underline underline-offset-2">
+          <a href={`mailto:${common.contactEmail}`} className="font-semibold text-brand-600 hover:text-brand-700 underline underline-offset-2">
             {common.contactEmailLabel}
           </a>
         </p>
       </div>
 
-      <form className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" onSubmit={handleSubmit}>
-        <div className="mb-2">
-          <input name="name" className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm" placeholder={content.namePlaceholder} required />
-        </div>
-        <div className="mb-2">
-          <input name="organization" className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm" placeholder={content.organizationPlaceholder} />
-        </div>
-        <div className="mb-2">
-          <input type="email" name="email" className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm" placeholder={content.emailPlaceholder} required />
-        </div>
-        <div className="mb-2">
+      <form className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card" onSubmit={handleSubmit}>
+        <div className="space-y-3">
+          <input
+            name="name"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 transition-colors"
+            placeholder={content.namePlaceholder}
+            required
+          />
+          <input
+            name="organization"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 transition-colors"
+            placeholder={content.organizationPlaceholder}
+          />
+          <input
+            type="email"
+            name="email"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 transition-colors"
+            placeholder={content.emailPlaceholder}
+            required
+          />
           <textarea
             name="message"
-            className="w-full rounded-md border border-slate-300 bg-slate-50 p-2 text-sm"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 transition-colors resize-none"
             rows={5}
             placeholder={content.messagePlaceholder}
             required
@@ -127,17 +138,21 @@ function ContactForm({ content, common }: ContactProps) {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="mt-1 w-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-sm font-medium text-white shadow-md shadow-violet-200 transition-transform hover:-translate-y-0.5 disabled:opacity-70"
+          className="mt-4 w-full rounded-xl bg-brand-600 py-3 text-sm font-bold text-white shadow-brand transition-all hover:bg-brand-700 hover:-translate-y-0.5 disabled:opacity-60"
         >
           {status === "loading" ? content.sendingLabel : content.sendLabel}
         </button>
 
-        {status === "success" && <p className="mt-2 text-[11px] text-emerald-600">{content.success}</p>}
-        {status === "error" && <p className="mt-2 text-[11px] text-rose-600">{errorMessage || content.error}</p>}
+        {status === "success" && (
+          <p className="mt-3 text-sm font-medium text-trust-600">{content.success}</p>
+        )}
+        {status === "error" && (
+          <p className="mt-3 text-sm text-red-600">{errorMessage || content.error}</p>
+        )}
 
-        <p className="mt-2 text-[11px] text-slate-400">
+        <p className="mt-3 text-[11px] text-slate-400">
           {content.dataNotice}{" "}
-          <a href="/privacy" className="underline underline-offset-2 hover:text-violet-700">{common.privacyPolicy}</a>.
+          <a href="/privacy" className="underline underline-offset-2 hover:text-brand-600">{common.privacyPolicy}</a>.
         </p>
       </form>
     </motion.div>

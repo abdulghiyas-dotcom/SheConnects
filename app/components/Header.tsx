@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Language, SiteContent } from "../lib/translations";
+import { Menu, X } from "lucide-react";
 
 type HeaderProps = {
   content: SiteContent["header"];
@@ -12,6 +13,8 @@ type HeaderProps = {
   onLanguageChange: (lang: Language) => void;
 };
 
+const VISIBLE_NAV = ["/#how-it-works", "/#organizations", "/#vas", "/#impact", "/blog"];
+
 export default function Header({
   content,
   language,
@@ -19,159 +22,176 @@ export default function Header({
   onLanguageChange,
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
-  const [langOpen, setLangOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Remove Services / Servizi to save space
-  const navItems = content.navItems.filter(
-    (n) => n.href !== "#services" && n.href !== "/#services"
-  );
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
-  const languageOptions: Language[] = ["en", "it"];
+  const navItems = content.navItems.filter((n) => VISIBLE_NAV.includes(n.href));
 
-  const languageSwitcher = (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setLangOpen((prev) => !prev)}
-        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-sm hover:bg-slate-50"
-      >
-        {languageNames[language]}
-        <span className="text-[9px] text-slate-500">▾</span>
-      </button>
-
-      {langOpen && (
-        <div className="absolute right-0 z-50 mt-1 w-24 rounded-2xl border border-slate-200 bg-white py-1 text-[11px] shadow-lg">
-          {languageOptions.map((lang) => (
-            <button
-              key={lang}
-              type="button"
-              onClick={() => {
-                onLanguageChange(lang);
-                setLangOpen(false);
-              }}
-              className={`block w-full px-3 py-1 text-left ${
-                lang === language
-                  ? "bg-violet-50 font-semibold text-violet-700"
-                  : "text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              {languageNames[lang]}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  const navLabels: Record<string, string> = {};
+  content.navItems.forEach((n) => { navLabels[n.href] = n.label; });
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 text-slate-800 shadow-sm backdrop-blur">
-      <nav
-        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2"
-        aria-label="Main navigation"
+    <>
+      <header
+        className={`sticky top-0 z-40 w-full transition-all duration-200 ${
+          scrolled
+            ? "border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-md"
+            : "border-b border-transparent bg-white/80 backdrop-blur-sm"
+        }`}
       >
-        {/* Logo + brand + slogan */}
-        <Link href="/#hero" className="flex items-center gap-3">
-          <Image
-            src="/icon.png"
-            alt="SheConnects logo"
-            width={40}
-            height={40}
-            priority
-            className="rounded-full"
-          />
-
-          <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold tracking-tight">
-              {content.brand}
-            </span>
-            <span className="text-[10px] font-medium text-slate-500 -mt-0.5">
-              {content.tagline}
-            </span>
-          </div>
-        </Link>
-
-        {/* Mobile menu button */}
-        <button
-          className="sm:hidden rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 shadow-sm"
-          onClick={() => {
-            setOpen(!open);
-            setLangOpen(false);
-          }}
-          aria-label="Toggle navigation menu"
-        >
-          {open ? content.close : content.menu}
-        </button>
-
-        {/* Desktop navigation */}
-        <div className="hidden items-center gap-4 text-sm text-slate-700 sm:flex">
-          {navItems.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className="transition-colors hover:text-violet-700"
-            >
-              {n.label}
-            </Link>
-          ))}
-
-          <Link
-            href="/app/sign-in"
-            className="text-sm text-slate-600 transition-colors hover:text-violet-700"
-          >
-            Sign in
+        <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <Image
+              src="/icon.png"
+              alt="SheConnects logo"
+              width={36}
+              height={36}
+              priority
+              className="rounded-full"
+            />
+            <div className="flex flex-col leading-none">
+              <span className="text-sm font-bold tracking-tight text-slate-900 group-hover:text-brand-700 transition-colors">
+                SheConnects
+              </span>
+              <span className="text-[10px] text-slate-400 mt-0.5 hidden sm:block">
+                {language === "it" ? "Lavoro digitale con impatto umano" : "Digital work with human impact"}
+              </span>
+            </div>
           </Link>
 
-          <Link
-            href="/app/sign-up"
-            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
-          >
-            Get started
-          </Link>
-
-          {/* Language button (label removed) */}
-          {languageSwitcher}
-        </div>
-      </nav>
-
-      {/* Mobile dropdown */}
-      {open && (
-        <div className="border-t border-slate-200 bg-white sm:hidden">
-          <div className="space-y-2 px-4 py-3">
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-1 lg:flex">
             {navItems.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
-                className="block py-1 text-sm text-slate-700"
-                onClick={() => {
-                  setOpen(false);
-                  setLangOpen(false);
-                }}
+                className="rounded-xl px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
               >
                 {n.label}
               </Link>
             ))}
+          </div>
+
+          {/* Right side */}
+          <div className="hidden items-center gap-2 sm:flex">
+            {/* Lang toggle */}
+            <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 p-0.5">
+              {(["en", "it"] as Language[]).map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => onLanguageChange(lang)}
+                  className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide transition-all duration-150 ${
+                    lang === language
+                      ? "bg-white text-brand-700 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
 
             <Link
               href="/app/sign-in"
-              className="block py-1 text-sm text-slate-700"
-              onClick={() => { setOpen(false); setLangOpen(false); }}
+              className="rounded-xl px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
-              Sign in
+              {language === "it" ? "Accedi" : "Sign in"}
             </Link>
 
             <Link
               href="/app/sign-up"
-              className="mt-2 inline-block w-full rounded-full bg-violet-600 px-4 py-2 text-center text-sm font-medium text-white shadow-md shadow-violet-200"
-              onClick={() => { setOpen(false); setLangOpen(false); }}
+              className="rounded-xl bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white shadow-brand transition-all hover:bg-brand-700 hover:-translate-y-0.5"
             >
-              Get started
+              {language === "it" ? "Inizia ora" : "Get started"}
             </Link>
+          </div>
 
-            {/* Language dropdown also used in mobile */}
-            <div className="pt-2">{languageSwitcher}</div>
+          {/* Mobile burger */}
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-700 sm:hidden"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </nav>
+      </header>
+
+      {/* Mobile drawer */}
+      {open && (
+        <div className="fixed inset-0 z-30 sm:hidden">
+          <div
+            className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+              <span className="text-sm font-semibold text-slate-900">Menu</span>
+              <button
+                onClick={() => setOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <nav className="flex-1 space-y-0.5 px-3 py-4">
+              {navItems.map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className="block rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  onClick={() => setOpen(false)}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="border-t border-slate-100 px-4 py-4 space-y-2">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs text-slate-500">Language:</span>
+                <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 p-0.5">
+                  {(["en", "it"] as Language[]).map((lang) => (
+                    <button
+                      key={lang}
+                      type="button"
+                      onClick={() => { onLanguageChange(lang); setOpen(false); }}
+                      className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold uppercase transition-all ${
+                        lang === language ? "bg-white text-brand-700 shadow-sm" : "text-slate-500"
+                      }`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Link
+                href="/app/sign-in"
+                className="block w-full rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
+                onClick={() => setOpen(false)}
+              >
+                {language === "it" ? "Accedi" : "Sign in"}
+              </Link>
+              <Link
+                href="/app/sign-up"
+                className="block w-full rounded-xl bg-brand-600 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-brand"
+                onClick={() => setOpen(false)}
+              >
+                {language === "it" ? "Inizia ora" : "Get started"}
+              </Link>
+            </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

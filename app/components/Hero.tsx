@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SiteContent } from "../lib/translations";
+import { ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 
 type HeroProps = {
   content: SiteContent["hero"];
@@ -13,73 +14,142 @@ export default function Hero({ content, common }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative mx-auto mt-6 max-w-6xl overflow-hidden rounded-3xl border border-violet-100 bg-white/90 px-4 pt-12 pb-16 shadow-[0_25px_80px_rgba(99,102,241,0.08)] lg:flex lg:items-center lg:gap-16 lg:px-10"
+      className="relative overflow-hidden bg-slate-900"
+      style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%)" }}
     >
-      {/* Soft background blobs */}
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -left-14 -top-10 h-48 w-48 rounded-full bg-violet-200 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-fuchsia-200 blur-3xl" />
+      {/* Animated background orbs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-brand-600/20 blur-3xl" />
+        <div className="absolute top-1/2 -right-20 h-72 w-72 rounded-full bg-violet-500/15 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-brand-400/10 blur-3xl" />
+        {/* Grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+          }}
+        />
       </div>
 
-      {/* Left side – text + CTAs */}
-      <motion.div
-        className="relative space-y-6 lg:flex-1"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        {content.badge && (
-          <p className="inline-flex items-center rounded-full bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-violet-700 ring-1 ring-violet-100">
+      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-36">
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6 flex justify-center lg:justify-start"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-300 backdrop-blur-sm">
+            <Sparkles size={11} className="text-accent-400" />
             {content.badge}
-          </p>
-        )}
+          </span>
+        </motion.div>
 
-        <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
-          {content.title}{" "}
-          {content.highlight && (
-            <span className="bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
-              {content.highlight}
-            </span>
-          )}
-        </h1>
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          {/* Left — headline + CTAs */}
+          <div>
+            <motion.h1
+              className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              {content.title}{" "}
+              <span className="bg-gradient-to-r from-brand-300 to-violet-300 bg-clip-text text-transparent">
+                {content.highlight}
+              </span>
+            </motion.h1>
 
-        <p className="max-w-xl text-sm text-slate-700 sm:text-base">
-          {content.description}
-        </p>
+            <motion.p
+              className="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              {content.description}
+            </motion.p>
 
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/app/sign-up"
-            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-violet-200 transition-transform hover:-translate-y-0.5"
+            <motion.div
+              className="mt-8 flex flex-wrap gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Link
+                href="/app/sign-up"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-brand-lg transition-all hover:bg-brand-500 hover:-translate-y-0.5"
+              >
+                {common.requestSupport}
+                <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/freelancers"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/15 hover:-translate-y-0.5"
+              >
+                {common.joinFreelancer}
+              </Link>
+            </motion.div>
+
+            {/* Trust signals */}
+            <motion.div
+              className="mt-8 flex flex-wrap items-center gap-5 text-sm text-slate-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck size={15} className="text-trust-400" />
+                GDPR compliant
+              </span>
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck size={15} className="text-trust-400" />
+                EU-registered company
+              </span>
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck size={15} className="text-trust-400" />
+                Vetted professionals
+              </span>
+            </motion.div>
+          </div>
+
+          {/* Right — mission card */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="relative"
           >
-            {common.requestSupport}
-          </Link>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-300 mb-4">
+                {content.whyTitle}
+              </p>
+              <p className="text-base leading-relaxed text-slate-200">
+                {content.whyDescription}
+              </p>
 
-          <Link
-            href="/app/apply"
-            className="rounded-full border border-slate-200 bg-white/70 px-5 py-2 text-sm text-slate-700 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5"
-          >
-            {common.joinFreelancer}
-          </Link>
-        </div>
-      </motion.div>
+              {/* Stats mini-row */}
+              <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-6">
+                {[
+                  { n: "150+", l: "Applications" },
+                  { n: "40+", l: "Interviews" },
+                  { n: "20", l: "Active" },
+                ].map(({ n, l }) => (
+                  <div key={l} className="text-center">
+                    <p className="text-xl font-bold text-white">{n}</p>
+                    <p className="text-[11px] text-slate-400">{l}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      {/* Right side – impact box */}
-      <motion.div
-        className="relative mt-8 lg:mt-0 lg:flex-1"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-white to-violet-50 p-6 shadow-xl shadow-violet-100">
-          <p className="text-xs font-semibold text-violet-700">
-            {content.whyTitle}
-          </p>
-          <p className="mt-3 text-sm text-slate-700">
-            {content.whyDescription}
-          </p>
+            {/* Floating badge */}
+            <div className="absolute -bottom-4 -right-4 rounded-2xl border border-trust-500/30 bg-trust-500/20 px-3 py-2 backdrop-blur-sm hidden lg:block">
+              <p className="text-xs font-semibold text-trust-300">SDG 5 — Gender Equality</p>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
