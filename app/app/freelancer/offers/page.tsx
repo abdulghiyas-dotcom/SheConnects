@@ -1,9 +1,13 @@
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
-import { FreelancerNav } from "@/components/features/freelancer-nav"
+import { PlatformLayout } from "@/components/features/platform-layout"
+import { StatusBadge } from "@/components/ui/status-badge"
+import { EmptyState } from "@/components/ui/empty-state"
 import { formatEur } from "@/lib/utils/pricing"
-import { cn } from "@/lib/utils/cn"
+import { Inbox, ArrowRight } from "lucide-react"
 import Link from "next/link"
+
+type StatusVariant = "pending" | "in_progress" | "completed" | "declined" | "cancelled" | "default"
 
 const STATUS_LABEL: Record<string, string> = {
   SENT:      "New offer",
@@ -14,12 +18,13 @@ const STATUS_LABEL: Record<string, string> = {
   EXPIRED:   "Expired",
 }
 
-const STATUS_CLASS: Record<string, string> = {
-  SENT:      "bg-amber-50 text-amber-700",
-  COUNTERED: "bg-brand-50 text-brand-700",
-  ACCEPTED:  "bg-trust-50 text-trust-700",
-  DECLINED:  "bg-red-50 text-red-600",
-  WITHDRAWN: "bg-secondary text-muted-foreground",
+const STATUS_VARIANT: Record<string, StatusVariant> = {
+  SENT:      "pending",
+  COUNTERED: "in_progress",
+  ACCEPTED:  "completed",
+  DECLINED:  "declined",
+  WITHDRAWN: "cancelled",
+  EXPIRED:   "cancelled",
 }
 
 export default async function FreelancerOffersPage() {
@@ -33,57 +38,69 @@ export default async function FreelancerOffersPage() {
   const offers = await prismaAdmin.offer.findMany({
     where: { freelancerId: freelancer!.id },
     include: {
-      client: { select: { organizationName: true } },
+      client:       { select: { organizationName: true } },
       currentRound: { select: { freelancerPriceCents: true, proposedTimeline: true, proposedScope: true } },
     },
     orderBy: { updatedAt: "desc" },
   })
 
-  const pending = offers.filter((o) => ["SENT"].includes(o.status))
+  const pending    = offers.filter((o) => o.status === "SENT")
   const inProgress = offers.filter((o) => ["COUNTERED", "CLIENT_REVIEWING"].includes(o.status))
-  const past = offers.filter((o) => ["ACCEPTED", "DECLINED", "WITHDRAWN", "EXPIRED"].includes(o.status))
+  const past       = offers.filter((o) => ["ACCEPTED", "DECLINED", "WITHDRAWN", "EXPIRED"].includes(o.status))
 
   function OfferRow({ offer }: { offer: typeof offers[0] }) {
     return (
       <Link
         href={`/app/freelancer/offers/${offer.id}`}
-        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-secondary/40 rounded-lg transition-colors"
+        className="group flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 transition-colors"
       >
         <div className="min-w-0">
-          <p className="font-medium text-sm truncate">{offer.client.organizationName}</p>
+          <p className="font-semibold text-sm text-slate-800 truncate">{offer.client.organizationName}</p>
           {offer.currentRound?.proposedScope && (
-            <p className="text-xs text-muted-foreground truncate mt-0.5">
+            <p className="text-xs text-slate-400 truncate mt-0.5">
               {offer.currentRound.proposedScope.slice(0, 70)}
             </p>
           )}
         </div>
         <div className="flex items-center gap-3 shrink-0">
           {offer.currentRound?.freelancerPriceCents && (
-            <span className="text-sm text-muted-foreground">{formatEur(offer.currentRound.freelancerPriceCents)}</span>
+            <span className="text-sm font-medium text-slate-700 tabular-nums hidden sm:block">
+              {formatEur(offer.currentRound.freelancerPriceCents)}
+            </span>
           )}
-          <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium", STATUS_CLASS[offer.status] ?? "bg-secondary text-muted-foreground")}>
-            {STATUS_LABEL[offer.status] ?? offer.status}
-          </span>
+          <StatusBadge
+            variant={STATUS_VARIANT[offer.status] ?? "default"}
+            label={STATUS_LABEL[offer.status] ?? offer.status}
+            dot={false}
+          />
+          <ArrowRight size={14} className="text-slate-300 group-hover:text-slate-500 transition-colors" />
         </div>
       </Link>
     )
   }
 
   return (
-    <div className="min-h-screen bg-secondary/30">
-      <FreelancerNav active="offers" />
+    <PlatformLayout variant="freelancer" title="Offers">
+      <div className="max-w-3xl mx-auto space-y-8">
 
-      <main className="max-w-3xl mx-auto px-6 py-8 space-y-8">
-        <h1 className="text-3xl font-semibold tracking-tight">Offers</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Offers</h1>
 
         {offers.length === 0 && (
-          <p className="text-muted-foreground">No offers yet — they'll appear here when clients reach out.</p>
+          <div className="rounded-2xl border border-slate-100 bg-white shadow-card">
+            <EmptyState
+              icon={Inbox}
+              title="No offers yet"
+              description="Offers from organisations will appear here."
+            />
+          </div>
         )}
 
         {pending.length > 0 && (
           <section>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">New — needs your response</h2>
-            <div className="bg-white rounded-xl border border-amber-200 divide-y divide-border">
+            <h2 className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-3">
+              Needs your response ({pending.length})
+            </h2>
+            <div className="rounded-2xl border border-amber-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
               {pending.map((o) => <OfferRow key={o.id} offer={o} />)}
             </div>
           </section>
@@ -91,8 +108,10 @@ export default async function FreelancerOffersPage() {
 
         {inProgress.length > 0 && (
           <section>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">In negotiation</h2>
-            <div className="bg-white rounded-xl border border-border divide-y divide-border">
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              In negotiation ({inProgress.length})
+            </h2>
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
               {inProgress.map((o) => <OfferRow key={o.id} offer={o} />)}
             </div>
           </section>
@@ -100,13 +119,15 @@ export default async function FreelancerOffersPage() {
 
         {past.length > 0 && (
           <section>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Past</h2>
-            <div className="bg-white rounded-xl border border-border divide-y divide-border">
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              Past ({past.length})
+            </h2>
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
               {past.map((o) => <OfferRow key={o.id} offer={o} />)}
             </div>
           </section>
         )}
-      </main>
-    </div>
+      </div>
+    </PlatformLayout>
   )
 }

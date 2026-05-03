@@ -1,9 +1,11 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { MapPin, Star } from "lucide-react"
+import { MapPin, Star, ShieldCheck, Search } from "lucide-react"
 import { requireAuth } from "@/lib/auth/server"
 import { prismaPublic } from "@/lib/db/prisma-public"
-import { ClientNav } from "@/components/features/client-nav"
+import { PlatformLayout } from "@/components/features/platform-layout"
+import { EmptyState } from "@/components/ui/empty-state"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils/cn"
 
 const TRACKS = [
@@ -14,11 +16,11 @@ const TRACKS = [
   { value: "RESEARCH_DATA",   label: "Research & Data" },
 ] as const
 
-const TRACK_BADGE: Record<string, string> = {
-  PROGRAMMING:     "bg-brand-50 text-brand-700",
-  CREATIVE_DESIGN: "bg-accent-50 text-accent-700",
-  TRANSLATION:     "bg-trust-50 text-trust-700",
-  RESEARCH_DATA:   "bg-secondary text-foreground",
+const TRACK_STYLES: Record<string, { badge: string; dot: string }> = {
+  PROGRAMMING:     { badge: "bg-brand-50 text-brand-700 border-brand-100",   dot: "bg-brand-500" },
+  CREATIVE_DESIGN: { badge: "bg-accent-50 text-accent-700 border-accent-100", dot: "bg-accent-500" },
+  TRANSLATION:     { badge: "bg-trust-50 text-trust-700 border-trust-100",   dot: "bg-trust-500" },
+  RESEARCH_DATA:   { badge: "bg-violet-50 text-violet-700 border-violet-100", dot: "bg-violet-500" },
 }
 
 const TRACK_LABEL: Record<string, string> = {
@@ -27,6 +29,14 @@ const TRACK_LABEL: Record<string, string> = {
   TRANSLATION:     "Translation",
   RESEARCH_DATA:   "Research & Data",
 }
+
+const AVATAR_GRADIENTS = [
+  "from-brand-400 to-brand-600",
+  "from-accent-400 to-accent-600",
+  "from-trust-400 to-trust-600",
+  "from-violet-400 to-violet-600",
+  "from-teal-400 to-teal-600",
+]
 
 export default async function FreelancersPage({
   searchParams,
@@ -69,28 +79,30 @@ export default async function FreelancersPage({
   })
 
   return (
-    <div className="min-h-screen bg-secondary/30">
-      <ClientNav active="freelancers" />
+    <PlatformLayout variant="client" title="Freelancers">
+      <div className="max-w-5xl mx-auto space-y-6">
 
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Freelancers</h1>
-          <p className="text-muted-foreground mt-1">
-            {freelancers.length} verified professional{freelancers.length !== 1 ? "s" : ""} available
-          </p>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Freelancers</h1>
+            <p className="mt-1 text-sm text-slate-500">
+              {freelancers.length} verified professional{freelancers.length !== 1 ? "s" : ""} available
+            </p>
+          </div>
         </div>
 
-        {/* Track filter tabs */}
+        {/* Track filter */}
         <div className="flex items-center gap-2 flex-wrap">
           {TRACKS.map((t) => (
             <Link
               key={t.value}
               href={t.value ? `/app/freelancers?track=${t.value}` : "/app/freelancers"}
               className={cn(
-                "px-4 py-1.5 rounded-full text-sm border transition-colors",
+                "px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150",
                 trackFilter === t.value
-                  ? "bg-foreground text-background border-foreground"
-                  : "bg-white text-muted-foreground border-border hover:border-foreground hover:text-foreground"
+                  ? "bg-brand-600 text-white border-brand-600 shadow-brand"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-700"
               )}
             >
               {t.label}
@@ -100,33 +112,58 @@ export default async function FreelancersPage({
 
         {/* Grid */}
         {freelancers.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground">
-            <p className="text-lg font-medium">No freelancers in this track yet</p>
-            <p className="text-sm mt-1">Check back soon — we're growing.</p>
+          <div className="rounded-2xl border border-slate-100 bg-white shadow-card">
+            <EmptyState
+              icon={Search}
+              title="No freelancers in this track yet"
+              description="We're growing — check back soon or browse all tracks."
+              action={
+                <Button asChild variant="outline" size="sm" className="rounded-xl">
+                  <Link href="/app/freelancers">View all tracks</Link>
+                </Button>
+              }
+            />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {freelancers.map((f) => {
+            {freelancers.map((f, idx) => {
               const location = [
                 f.showCity && f.displayCity,
                 f.showCountry && f.displayCountry,
               ].filter(Boolean).join(", ")
+              const gradient = AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length]
+              const trackStyle = TRACK_STYLES[f.track] ?? { badge: "bg-slate-50 text-slate-600 border-slate-200", dot: "bg-slate-400" }
+              const initials = (f.alias ?? "?").slice(0, 2).toUpperCase()
 
               return (
                 <Link
                   key={f.aliasSlug}
                   href={`/app/freelancers/${f.aliasSlug}`}
-                  className="bg-white rounded-xl border border-border hover:border-brand-300 hover:shadow-sm transition-all p-5 flex flex-col gap-3"
+                  className="group flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-card hover:-translate-y-0.5 hover:shadow-card-hover transition-all duration-200"
                 >
                   {/* Top row */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="font-semibold text-lg leading-tight">{f.alias}</p>
+                  <div className="flex items-start gap-3">
+                    {/* Avatar */}
+                    <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-sm font-bold text-white shadow-sm`}>
+                      {initials}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-semibold text-slate-900 leading-tight">{f.alias}</p>
+                        <ShieldCheck size={14} className="text-trust-500 flex-shrink-0" />
+                      </div>
                       {f.tagline && (
-                        <p className="text-sm text-muted-foreground mt-0.5 line-clamp-1">{f.tagline}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{f.tagline}</p>
                       )}
                     </div>
-                    <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium shrink-0", TRACK_BADGE[f.track])}>
+
+                    {/* Track badge */}
+                    <span className={cn(
+                      "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium flex-shrink-0",
+                      trackStyle.badge
+                    )}>
+                      <span className={cn("h-1.5 w-1.5 rounded-full", trackStyle.dot)} />
                       {TRACK_LABEL[f.track] ?? f.track}
                     </span>
                   </div>
@@ -137,7 +174,7 @@ export default async function FreelancersPage({
                       {f.skills.map((s) => (
                         <span
                           key={s.skill.name}
-                          className="text-xs px-2 py-0.5 rounded-full bg-secondary text-foreground"
+                          className="rounded-full border border-slate-100 bg-slate-50 px-2.5 py-0.5 text-xs text-slate-600"
                         >
                           {s.skill.name}
                         </span>
@@ -146,19 +183,19 @@ export default async function FreelancersPage({
                   )}
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-1">
+                  <div className="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-slate-50">
                     <div className="flex items-center gap-3">
                       {f.languages.length > 0 && (
                         <span>{f.languages.map((l) => l.language).join(" · ")}</span>
                       )}
                       {location && (
                         <span className="flex items-center gap-0.5">
-                          <MapPin size={10} /> {location}
+                          <MapPin size={10} className="flex-shrink-0" /> {location}
                         </span>
                       )}
                     </div>
                     {(f.averageRating ?? 0) > 0 && (
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 text-amber-600 font-medium">
                         <Star size={11} className="fill-amber-400 text-amber-400" />
                         {f.averageRating?.toFixed(1)}
                       </span>
@@ -169,7 +206,7 @@ export default async function FreelancersPage({
             })}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </PlatformLayout>
   )
 }

@@ -1,53 +1,62 @@
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
-import { AdminNav } from "@/components/features/admin-nav"
+import { PlatformLayout } from "@/components/features/platform-layout"
+import { EmptyState } from "@/components/ui/empty-state"
 import { formatEur } from "@/lib/utils/pricing"
+import { Users } from "lucide-react"
 
 export default async function AdminClientsPage() {
   await requireRole(["ADMIN", "TEAM"])
 
   const clients = await prismaAdmin.client.findMany({
     include: {
-      user: { select: { email: true, createdAt: true } },
+      user:   { select: { email: true, createdAt: true } },
       _count: { select: { projects: true, offers: true } },
     },
     orderBy: { createdAt: "desc" },
   })
 
   return (
-    <div className="min-h-screen bg-secondary/30">
-      <AdminNav active="clients" />
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Clients</h1>
-        <p className="text-muted-foreground -mt-4">{clients.length} registered</p>
-
-        <div className="bg-white rounded-xl border border-border divide-y divide-border">
-          {clients.length === 0 && (
-            <p className="text-muted-foreground px-5 py-4 text-sm">No clients yet.</p>
-          )}
-          {clients.map((c) => (
-            <div key={c.id} className="flex items-center justify-between gap-4 px-5 py-4">
-              <div className="min-w-0">
-                <p className="font-medium text-sm">{c.organizationName}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {c.user.email} · {c.billingCountry ?? "country not set"}
-                  {c.vatNumber ? ` · VAT: ${c.vatNumber}` : ""}
-                </p>
-              </div>
-              <div className="flex items-center gap-6 shrink-0 text-xs text-muted-foreground">
-                <div className="text-right">
-                  <p>{c._count.projects} projects</p>
-                  <p>{c._count.offers} offers</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium text-foreground">{formatEur(Number(c.totalSpentCents))}</p>
-                  <p>total spent</p>
-                </div>
-              </div>
-            </div>
-          ))}
+    <PlatformLayout variant="admin" title="Clients">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Clients</h1>
+          <p className="mt-1 text-sm text-slate-500">{clients.length} registered</p>
         </div>
-      </main>
-    </div>
+
+        {clients.length === 0 ? (
+          <div className="rounded-2xl border border-slate-100 bg-white shadow-card">
+            <EmptyState icon={Users} title="No clients yet" />
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
+            {clients.map((c) => (
+              <div key={c.id} className="flex items-center justify-between gap-4 px-5 py-4">
+                <div className="min-w-0">
+                  <p className="font-semibold text-sm text-slate-800">{c.organizationName}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {c.user.email}
+                    {c.billingCountry ? ` · ${c.billingCountry}` : ""}
+                    {c.vatNumber ? ` · VAT: ${c.vatNumber}` : ""}
+                  </p>
+                </div>
+                <div className="flex items-center gap-6 shrink-0 text-xs text-slate-400">
+                  <div className="text-right hidden sm:block">
+                    <p>{c._count.projects} projects</p>
+                    <p>{c._count.offers} offers</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-slate-800 tabular-nums">
+                      {formatEur(Number(c.totalSpentCents))}
+                    </p>
+                    <p>total spent</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </PlatformLayout>
   )
 }

@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { Sparkles, CheckCircle } from "lucide-react"
 
 const TRACK_LABELS: Record<string, string> = {
@@ -32,7 +31,6 @@ export function BriefBuilder() {
   const [estimatedHours, setEstimatedHours] = useState<number | "">("")
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState("")
-  const [savedId, setSavedId] = useState("")
 
   async function analyze() {
     if (!title.trim() || !description.trim()) return
@@ -75,7 +73,8 @@ export function BriefBuilder() {
       })
       const data = await res.json()
       if (!res.ok) { setSaveError(data.error ?? "Failed to save"); return }
-      setSavedId(data.id)
+      setSaving(false)
+      void data
       setStep("done")
     } catch {
       setSaveError("Something went wrong. Try again.")
@@ -84,21 +83,31 @@ export function BriefBuilder() {
     }
   }
 
+  const fieldClass = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 focus:outline-none"
+
   if (step === "done") {
     return (
-      <div className="bg-white rounded-xl border border-trust-200 p-8 text-center space-y-4">
-        <CheckCircle className="mx-auto text-trust-600" size={40} />
-        <h2 className="text-lg font-semibold">Brief saved!</h2>
-        <p className="text-sm text-muted-foreground">
+      <div className="rounded-2xl border border-trust-200 bg-white shadow-card p-8 text-center space-y-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-trust-50 mx-auto">
+          <CheckCircle className="text-trust-600" size={28} />
+        </div>
+        <h2 className="text-lg font-bold text-slate-900">Brief saved!</h2>
+        <p className="text-sm text-slate-500">
           You can now browse freelancers and send them this brief as an offer.
         </p>
         <div className="flex gap-3 justify-center pt-2">
-          <Button variant="outline" onClick={() => router.push("/app/freelancers")}>
+          <button
+            onClick={() => router.push("/app/freelancers")}
+            className="h-10 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          >
             Browse freelancers
-          </Button>
-          <Button onClick={() => router.push("/app/client/dashboard")}>
+          </button>
+          <button
+            onClick={() => router.push("/app/client/dashboard")}
+            className="h-10 rounded-xl bg-brand-600 hover:bg-brand-700 px-4 text-sm font-semibold text-white shadow-brand transition-colors"
+          >
             Dashboard
-          </Button>
+          </button>
         </div>
       </div>
     )
@@ -106,34 +115,36 @@ export function BriefBuilder() {
 
   if (step === "review" && suggestion) {
     return (
-      <div className="space-y-5">
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-5 space-y-3">
+      <div className="space-y-4">
+        {/* AI analysis card */}
+        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
           <div className="flex items-center gap-2 text-brand-700">
-            <Sparkles size={16} />
-            <span className="text-sm font-medium">AI analysis</span>
+            <Sparkles size={15} />
+            <span className="text-sm font-semibold">AI analysis</span>
           </div>
-          <p className="text-sm text-foreground">{suggestion.summary}</p>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-muted-foreground pt-1">
+          <p className="text-sm text-slate-700">{suggestion.summary}</p>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-slate-500 pt-1">
             <span>Suggested track</span>
-            <span className="text-foreground font-medium">{TRACK_LABELS[suggestion.track] ?? suggestion.track}</span>
+            <span className="text-slate-800 font-semibold">{TRACK_LABELS[suggestion.track] ?? suggestion.track}</span>
             <span>Confidence</span>
-            <span className="text-foreground">{Math.round(suggestion.confidence * 100)}%</span>
+            <span className="text-slate-700">{Math.round(suggestion.confidence * 100)}%</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
+        {/* Brief review card */}
+        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5 space-y-4">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Title</p>
-            <p className="text-sm font-medium">{title}</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Title</p>
+            <p className="text-sm font-semibold text-slate-800">{title}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Description</p>
-            <p className="text-sm whitespace-pre-line">{description}</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Description</p>
+            <p className="text-sm text-slate-600 whitespace-pre-line">{description}</p>
           </div>
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
               Estimated hours
-              <span className="text-muted-foreground font-normal ml-1">(AI suggested {suggestion.estimatedHours}h — adjust if needed)</span>
+              <span className="text-slate-400 font-normal normal-case ml-1">(AI suggested {suggestion.estimatedHours}h — adjust if needed)</span>
             </label>
             <input
               type="number"
@@ -141,60 +152,68 @@ export function BriefBuilder() {
               max={9999}
               value={estimatedHours}
               onChange={(e) => setEstimatedHours(e.target.value === "" ? "" : Number(e.target.value))}
-              className="w-28 rounded-md border border-input bg-background px-3 py-1.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="w-28 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 focus:outline-none"
             />
           </div>
         </div>
 
-        {saveError && <p className="text-xs text-destructive">{saveError}</p>}
+        {saveError && <p className="text-xs text-red-600">{saveError}</p>}
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => setStep("form")} disabled={saving}>
+          <button
+            onClick={() => setStep("form")}
+            disabled={saving}
+            className="h-10 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+          >
             Back
-          </Button>
-          <Button onClick={save} disabled={saving}>
+          </button>
+          <button
+            onClick={save}
+            disabled={saving}
+            className="h-10 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 px-5 text-sm font-semibold text-white shadow-brand transition-colors"
+          >
             {saving ? "Saving…" : "Save brief"}
-          </Button>
+          </button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border p-6 space-y-5">
-      <div className="space-y-1">
-        <label className="block text-sm font-medium">Project title</label>
+    <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6 space-y-5">
+      <div className="space-y-1.5">
+        <label className="block text-sm font-medium text-slate-700">Project title</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Redesign our company website"
           maxLength={200}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className={fieldClass}
         />
       </div>
 
-      <div className="space-y-1">
-        <label className="block text-sm font-medium">Describe what you need</label>
+      <div className="space-y-1.5">
+        <label className="block text-sm font-medium text-slate-700">Describe what you need</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={6}
           placeholder="Describe the project in as much detail as you can — goals, deliverables, audience, tech stack, timeline, etc."
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+          className={`${fieldClass} resize-none`}
         />
       </div>
 
-      {analyzeError && <p className="text-xs text-destructive">{analyzeError}</p>}
+      {analyzeError && <p className="text-xs text-red-600">{analyzeError}</p>}
 
-      <Button
+      <button
         onClick={analyze}
         disabled={analyzing || !title.trim() || !description.trim()}
-        className="gap-2"
+        className="inline-flex items-center gap-2 h-10 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 px-5 text-sm font-semibold text-white shadow-brand transition-colors"
       >
-        <Sparkles size={15} />
+        <Sparkles size={14} />
         {analyzing ? "Analyzing…" : "Analyze with AI"}
-      </Button>
+      </button>
     </div>
   )
 }

@@ -1,9 +1,13 @@
 import Link from "next/link"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
-import { FreelancerNav } from "@/components/features/freelancer-nav"
+import { PlatformLayout } from "@/components/features/platform-layout"
+import { StatusBadge } from "@/components/ui/status-badge"
+import { EmptyState } from "@/components/ui/empty-state"
 import { formatEur } from "@/lib/utils/pricing"
-import { cn } from "@/lib/utils/cn"
+import { FolderOpen, ArrowRight } from "lucide-react"
+
+type StatusVariant = "pending" | "in_progress" | "completed" | "cancelled" | "default"
 
 const STATUS_LABEL: Record<string, string> = {
   AWAITING_KICKOFF:   "Awaiting kickoff",
@@ -14,13 +18,13 @@ const STATUS_LABEL: Record<string, string> = {
   CANCELLED:          "Cancelled",
 }
 
-const STATUS_CLASS: Record<string, string> = {
-  AWAITING_KICKOFF:   "bg-amber-50 text-amber-700",
-  IN_PROGRESS:        "bg-brand-50 text-brand-700",
-  IN_REVIEW:          "bg-brand-50 text-brand-700",
-  REVISION_REQUESTED: "bg-amber-50 text-amber-700",
-  COMPLETED:          "bg-trust-50 text-trust-700",
-  CANCELLED:          "bg-secondary text-muted-foreground",
+const STATUS_VARIANT: Record<string, StatusVariant> = {
+  AWAITING_KICKOFF:   "pending",
+  IN_PROGRESS:        "in_progress",
+  IN_REVIEW:          "in_progress",
+  REVISION_REQUESTED: "pending",
+  COMPLETED:          "completed",
+  CANCELLED:          "cancelled",
 }
 
 export default async function FreelancerProjectsPage() {
@@ -34,7 +38,7 @@ export default async function FreelancerProjectsPage() {
   const projects = await prismaAdmin.project.findMany({
     where: { freelancerId: freelancer!.id },
     include: {
-      client: { select: { organizationName: true } },
+      client:     { select: { organizationName: true } },
       milestones: { select: { status: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -47,46 +51,68 @@ export default async function FreelancerProjectsPage() {
 
   function ProjectRow({ project }: { project: typeof projects[0] }) {
     const approved = project.milestones.filter((m) => m.status === "APPROVED").length
-    const total = project.milestones.length
+    const total    = project.milestones.length
+    const progress = total > 0 ? Math.round((approved / total) * 100) : 0
+
     return (
       <Link
         href={`/app/freelancer/projects/${project.id}`}
-        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-secondary/40 rounded-lg transition-colors"
+        className="group flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 transition-colors"
       >
-        <div className="min-w-0">
-          <p className="font-medium text-sm truncate">{project.title}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {project.client.organizationName} · {approved}/{total} milestones
-          </p>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-sm text-slate-800 truncate">{project.title}</p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-xs text-slate-400">{project.client.organizationName}</p>
+            {total > 0 && (
+              <div className="flex items-center gap-1.5">
+                <div className="h-1.5 w-20 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-trust-500 transition-all"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="text-xs text-slate-400">{approved}/{total}</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <span className="text-sm text-muted-foreground">{formatEur(project.freelancerPriceCents)}</span>
-          <span className={cn(
-            "text-xs px-2 py-0.5 rounded-full font-medium",
-            STATUS_CLASS[project.status] ?? "bg-secondary text-muted-foreground"
-          )}>
-            {STATUS_LABEL[project.status] ?? project.status}
+          <span className="text-sm font-medium text-slate-700 tabular-nums hidden sm:block">
+            {formatEur(project.freelancerPriceCents)}
           </span>
+          <StatusBadge
+            variant={STATUS_VARIANT[project.status] ?? "default"}
+            label={STATUS_LABEL[project.status] ?? project.status}
+            dot={false}
+          />
+          <ArrowRight size={14} className="text-slate-300 group-hover:text-slate-500 transition-colors" />
         </div>
       </Link>
     )
   }
 
   return (
-    <div className="min-h-screen bg-secondary/30">
-      <FreelancerNav active="projects" />
+    <PlatformLayout variant="freelancer" title="Projects">
+      <div className="max-w-3xl mx-auto space-y-8">
 
-      <main className="max-w-3xl mx-auto px-6 py-8 space-y-8">
-        <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Projects</h1>
 
         {projects.length === 0 && (
-          <p className="text-muted-foreground">No projects yet — they appear here once an offer is accepted.</p>
+          <div className="rounded-2xl border border-slate-100 bg-white shadow-card">
+            <EmptyState
+              icon={FolderOpen}
+              title="No projects yet"
+              description="Projects appear here once an offer is accepted."
+            />
+          </div>
         )}
 
         {active.length > 0 && (
           <section>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Active</h2>
-            <div className="bg-white rounded-xl border border-border divide-y divide-border">
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              Active ({active.length})
+            </h2>
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
               {active.map((p) => <ProjectRow key={p.id} project={p} />)}
             </div>
           </section>
@@ -94,13 +120,15 @@ export default async function FreelancerProjectsPage() {
 
         {past.length > 0 && (
           <section>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Past</h2>
-            <div className="bg-white rounded-xl border border-border divide-y divide-border">
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              Past ({past.length})
+            </h2>
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
               {past.map((p) => <ProjectRow key={p.id} project={p} />)}
             </div>
           </section>
         )}
-      </main>
-    </div>
+      </div>
+    </PlatformLayout>
   )
 }

@@ -48,6 +48,34 @@
       }
     }
   },
+  "platform": {
+    "sidebar": {
+      "collapse": "Comprimi",
+      "signOut": "Esci",
+      "adminPanel": "Pannello admin",
+      "freelancer": "Professionista",
+      "platform": "Piattaforma",
+      "nav": {
+        "dashboard": "Dashboard",
+        "freelancers": "Professioniste",
+        "aiMatching": "Matching AI",
+        "offers": "Offerte",
+        "projects": "Progetti",
+        "myAlias": "Il mio alias",
+        "overview": "Panoramica",
+        "applications": "Candidature",
+        "clients": "Clienti",
+        "payments": "Pagamenti"
+      }
+    },
+    "header": {
+      "notifications": "Notifiche",
+      "account": "Account",
+      "profile": "Profilo",
+      "settings": "Impostazioni",
+      "signOut": "Esci"
+    }
+  },
   "freelancers": {
     "directory": {
       "title": "Trova una professionista",
@@ -83,11 +111,15 @@
       "skills": "Competenze",
       "portfolio": "Portfolio",
       "languages": "Lingue",
-      "sendOffer": "Invia offerta",
+      "sendOffer": "Invia un'offerta",
       "verifiedAlias": "Alias verificato",
       "verifiedAliasTooltip": "L'identità di questa professionista è stata verificata da SheConnects. Il suo vero nome è tenuto privato per la sua sicurezza.",
       "completedProjects": "progetti completati",
-      "rating": "valutazione"
+      "rating": "valutazione",
+      "availableNow": "Disponibile per nuovi progetti",
+      "notAvailable": "Non accetta nuovi progetti al momento.",
+      "sendOfferHint": "Potrai discutere i dettagli prima di confermare qualsiasi cosa.",
+      "privacyNote": "Le professioniste usano uno pseudonimo per proteggere la loro identità. SheConnects verifica tutti i professionisti prima che appaiano sulla piattaforma."
     }
   },
   "dashboard": {
@@ -105,6 +137,236 @@
         "offers": "Vedi offerte",
         "projects": "Vedi progetti"
       }
+    },
+    "freelancer": {
+      "title": "La mia dashboard",
+      "welcome": "Bentornata",
+      "applicationProgress": "Progresso candidatura",
+      "steps": {
+        "applied": "Candidatura inviata",
+        "screening": "Selezione",
+        "interview": "Colloquio",
+        "training": "Formazione",
+        "active": "Attiva"
+      },
+      "statusMessages": {
+        "APPLIED": "La tua candidatura è in fase di revisione. Ti contatteremo presto.",
+        "SCREENING": "Sei nella fase di selezione. Aspetta un'email dal nostro team.",
+        "INTERVIEW": "Sei stata invitata a un colloquio. Controlla la tua email per i dettagli.",
+        "TRAINING": "Sei in formazione di onboarding. Completala per diventare attiva.",
+        "ACTIVE": "Sei attiva sulla piattaforma. Controlla le offerte e i progetti qui sotto."
+      },
+      "stats": {
+        "activeOffers": "Offerte attive",
+        "activeProjects": "Progetti attivi",
+        "completedProjects": "Progetti completati"
+      }
+    },
+    "admin": {
+      "title": "Panoramica",
+      "stats": {
+        "pendingApplications": "In attesa di revisione",
+        "activeFreelancers": "Professioniste attive",
+        "clients": "Clienti",
+        "activeProjects": "Progetti attivi"
+      },
+      "operations": {
+        "title": "Operazioni",
+        "reviewApplications": "Revisiona candidature",
+        "manageFreelancers": "Gestisci professioniste",
+        "manageClients": "Gestisci clienti",
+        "manageProjects": "Gestisci progetti",
+        "managePayments": "Gestisci pagamenti"
+      }
+    }
+  },
+  "offers": {
+    "title": "Offerte",
+    "newOffer": "Nuova offerta",
+    "backToAll": "Tutte le offerte",
+    "empty": "Nessuna offerta",
+    "emptyDescription": "Le offerte appariranno qui una volta inviate.",
+    "needsResponse": "Richiede la tua risposta",
+    "status": {
+      "SENT": "In attesa di risposta",
+      "COUNTERED": "Controfferta inviata",
+      "ACCEPTED": "Accettata",
+      "DECLINED": "Rifiutata",
+      "WITHDRAWN": "Ritirata"
+    },
+    "statusClient": {
+      "SENT": "In attesa della risposta della professionista",
+      "COUNTERED": "Controfferta ricevuta",
+      "ACCEPTED": "Accettata",
+      "DECLINED": "Rifiutata",
+      "WITHDRAWN": "Ritirata"
+    },
+    "detail": {
+      "receivedOn": "Ricevuta il",
+      "sentOn": "Inviata il",
+      "negotiationHistory": "Storico trattativa",
+      "round": "Round",
+      "yourEarnings": "I tuoi guadagni",
+      "freelancerFee": "Compenso professionista",
+      "platformFee": "Commissione piattaforma (20%)",
+      "vat": "IVA",
+      "clientPays": "Il cliente paga",
+      "totalYouPay": "Totale che paghi",
+      "timeline": "Tempistica",
+      "viewProject": "Vedi il tuo progetto →",
+      "waitingForClient": "La tua controfferta è stata inviata. In attesa del cliente.",
+      "youDeclined": "Hai rifiutato questa offerta.",
+      "clientWithdrew": "Il cliente ha ritirato questa offerta.",
+      "acceptedViewProject": "Questa offerta è stata accettata."
+    },
+    "form": {
+      "title": "Invia un'offerta a",
+      "scopeLabel": "Di cosa hai bisogno?",
+      "priceLabel": "Compenso della professionista (€)",
+      "priceHint": "Questo va direttamente alla professionista",
+      "timelineLabel": "Tempistica",
+      "timelinePlaceholder": "es. 2 settimane",
+      "messageLabel": "Messaggio",
+      "messageOptional": "(opzionale)",
+      "messagePlaceholder": "Contesto aggiuntivo, domande o requisiti specifici…",
+      "priceBreakdown": "Dettaglio prezzi",
+      "subtotal": "Subtotale",
+      "totalYouPay": "Totale che paghi",
+      "cancel": "Annulla",
+      "send": "Invia offerta",
+      "sending": "Invio in corso…",
+      "minPriceError": "L'offerta minima è €1"
+    }
+  },
+  "projects": {
+    "title": "Progetti",
+    "backToAll": "Tutti i progetti",
+    "empty": "Nessun progetto",
+    "emptyDescription": "I tuoi progetti attivi appariranno qui una volta accettata un'offerta.",
+    "status": {
+      "AWAITING_KICKOFF": "In attesa di avvio",
+      "IN_PROGRESS": "In corso",
+      "COMPLETED": "Completato",
+      "CANCELLED": "Annullato"
+    },
+    "milestones": {
+      "title": "Milestone",
+      "progress": "Avanzamento milestone",
+      "status": {
+        "PENDING": "Non iniziata",
+        "IN_PROGRESS": "In corso",
+        "SUBMITTED": "In attesa di revisione",
+        "APPROVED": "Approvata",
+        "REVISION_REQUESTED": "Revisione richiesta"
+      },
+      "dueOn": "Scadenza",
+      "approvedOn": "Approvata il",
+      "submittedOn": "Inviata il",
+      "revisionRequested": "Il cliente ha richiesto una revisione."
+    },
+    "messages": "Messaggi",
+    "viewOffer": "Vedi offerta originale →",
+    "freelancerFee": "Compenso professionista",
+    "yourEarnings": "I tuoi guadagni",
+    "platformFee": "Commissione piattaforma",
+    "vat": "IVA",
+    "total": "Totale",
+    "payment": {
+      "payNow": "Paga ora",
+      "paymentDue": "Pagamento di {amount} in sospeso.",
+      "paymentFailed": "Pagamento fallito — riprova.",
+      "workBegins": "Il lavoro inizia dopo la conferma del pagamento.",
+      "paymentReceived": "Pagamento ricevuto — grazie."
+    },
+    "pay": {
+      "title": "Paga il progetto",
+      "orderSummary": "Riepilogo ordine"
+    }
+  },
+  "apply": {
+    "title": "Candidati a SheConnects",
+    "subtitle": "Entra nella nostra rete di professioniste afghane verificate",
+    "steps": {
+      "account": "Account",
+      "aboutYou": "Chi sei",
+      "track": "Area",
+      "skills": "Competenze",
+      "experience": "Esperienza",
+      "portfolio": "Portfolio",
+      "verification": "Verifica",
+      "voiceIntro": "Intro vocale",
+      "submit": "Invia"
+    }
+  },
+  "brief": {
+    "title": "Nuovo brief di progetto",
+    "subtitle": "Descrivi cosa ti serve — la nostra IA lo classificherà e suggerirà la portata. Puoi modificarlo prima di salvarlo.",
+    "titleLabel": "Titolo del progetto",
+    "titlePlaceholder": "es. Ridisegnare il nostro sito web aziendale",
+    "descriptionLabel": "Descrivi cosa ti serve",
+    "descriptionPlaceholder": "Descrivi il progetto nel modo più dettagliato possibile — obiettivi, deliverable, pubblico, stack tecnologico, tempistica, ecc.",
+    "analyzeButton": "Analizza con IA",
+    "analyzing": "Analisi in corso…",
+    "aiAnalysis": "Analisi IA",
+    "suggestedTrack": "Area suggerita",
+    "confidence": "Confidenza",
+    "estimatedHoursLabel": "Ore stimate",
+    "aiSuggestedHours": "IA suggerisce {hours}h — modifica se necessario",
+    "back": "Indietro",
+    "save": "Salva brief",
+    "saving": "Salvataggio…",
+    "saved": "Brief salvato!",
+    "savedDescription": "Ora puoi sfogliare le professioniste e inviare loro questo brief come offerta.",
+    "browseFreelancers": "Sfoglia professioniste",
+    "toDashboard": "Dashboard",
+    "tracks": {
+      "PROGRAMMING": "Programmazione e sviluppo",
+      "CREATIVE_DESIGN": "Design creativo",
+      "TRANSLATION": "Traduzione e scrittura",
+      "RESEARCH_DATA": "Ricerca e dati"
+    }
+  },
+  "admin": {
+    "applications": {
+      "title": "Candidature",
+      "backToAll": "Tutte le candidature",
+      "empty": "Nessuna candidatura",
+      "emptyDescription": "Le nuove candidature appariranno qui.",
+      "updateStatus": "Aggiorna stato",
+      "skills": "Competenze",
+      "languages": "Lingue",
+      "portfolio": "Portfolio",
+      "voiceIntro": "Intro vocale",
+      "timeline": {
+        "applied": "Candidatura inviata",
+        "screened": "Selezionata",
+        "accepted": "Accettata"
+      },
+      "track": "Area"
+    },
+    "freelancers": {
+      "title": "Professioniste",
+      "empty": "Nessuna professionista",
+      "emptyDescription": "Le professioniste attive appariranno qui."
+    },
+    "clients": {
+      "title": "Clienti",
+      "empty": "Nessun cliente",
+      "emptyDescription": "I clienti registrati appariranno qui."
+    },
+    "projects": {
+      "title": "Progetti",
+      "empty": "Nessun progetto",
+      "emptyDescription": "I progetti attivi appariranno qui."
+    },
+    "payments": {
+      "title": "Pagamenti",
+      "totalReceived": "Totale ricevuto",
+      "paidOut": "Pagato",
+      "pendingPayouts": "Pagamenti in sospeso",
+      "failedPayments": "Falliti",
+      "markSent": "Segna come inviato",
+      "markSending": "Salvataggio…"
     }
   },
   "common": {

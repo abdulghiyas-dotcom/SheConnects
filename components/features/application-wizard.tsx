@@ -1,28 +1,27 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Image from "next/image"
 import { Check } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 
 export const WIZARD_STEPS = [
-  { slug: "apply",       label: "Create account",    path: "/app/apply" },
-  { slug: "about-you",   label: "About you",         path: "/app/apply/about-you" },
-  { slug: "track",       label: "Your track",        path: "/app/apply/track" },
-  { slug: "skills",      label: "Skills",            path: "/app/apply/skills" },
-  { slug: "experience",  label: "Experience",        path: "/app/apply/experience" },
-  { slug: "portfolio",   label: "Portfolio",         path: "/app/apply/portfolio" },
-  { slug: "identity",    label: "Verification",      path: "/app/apply/identity" },
-  { slug: "voice",       label: "Voice intro",       path: "/app/apply/voice" },
-  { slug: "review",      label: "Review & submit",   path: "/app/apply/review" },
+  { slug: "apply",       label: "Account",     path: "/app/apply" },
+  { slug: "about-you",   label: "About you",   path: "/app/apply/about-you" },
+  { slug: "track",       label: "Track",       path: "/app/apply/track" },
+  { slug: "skills",      label: "Skills",      path: "/app/apply/skills" },
+  { slug: "experience",  label: "Experience",  path: "/app/apply/experience" },
+  { slug: "portfolio",   label: "Portfolio",   path: "/app/apply/portfolio" },
+  { slug: "identity",    label: "Verification", path: "/app/apply/identity" },
+  { slug: "voice",       label: "Voice intro", path: "/app/apply/voice" },
+  { slug: "review",      label: "Submit",      path: "/app/apply/review" },
 ] as const
 
 interface WizardShellProps {
-  currentStep: number   // 1-indexed
+  currentStep: number
   title: string
   subtitle?: string
   children: React.ReactNode
-  /** Pass completed step count from DB to mark earlier steps as done */
   completedSteps?: number
 }
 
@@ -34,76 +33,94 @@ export function WizardShell({
   completedSteps = 0,
 }: WizardShellProps) {
   const totalSteps = WIZARD_STEPS.length
+  const progress = ((currentStep - 1) / (totalSteps - 1)) * 100
 
   return (
-    <div className="min-h-screen bg-secondary/30">
+    <div className="min-h-screen bg-slate-50">
       {/* Top bar */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
-          <span className="text-base font-semibold text-foreground">SheConnects</span>
-          <span className="text-xs text-muted-foreground">
-            Step {currentStep} of {totalSteps}
+      <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-100">
+        <div className="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <Image src="/icon.png" alt="SheConnects" width={26} height={26} className="rounded-full" />
+            <span className="text-sm font-semibold text-slate-900">SheConnects</span>
+          </Link>
+
+          {/* Step pills — desktop */}
+          <div className="hidden md:flex items-center gap-1 overflow-x-auto">
+            {WIZARD_STEPS.map((step, i) => {
+              const stepNum = i + 1
+              const isDone = stepNum < currentStep || i < completedSteps
+              const isCurrent = stepNum === currentStep
+
+              return (
+                <div key={step.slug} className="flex items-center gap-1 flex-shrink-0">
+                  <div
+                    className={cn(
+                      "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all",
+                      isDone    && "bg-trust-50 text-trust-700",
+                      isCurrent && "bg-brand-600 text-white shadow-brand",
+                      !isDone && !isCurrent && "text-slate-400"
+                    )}
+                  >
+                    {isDone ? (
+                      <Check size={10} />
+                    ) : (
+                      <span className={cn(
+                        "h-4 w-4 rounded-full text-[10px] flex items-center justify-center font-bold",
+                        isCurrent ? "bg-white/20 text-white" : "bg-slate-200 text-slate-500"
+                      )}>
+                        {stepNum}
+                      </span>
+                    )}
+                    <span className={cn(isCurrent ? "" : "hidden sm:inline")}>{step.label}</span>
+                  </div>
+                  {i < WIZARD_STEPS.length - 1 && (
+                    <div className={cn("w-3 h-px flex-shrink-0", isDone ? "bg-trust-300" : "bg-slate-200")} />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Mobile step count */}
+          <span className="md:hidden text-xs font-medium text-slate-500">
+            Step {currentStep} / {totalSteps}
           </span>
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-secondary">
+        <div className="h-0.5 bg-slate-100">
           <div
-            className="h-1 bg-brand-500 transition-all duration-500"
-            style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}
+            className="h-0.5 bg-brand-600 transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
           />
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-8">
-        {/* Step pills — desktop only */}
-        <div className="hidden md:flex items-center gap-1 mb-8 overflow-x-auto pb-2">
-          {WIZARD_STEPS.map((step, i) => {
-            const stepNum = i + 1
-            const isDone = stepNum < currentStep || i < completedSteps
-            const isCurrent = stepNum === currentStep
-
-            return (
-              <div key={step.slug} className="flex items-center gap-1 flex-shrink-0">
-                <div
-                  className={cn(
-                    "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors",
-                    isDone && "bg-trust-50 text-trust-700",
-                    isCurrent && "bg-brand-100 text-brand-700",
-                    !isDone && !isCurrent && "text-muted-foreground"
-                  )}
-                >
-                  {isDone ? (
-                    <Check size={10} className="text-trust-600" />
-                  ) : (
-                    <span className={cn(
-                      "w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-semibold",
-                      isCurrent ? "bg-brand-500 text-white" : "bg-muted text-muted-foreground"
-                    )}>
-                      {stepNum}
-                    </span>
-                  )}
-                  {step.label}
-                </div>
-                {i < WIZARD_STEPS.length - 1 && (
-                  <div className="w-3 h-px bg-border flex-shrink-0" />
-                )}
-              </div>
-            )
-          })}
-        </div>
-
+      <main className="max-w-2xl mx-auto px-6 py-10">
         {/* Step content card */}
-        <div className="bg-white rounded-xl border shadow-sm p-6 md:p-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-7 md:p-9">
+          <div className="mb-7">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white">
+                {currentStep}
+              </span>
+              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                Step {currentStep} of {totalSteps}
+              </span>
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-2">{title}</h1>
             {subtitle && (
-              <p className="text-muted-foreground mt-1 text-sm">{subtitle}</p>
+              <p className="mt-1.5 text-sm text-slate-500 leading-relaxed">{subtitle}</p>
             )}
           </div>
 
           {children}
         </div>
+
+        <p className="mt-6 text-center text-xs text-slate-400">
+          Your data is encrypted and never shared without your consent.
+        </p>
       </main>
     </div>
   )

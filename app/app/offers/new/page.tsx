@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { getVatInfo } from "@/lib/utils/pricing"
-import { ClientNav } from "@/components/features/client-nav"
+import { PlatformLayout } from "@/components/features/platform-layout"
 import { OfferForm } from "./offer-form"
 
 export default async function NewOfferPage({
@@ -38,22 +38,20 @@ export default async function NewOfferPage({
     : "VAT (0%)"
 
   return (
-    <div className="min-h-screen bg-secondary/30">
-      <ClientNav active="offers" />
-
-      <main className="max-w-2xl mx-auto px-6 py-8">
+    <PlatformLayout variant="client" title="New Offer">
+      <div className="max-w-2xl mx-auto">
         <Link
           href={`/app/freelancers/${slug}`}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-6"
         >
-          <ArrowLeft size={14} /> Back to {freelancer.alias}'s profile
+          <ArrowLeft size={14} /> Back to {freelancer.alias}&apos;s profile
         </Link>
 
-        <div className="bg-white rounded-xl border border-border p-6 md:p-8">
+        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6 md:p-8">
           <div className="mb-6">
-            <h1 className="text-xl font-semibold">Send an offer to {freelancer.alias}</h1>
+            <h1 className="text-xl font-bold text-slate-900">Send an offer to {freelancer.alias}</h1>
             {freelancer.tagline && (
-              <p className="text-sm text-muted-foreground mt-1">{freelancer.tagline}</p>
+              <p className="text-sm text-slate-500 mt-1">{freelancer.tagline}</p>
             )}
           </div>
 
@@ -64,7 +62,7 @@ export default async function NewOfferPage({
             vatLabel={vatLabel}
           />
         </div>
-      </main>
-    </div>
+      </div>
+    </PlatformLayout>
   )
 }

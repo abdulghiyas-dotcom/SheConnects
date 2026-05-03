@@ -48,6 +48,34 @@
       }
     }
   },
+  "platform": {
+    "sidebar": {
+      "collapse": "Collapse",
+      "signOut": "Sign out",
+      "adminPanel": "Admin Panel",
+      "freelancer": "Freelancer",
+      "platform": "Platform",
+      "nav": {
+        "dashboard": "Dashboard",
+        "freelancers": "Freelancers",
+        "aiMatching": "AI Matching",
+        "offers": "Offers",
+        "projects": "Projects",
+        "myAlias": "My Alias",
+        "overview": "Overview",
+        "applications": "Applications",
+        "clients": "Clients",
+        "payments": "Payments"
+      }
+    },
+    "header": {
+      "notifications": "Notifications",
+      "account": "Account",
+      "profile": "Profile",
+      "settings": "Settings",
+      "signOut": "Sign out"
+    }
+  },
   "freelancers": {
     "directory": {
       "title": "Find a freelancer",
@@ -83,11 +111,15 @@
       "skills": "Skills",
       "portfolio": "Portfolio",
       "languages": "Languages",
-      "sendOffer": "Send offer",
+      "sendOffer": "Send an offer",
       "verifiedAlias": "Verified alias",
       "verifiedAliasTooltip": "This freelancer's identity has been verified by SheConnects. Their real name is kept private for their safety.",
       "completedProjects": "completed projects",
-      "rating": "rating"
+      "rating": "rating",
+      "availableNow": "Available for new projects",
+      "notAvailable": "Not accepting new projects at this time.",
+      "sendOfferHint": "You'll be able to discuss details before anything is confirmed.",
+      "privacyNote": "Freelancers use a pseudonym to protect their identity. SheConnects verifies all professionals before they appear on the platform."
     }
   },
   "dashboard": {
@@ -105,6 +137,236 @@
         "offers": "View offers",
         "projects": "View projects"
       }
+    },
+    "freelancer": {
+      "title": "My dashboard",
+      "welcome": "Welcome back",
+      "applicationProgress": "Application progress",
+      "steps": {
+        "applied": "Applied",
+        "screening": "Screening",
+        "interview": "Interview",
+        "training": "Training",
+        "active": "Active"
+      },
+      "statusMessages": {
+        "APPLIED": "Your application is being reviewed. We'll be in touch soon.",
+        "SCREENING": "You're in the screening stage. Expect an email from our team.",
+        "INTERVIEW": "You've been invited to an interview. Check your email for details.",
+        "TRAINING": "You're in onboarding training. Complete it to go live.",
+        "ACTIVE": "You're live on the platform. Check your offers and projects below."
+      },
+      "stats": {
+        "activeOffers": "Active offers",
+        "activeProjects": "Active projects",
+        "completedProjects": "Completed projects"
+      }
+    },
+    "admin": {
+      "title": "Overview",
+      "stats": {
+        "pendingApplications": "Pending review",
+        "activeFreelancers": "Active freelancers",
+        "clients": "Clients",
+        "activeProjects": "Active projects"
+      },
+      "operations": {
+        "title": "Operations",
+        "reviewApplications": "Review applications",
+        "manageFreelancers": "Manage freelancers",
+        "manageClients": "Manage clients",
+        "manageProjects": "Manage projects",
+        "managePayments": "Manage payments"
+      }
+    }
+  },
+  "offers": {
+    "title": "Offers",
+    "newOffer": "New offer",
+    "backToAll": "All offers",
+    "empty": "No offers yet",
+    "emptyDescription": "Offers will appear here once sent.",
+    "needsResponse": "Needs your response",
+    "status": {
+      "SENT": "Awaiting response",
+      "COUNTERED": "Counter-offer sent",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
+      "WITHDRAWN": "Withdrawn"
+    },
+    "statusClient": {
+      "SENT": "Awaiting freelancer response",
+      "COUNTERED": "Counter-offer received",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
+      "WITHDRAWN": "Withdrawn"
+    },
+    "detail": {
+      "receivedOn": "Received",
+      "sentOn": "Sent",
+      "negotiationHistory": "Negotiation history",
+      "round": "Round",
+      "yourEarnings": "Your earnings",
+      "freelancerFee": "Freelancer fee",
+      "platformFee": "Platform fee (20%)",
+      "vat": "VAT",
+      "clientPays": "Client pays",
+      "totalYouPay": "Total you pay",
+      "timeline": "Timeline",
+      "viewProject": "View your project →",
+      "waitingForClient": "Your counter-offer has been sent. Waiting for the client.",
+      "youDeclined": "You declined this offer.",
+      "clientWithdrew": "The client withdrew this offer.",
+      "acceptedViewProject": "This offer has been accepted."
+    },
+    "form": {
+      "title": "Send an offer to",
+      "scopeLabel": "What do you need done?",
+      "priceLabel": "Freelancer's fee (€)",
+      "priceHint": "This goes directly to the freelancer",
+      "timelineLabel": "Timeline",
+      "timelinePlaceholder": "e.g. 2 weeks",
+      "messageLabel": "Message",
+      "messageOptional": "(optional)",
+      "messagePlaceholder": "Any extra context, questions, or specific requirements…",
+      "priceBreakdown": "Price breakdown",
+      "subtotal": "Subtotal",
+      "totalYouPay": "Total you pay",
+      "cancel": "Cancel",
+      "send": "Send offer",
+      "sending": "Sending…",
+      "minPriceError": "Minimum offer is €1"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "backToAll": "All projects",
+    "empty": "No projects yet",
+    "emptyDescription": "Your active projects will appear here once an offer is accepted.",
+    "status": {
+      "AWAITING_KICKOFF": "Awaiting kickoff",
+      "IN_PROGRESS": "In progress",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "milestones": {
+      "title": "Milestones",
+      "progress": "Milestone progress",
+      "status": {
+        "PENDING": "Not started",
+        "IN_PROGRESS": "In progress",
+        "SUBMITTED": "Awaiting review",
+        "APPROVED": "Approved",
+        "REVISION_REQUESTED": "Revision requested"
+      },
+      "dueOn": "Due",
+      "approvedOn": "Approved",
+      "submittedOn": "Submitted",
+      "revisionRequested": "The client has requested a revision."
+    },
+    "messages": "Messages",
+    "viewOffer": "View original offer →",
+    "freelancerFee": "Freelancer fee",
+    "yourEarnings": "Your earnings",
+    "platformFee": "Platform fee",
+    "vat": "VAT",
+    "total": "Total",
+    "payment": {
+      "payNow": "Pay now",
+      "paymentDue": "Payment of {amount} is due.",
+      "paymentFailed": "Payment failed — please try again.",
+      "workBegins": "Work begins once payment is confirmed.",
+      "paymentReceived": "Payment received — thank you."
+    },
+    "pay": {
+      "title": "Pay for project",
+      "orderSummary": "Order summary"
+    }
+  },
+  "apply": {
+    "title": "Apply to SheConnects",
+    "subtitle": "Join our network of verified Afghan women professionals",
+    "steps": {
+      "account": "Account",
+      "aboutYou": "About you",
+      "track": "Track",
+      "skills": "Skills",
+      "experience": "Experience",
+      "portfolio": "Portfolio",
+      "verification": "Verification",
+      "voiceIntro": "Voice intro",
+      "submit": "Submit"
+    }
+  },
+  "brief": {
+    "title": "New project brief",
+    "subtitle": "Describe what you need — our AI will classify it and suggest scope. You can edit before saving.",
+    "titleLabel": "Project title",
+    "titlePlaceholder": "e.g. Redesign our company website",
+    "descriptionLabel": "Describe what you need",
+    "descriptionPlaceholder": "Describe the project in as much detail as you can — goals, deliverables, audience, tech stack, timeline, etc.",
+    "analyzeButton": "Analyze with AI",
+    "analyzing": "Analyzing…",
+    "aiAnalysis": "AI analysis",
+    "suggestedTrack": "Suggested track",
+    "confidence": "Confidence",
+    "estimatedHoursLabel": "Estimated hours",
+    "aiSuggestedHours": "AI suggested {hours}h — adjust if needed",
+    "back": "Back",
+    "save": "Save brief",
+    "saving": "Saving…",
+    "saved": "Brief saved!",
+    "savedDescription": "You can now browse freelancers and send them this brief as an offer.",
+    "browseFreelancers": "Browse freelancers",
+    "toDashboard": "Dashboard",
+    "tracks": {
+      "PROGRAMMING": "Programming & Development",
+      "CREATIVE_DESIGN": "Creative & Design",
+      "TRANSLATION": "Translation & Writing",
+      "RESEARCH_DATA": "Research & Data"
+    }
+  },
+  "admin": {
+    "applications": {
+      "title": "Applications",
+      "backToAll": "All applications",
+      "empty": "No applications",
+      "emptyDescription": "New applications will appear here.",
+      "updateStatus": "Update status",
+      "skills": "Skills",
+      "languages": "Languages",
+      "portfolio": "Portfolio",
+      "voiceIntro": "Voice intro",
+      "timeline": {
+        "applied": "Applied",
+        "screened": "Screened",
+        "accepted": "Accepted"
+      },
+      "track": "Track"
+    },
+    "freelancers": {
+      "title": "Freelancers",
+      "empty": "No freelancers",
+      "emptyDescription": "Active freelancers will appear here."
+    },
+    "clients": {
+      "title": "Clients",
+      "empty": "No clients",
+      "emptyDescription": "Registered clients will appear here."
+    },
+    "projects": {
+      "title": "Projects",
+      "empty": "No projects",
+      "emptyDescription": "Active projects will appear here."
+    },
+    "payments": {
+      "title": "Payments",
+      "totalReceived": "Total received",
+      "paidOut": "Paid out",
+      "pendingPayouts": "Pending payouts",
+      "failedPayments": "Failed",
+      "markSent": "Mark as sent",
+      "markSending": "Saving…"
     }
   },
   "common": {

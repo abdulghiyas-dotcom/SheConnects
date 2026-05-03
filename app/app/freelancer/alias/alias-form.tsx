@@ -106,7 +106,7 @@ export function AliasForm({ currentAlias, suggestions }: Props) {
     !saving
 
   return (
-    <div className="min-h-screen bg-secondary/30 flex items-center justify-center px-4 py-12">
+    <div className="flex justify-center py-8">
       <div className="w-full max-w-md space-y-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Choose your alias</h1>

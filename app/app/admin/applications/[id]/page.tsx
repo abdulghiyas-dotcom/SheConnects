@@ -3,17 +3,26 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
-import { AdminNav } from "@/components/features/admin-nav"
+import { PlatformLayout } from "@/components/features/platform-layout"
+import { StatusBadge } from "@/components/ui/status-badge"
 import { StatusForm } from "./status-form"
-import { cn } from "@/lib/utils/cn"
 
-const STATUS_CLASS: Record<string, string> = {
-  APPLIED:   "bg-amber-50 text-amber-700",
-  SCREENING: "bg-brand-50 text-brand-700",
-  INTERVIEW: "bg-brand-50 text-brand-700",
-  TRAINING:  "bg-trust-50 text-trust-700",
-  ACTIVE:    "bg-trust-50 text-trust-700",
-  REJECTED:  "bg-red-50 text-red-600",
+type StatusVariant = "applied" | "screening" | "interview" | "training" | "active" | "declined" | "default"
+
+const STATUS_VARIANT: Record<string, StatusVariant> = {
+  APPLIED:   "applied",
+  SCREENING: "screening",
+  INTERVIEW: "interview",
+  TRAINING:  "training",
+  ACTIVE:    "active",
+  REJECTED:  "declined",
+}
+
+const TRACK_LABEL: Record<string, string> = {
+  PROGRAMMING:     "Dev & Tech",
+  CREATIVE_DESIGN: "Creative Design",
+  TRANSLATION:     "Translation",
+  RESEARCH_DATA:   "Research & Data",
 }
 
 export default async function AdminApplicationDetailPage({ params }: { params: { id: string } }) {
@@ -22,9 +31,9 @@ export default async function AdminApplicationDetailPage({ params }: { params: {
   const freelancer = await prismaAdmin.freelancer.findUnique({
     where: { id: params.id },
     include: {
-      user: { select: { email: true, createdAt: true } },
-      languages: true,
-      skills: { include: { skill: true } },
+      user:           { select: { email: true, createdAt: true } },
+      languages:      true,
+      skills:         { include: { skill: true } },
       portfolioItems: { include: { files: { include: { file: true } } } },
     },
   })
@@ -34,47 +43,50 @@ export default async function AdminApplicationDetailPage({ params }: { params: {
   const voiceIntroFileId = (freelancer.applicationData as { voiceIntroFileId?: string } | null)?.voiceIntroFileId
 
   return (
-    <div className="min-h-screen bg-secondary/30">
-      <AdminNav active="applications" />
+    <PlatformLayout variant="admin" title="Application Review">
+      <div className="max-w-4xl mx-auto space-y-6">
 
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
-        <Link href="/app/admin/applications" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+        <Link href="/app/admin/applications" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
           <ArrowLeft size={14} /> All applications
         </Link>
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main info */}
-          <div className="col-span-2 space-y-4">
-            <div className="bg-white rounded-xl border border-border p-6">
+          <div className="lg:col-span-2 space-y-4">
+
+            {/* Profile */}
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <h1 className="text-xl font-semibold">
+                  <h1 className="text-xl font-bold text-slate-900">
                     {freelancer.displayCity ? `${freelancer.displayCity}, ` : ""}{freelancer.displayCountry ?? "Unknown location"}
                   </h1>
-                  <p className="text-sm text-muted-foreground mt-1">{freelancer.user.email}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Track: <span className="font-medium">{freelancer.track.replace(/_/g, " ")}</span>
+                  <p className="text-sm text-slate-500 mt-1">{freelancer.user.email}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Track: <span className="font-semibold text-slate-600">{TRACK_LABEL[freelancer.track] ?? freelancer.track.replace(/_/g, " ")}</span>
                   </p>
                 </div>
-                <span className={cn("text-xs px-2.5 py-1 rounded-full font-medium shrink-0", STATUS_CLASS[freelancer.status] ?? "bg-secondary text-muted-foreground")}>
-                  {freelancer.status}
-                </span>
+                <StatusBadge
+                  variant={STATUS_VARIANT[freelancer.status] ?? "default"}
+                  label={freelancer.status.charAt(0) + freelancer.status.slice(1).toLowerCase()}
+                />
               </div>
 
               {freelancer.tagline && (
-                <p className="text-sm font-medium text-foreground mb-2">{freelancer.tagline}</p>
+                <p className="text-sm font-semibold text-slate-700 mb-2">{freelancer.tagline}</p>
               )}
               {freelancer.bio && (
-                <p className="text-sm text-muted-foreground whitespace-pre-line">{freelancer.bio}</p>
+                <p className="text-sm text-slate-500 whitespace-pre-line">{freelancer.bio}</p>
               )}
             </div>
 
+            {/* Skills */}
             {freelancer.skills.length > 0 && (
-              <div className="bg-white rounded-xl border border-border p-5">
-                <h2 className="text-sm font-semibold mb-3">Skills</h2>
+              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
+                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Skills</h2>
                 <div className="flex flex-wrap gap-2">
                   {freelancer.skills.map((s) => (
-                    <span key={s.skillId} className="text-xs bg-secondary text-foreground px-2.5 py-1 rounded-full">
+                    <span key={s.skillId} className="rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
                       {s.skill.name} · {s.level.toLowerCase()}
                     </span>
                   ))}
@@ -82,12 +94,13 @@ export default async function AdminApplicationDetailPage({ params }: { params: {
               </div>
             )}
 
+            {/* Languages */}
             {freelancer.languages.length > 0 && (
-              <div className="bg-white rounded-xl border border-border p-5">
-                <h2 className="text-sm font-semibold mb-3">Languages</h2>
+              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
+                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Languages</h2>
                 <div className="flex flex-wrap gap-2">
                   {freelancer.languages.map((l) => (
-                    <span key={l.language} className="text-xs bg-secondary text-foreground px-2.5 py-1 rounded-full">
+                    <span key={l.language} className="rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
                       {l.language} · {l.proficiency.toLowerCase()}
                     </span>
                   ))}
@@ -95,14 +108,15 @@ export default async function AdminApplicationDetailPage({ params }: { params: {
               </div>
             )}
 
+            {/* Portfolio */}
             {freelancer.portfolioItems.length > 0 && (
-              <div className="bg-white rounded-xl border border-border p-5">
-                <h2 className="text-sm font-semibold mb-3">Portfolio</h2>
+              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
+                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Portfolio</h2>
                 <div className="space-y-3">
                   {freelancer.portfolioItems.map((item) => (
-                    <div key={item.id} className="text-sm">
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-muted-foreground text-xs mt-0.5">{item.description.slice(0, 150)}</p>
+                    <div key={item.id} className="border-l-2 border-brand-200 pl-3">
+                      <p className="text-sm font-semibold text-slate-800">{item.title}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{item.description.slice(0, 150)}</p>
                     </div>
                   ))}
                 </div>
@@ -110,28 +124,28 @@ export default async function AdminApplicationDetailPage({ params }: { params: {
             )}
 
             {voiceIntroFileId && (
-              <div className="bg-white rounded-xl border border-border p-5">
-                <h2 className="text-sm font-semibold mb-2">Voice intro</h2>
-                <p className="text-xs text-muted-foreground">File ID: {voiceIntroFileId}</p>
+              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
+                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Voice intro</h2>
+                <p className="text-xs text-slate-400">File ID: {voiceIntroFileId}</p>
               </div>
             )}
           </div>
 
-          {/* Actions sidebar */}
+          {/* Sidebar — actions */}
           <div className="space-y-4">
-            <div className="bg-white rounded-xl border border-border p-5">
-              <h2 className="text-sm font-semibold mb-3">Update status</h2>
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
+              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Update status</h2>
               <StatusForm freelancerId={freelancer.id} currentStatus={freelancer.status} />
             </div>
 
-            <div className="bg-white rounded-xl border border-border p-5 text-xs text-muted-foreground space-y-1">
-              <p>Applied: {new Date(freelancer.appliedAt).toLocaleDateString("en-GB")}</p>
-              {freelancer.screenedAt && <p>Screened: {new Date(freelancer.screenedAt).toLocaleDateString("en-GB")}</p>}
-              {freelancer.acceptedAt && <p>Accepted: {new Date(freelancer.acceptedAt).toLocaleDateString("en-GB")}</p>}
+            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5 space-y-1.5 text-xs text-slate-400">
+              <p>Applied: <span className="text-slate-600 font-medium">{new Date(freelancer.appliedAt).toLocaleDateString("en-GB")}</span></p>
+              {freelancer.screenedAt && <p>Screened: <span className="text-slate-600 font-medium">{new Date(freelancer.screenedAt).toLocaleDateString("en-GB")}</span></p>}
+              {freelancer.acceptedAt && <p>Accepted: <span className="text-slate-600 font-medium">{new Date(freelancer.acceptedAt).toLocaleDateString("en-GB")}</span></p>}
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </PlatformLayout>
   )
 }

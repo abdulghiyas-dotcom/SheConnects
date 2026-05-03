@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { AliasForm } from "./alias-form"
+import { PlatformLayout } from "@/components/features/platform-layout"
 
 function buildSuggestions(firstName: string, lastName: string): string[] {
   const first = firstName.trim()
@@ -45,9 +46,11 @@ export default async function AliasPage() {
     : []
 
   return (
-    <AliasForm
-      currentAlias={freelancer.alias}
-      suggestions={suggestions}
-    />
+    <PlatformLayout variant="freelancer" title="My Alias">
+      <AliasForm
+        currentAlias={freelancer.alias}
+        suggestions={suggestions}
+      />
+    </PlatformLayout>
   )
 }
