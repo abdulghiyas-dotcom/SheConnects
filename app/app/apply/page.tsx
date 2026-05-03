@@ -16,6 +16,8 @@ export default function ApplyPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [step, setStep] = useState<"form" | "verify">("form")
+  const [otp, setOtp] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -24,10 +26,14 @@ export default function ApplyPage() {
 
     try {
       const supabase = createClient()
-      const { error: authError } = await supabase.auth.signUp({
+      const origin = window.location.origin
+      const { data, error: authError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { role: "FREELANCER" } },
+        options: {
+          emailRedirectTo: `${origin}/app/auth/callback?next=/app/apply/about-you`,
+          data: { role: "FREELANCER" },
+        },
       })
 
       if (authError) {
@@ -39,23 +45,106 @@ export default function ApplyPage() {
         return
       }
 
-      const res = await fetch("/api/auth/create-freelancer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-
-      if (!res.ok) {
-        setError("Account created but setup failed. Please sign in and continue.")
+      // Email confirmation required — session not yet established
+      if (!data.session) {
+        setStep("verify")
         return
       }
 
-      router.push("/app/apply/about-you")
+      await createFreelancerProfile()
     } catch {
       setError("Something went wrong. Please try again.")
     } finally {
       setLoading(false)
     }
+  }
+
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+
+    try {
+      const supabase = createClient()
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        email,
+        token: otp.trim(),
+        type: "signup",
+      })
+
+      if (verifyError) {
+        setError(
+          verifyError.message.includes("expired") || verifyError.message.includes("invalid")
+            ? "Invalid or expired code. Check your email and try again."
+            : verifyError.message
+        )
+        return
+      }
+
+      await createFreelancerProfile()
+    } catch {
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function createFreelancerProfile() {
+    const res = await fetch("/api/auth/create-freelancer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+
+    if (!res.ok) {
+      setError("Account created but setup failed. Please sign in and continue.")
+      return
+    }
+
+    router.push("/app/apply/about-you")
+  }
+
+  if (step === "verify") {
+    return (
+      <WizardShell currentStep={1} title="Check your email" subtitle={`We sent a 6-digit code to ${email}. Enter it below to confirm your account.`}>
+        <form onSubmit={handleVerify} className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="otp">Confirmation code</Label>
+            <Input
+              id="otp"
+              type="text"
+              inputMode="numeric"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="123456"
+              maxLength={6}
+              required
+              autoComplete="one-time-code"
+              autoFocus
+            />
+            <p className="text-xs text-muted-foreground">
+              You can also click the confirmation link in the email instead.
+            </p>
+          </div>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Verifying…" : "Confirm email"}
+          </Button>
+
+          <p className="text-center text-sm text-muted-foreground">
+            <button
+              type="button"
+              className="text-primary hover:underline"
+              onClick={() => { setStep("form"); setOtp(""); setError("") }}
+            >
+              ← Back
+            </button>
+          </p>
+        </form>
+      </WizardShell>
+    )
   }
 
   return (

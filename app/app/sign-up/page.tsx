@@ -27,6 +27,8 @@ export default function SignUpPage() {
   const [orgType, setOrgType] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [step, setStep] = useState<"form" | "verify">("form")
+  const [otp, setOtp] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -35,10 +37,12 @@ export default function SignUpPage() {
 
     try {
       const supabase = createClient()
-      const { error: authError } = await supabase.auth.signUp({
+      const origin = window.location.origin
+      const { data, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: `${origin}/app/auth/callback?next=/app/client/dashboard`,
           data: {
             role: "CLIENT",
             organizationName: orgName,
@@ -48,33 +52,130 @@ export default function SignUpPage() {
       })
 
       if (authError) {
-        if (authError.message.includes("already registered")) {
-          setError("An account with this email already exists.")
-        } else {
-          setError(authError.message)
-        }
+        setError(
+          authError.message.includes("already registered")
+            ? "An account with this email already exists."
+            : authError.message
+        )
         return
       }
 
-      // Create the client record via server action
-      const res = await fetch("/api/auth/create-client", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, orgName, orgType }),
-      })
-
-      if (!res.ok) {
-        setError("Account created but profile setup failed. Please sign in and try again.")
+      // Email confirmation required — session not yet established
+      if (!data.session) {
+        setStep("verify")
         return
       }
 
-      router.push("/app/client/dashboard")
-      router.refresh()
+      await createClientProfile(orgName, orgType)
     } catch {
       setError("Something went wrong. Please try again.")
     } finally {
       setLoading(false)
     }
+  }
+
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+
+    try {
+      const supabase = createClient()
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        email,
+        token: otp.trim(),
+        type: "signup",
+      })
+
+      if (verifyError) {
+        setError(verifyError.message.includes("expired") || verifyError.message.includes("invalid")
+          ? "Invalid or expired code. Check your email and try again."
+          : verifyError.message)
+        return
+      }
+
+      await createClientProfile(orgName, orgType)
+    } catch {
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function createClientProfile(orgNameVal: string, orgTypeVal: string) {
+    const res = await fetch("/api/auth/create-client", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, orgName: orgNameVal, orgType: orgTypeVal }),
+    })
+
+    if (!res.ok) {
+      setError("Account created but profile setup failed. Please sign in and try again.")
+      return
+    }
+
+    router.push("/app/client/dashboard")
+    router.refresh()
+  }
+
+  if (step === "verify") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-secondary/30 px-4 py-8">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-foreground">SheConnects</h1>
+            <p className="text-sm text-muted-foreground mt-1">Digital work with human impact</p>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Check your email</CardTitle>
+              <CardDescription>
+                We sent a 6-digit code to <strong>{email}</strong>. Enter it below to confirm your account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleVerify} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="otp">Confirmation code</Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    inputMode="numeric"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    maxLength={6}
+                    required
+                    autoComplete="one-time-code"
+                    autoFocus
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    You can also click the confirmation link in the email instead.
+                  </p>
+                </div>
+
+                {error && <p className="text-sm text-destructive">{error}</p>}
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Verifying…" : "Confirm email"}
+                </Button>
+              </form>
+
+              <div className="mt-4 text-center text-sm text-muted-foreground">
+                <button
+                  type="button"
+                  className="text-primary hover:underline"
+                  onClick={() => { setStep("form"); setOtp(""); setError("") }}
+                >
+                  ← Back
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
   }
 
   return (
