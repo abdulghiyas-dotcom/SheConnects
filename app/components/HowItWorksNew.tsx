@@ -115,8 +115,27 @@ export default function HowItWorksNew({ language }: Props) {
   const c = content[language];
 
   return (
-    <section id="how-it-works" className="py-28 bg-white">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="how-it-works" className="relative overflow-hidden py-28 bg-white">
+      {/* Animated background blobs */}
+      <motion.div
+        className="pointer-events-none absolute -top-32 -left-32 rounded-full"
+        style={{ width: 420, height: 420, background: "radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.18, 1], x: [0, 30, 0], y: [0, -20, 0] }}
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute -bottom-24 -right-24 rounded-full"
+        style={{ width: 360, height: 360, background: "radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.14, 1], x: [0, -25, 0], y: [0, 20, 0] }}
+        transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+      />
+      <motion.div
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ width: 280, height: 280, background: "radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.25, 1] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+      />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}

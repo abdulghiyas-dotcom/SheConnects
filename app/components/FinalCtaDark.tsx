@@ -47,9 +47,17 @@ export default function FinalCta({ language }: Props) {
               backgroundSize: "40px 40px",
             }}
           />
-          {/* Background: soft orbs */}
-          <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/8 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
+          {/* Background: animated orbs */}
+          <motion.div
+            className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-white/10 blur-3xl"
+            animate={{ scale: [1, 1.3, 1], x: [0, -20, 0], y: [0, 20, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-purple-400/20 blur-3xl"
+            animate={{ scale: [1, 1.25, 1], x: [0, 25, 0], y: [0, -15, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+          />
 
           <div className="relative">
             <span className="mb-5 inline-block rounded-full border border-white/25 bg-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white/80">

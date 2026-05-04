@@ -83,8 +83,27 @@ export default function StudioTracks({ language }: Props) {
   const c = content[language];
 
   return (
-    <section id="services" className="py-28 bg-slate-50">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="services" className="relative overflow-hidden py-28 bg-slate-50">
+      {/* Animated background blobs */}
+      <motion.div
+        className="pointer-events-none absolute top-0 right-0 rounded-full"
+        style={{ width: 500, height: 500, background: "radial-gradient(circle, rgba(79,70,229,0.05) 0%, transparent 65%)" }}
+        animate={{ scale: [1, 1.12, 1], x: [0, -20, 0], y: [0, 20, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute bottom-0 left-0 rounded-full"
+        style={{ width: 400, height: 400, background: "radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 65%)" }}
+        animate={{ scale: [1, 1.15, 1], x: [0, 20, 0], y: [0, -15, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
+      <motion.div
+        className="pointer-events-none absolute top-1/3 left-1/4 rounded-full"
+        style={{ width: 200, height: 200, background: "radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.3, 1], x: [0, 15, -10, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}

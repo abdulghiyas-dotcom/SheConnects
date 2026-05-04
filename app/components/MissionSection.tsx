@@ -41,8 +41,21 @@ export default function MissionSection({ language }: Props) {
   const c = content[language];
 
   return (
-    <section id="organizations" className="bg-white py-28">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="organizations" className="relative overflow-hidden bg-white py-28">
+      {/* Animated background blobs */}
+      <motion.div
+        className="pointer-events-none absolute -top-20 right-0 rounded-full"
+        style={{ width: 480, height: 480, background: "radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 65%)" }}
+        animate={{ scale: [1, 1.13, 1], x: [0, -20, 0], y: [0, 15, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute bottom-0 -left-20 rounded-full"
+        style={{ width: 380, height: 380, background: "radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 65%)" }}
+        animate={{ scale: [1, 1.18, 1], x: [0, 25, 0], y: [0, -15, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+      />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
         {/* Large pull-quote */}
         <motion.div

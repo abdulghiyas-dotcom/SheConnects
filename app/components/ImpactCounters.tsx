@@ -76,9 +76,22 @@ export default function ImpactCounters({ language }: Props) {
           backgroundSize: "40px 40px",
         }}
       />
-      {/* White blob top-right */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
+      {/* Animated orbs */}
+      <motion.div
+        className="pointer-events-none absolute -top-24 -right-24 h-80 w-80 rounded-full bg-white/8 blur-3xl"
+        animate={{ scale: [1, 1.2, 1], x: [0, -30, 0], y: [0, 20, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-purple-400/10 blur-3xl"
+        animate={{ scale: [1, 1.25, 1], x: [0, 30, 0], y: [0, -20, 0] }}
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
+      <motion.div
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-white/5 blur-3xl"
+        animate={{ scale: [1, 1.4, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
