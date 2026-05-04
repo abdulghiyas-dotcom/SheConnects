@@ -8,13 +8,17 @@ import { createClient } from "@/lib/auth/supabase-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ShieldCheck, Users, Globe } from "lucide-react"
+import { Building2, User2, ArrowLeft } from "lucide-react"
+
+type Role = "client" | "freelancer" | null
 
 export default function SignInPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirectTo") ?? ""
+  const roleParam = searchParams.get("role") as Role
 
+  const [role, setRole] = useState<Role>(roleParam)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -58,132 +62,185 @@ export default function SignInPage() {
     }
   }
 
-  return (
-    <div className="flex min-h-screen">
-      {/* Left panel — brand */}
+  const inputClass = "h-11 rounded-xl border-white/10 bg-white/5 text-white placeholder:text-white/25 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20"
+  const labelClass = "text-sm font-medium text-white/60"
+
+  /* ── Role picker (no ?role= set) ── */
+  if (!role) {
+    return (
       <div
-        className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%)" }}
+        className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
+        style={{ background: "#080810" }}
       >
-        {/* Background orbs */}
-        <div className="absolute top-[-80px] right-[-80px] h-80 w-80 rounded-full bg-brand-600/20 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-[-60px] left-[-60px] h-64 w-64 rounded-full bg-accent-500/10 blur-3xl pointer-events-none" />
-
-        <div className="relative z-10">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/icon.png" alt="SheConnects" width={32} height={32} className="rounded-full" />
-            <span className="text-white font-semibold text-lg">SheConnects</span>
-          </Link>
-        </div>
-
-        <div className="relative z-10 space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold text-white leading-tight">
-              Verified talent.<br />Real impact.
-            </h2>
-            <p className="text-slate-300 text-base leading-relaxed">
-              Connect with skilled Afghan women professionals — vetted, privacy-protected, and ready to work.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              { icon: ShieldCheck, text: "Every freelancer identity-verified" },
-              { icon: Users,       text: "150+ women earning their income" },
-              { icon: Globe,       text: "Clients across Europe & beyond" },
-            ].map(({ icon: Icon, text }) => (
-              <div key={text} className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-                  <Icon size={15} className="text-brand-300" />
-                </div>
-                <span className="text-sm text-slate-300">{text}</span>
-              </div>
-            ))}
-          </div>
-
-          <blockquote className="border-l-2 border-brand-400 pl-4">
-            <p className="text-sm text-slate-300 italic leading-relaxed">
-              "SheConnects gave me the chance to use my skills and support my family — while staying safe."
-            </p>
-            <p className="mt-2 text-xs text-slate-500">— Zahra M., Translation track</p>
-          </blockquote>
-        </div>
-
-        <p className="relative z-10 text-xs text-slate-600">
-          © {new Date().getFullYear()} SheConnects · GDPR compliant
-        </p>
-      </div>
-
-      {/* Right panel — form */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 bg-white">
-        {/* Mobile logo */}
-        <Link href="/" className="flex items-center gap-2 mb-10 lg:hidden">
-          <Image src="/icon.png" alt="SheConnects" width={28} height={28} className="rounded-full" />
-          <span className="font-semibold text-slate-900">SheConnects</span>
+        {/* Logo */}
+        <Link href="/" className="mb-12 flex items-center gap-2.5 group">
+          <Image src="/icon.png" alt="SheConnects" width={32} height={32} className="rounded-full" />
+          <span className="font-bold text-white group-hover:text-indigo-300 transition-colors">SheConnects</span>
         </Link>
 
-        <div className="w-full max-w-sm">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Welcome back</h1>
-            <p className="mt-1 text-sm text-slate-500">Sign in to your account</p>
+        {/* Title */}
+        <div className="mb-10 text-center">
+          <h1 className="text-2xl font-black text-white tracking-tight">Welcome back</h1>
+          <p className="mt-2 text-sm text-white/40">Choose how you want to sign in</p>
+        </div>
+
+        {/* Two cards */}
+        <div className="grid w-full max-w-xl gap-4 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => setRole("client")}
+            className="group flex flex-col items-center gap-4 rounded-2xl border border-white/8 p-8 text-center transition-all hover:border-indigo-500/40 hover:-translate-y-0.5"
+            style={{ background: "#0F0F1A" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 40px rgba(79,70,229,0.12)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = "none";
+            }}
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-indigo-500/20 bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors">
+              <Building2 size={24} className="text-indigo-400" />
+            </div>
+            <div>
+              <p className="text-base font-bold text-white">I represent an organisation</p>
+              <p className="mt-1.5 text-xs text-white/35">NGOs, SMEs, social enterprises</p>
+            </div>
+            <span className="mt-auto rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold text-indigo-400 group-hover:bg-indigo-500/20 transition-colors">
+              Sign in as organisation
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRole("freelancer")}
+            className="group flex flex-col items-center gap-4 rounded-2xl border border-white/8 p-8 text-center transition-all hover:border-purple-500/40 hover:-translate-y-0.5"
+            style={{ background: "#0F0F1A" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 40px rgba(124,58,237,0.12)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = "none";
+            }}
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-purple-500/20 bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
+              <User2 size={24} className="text-purple-400" />
+            </div>
+            <div>
+              <p className="text-base font-bold text-white">I am an Afghan woman</p>
+              <p className="mt-1.5 text-xs text-white/35">Join our network of freelancers</p>
+            </div>
+            <span className="mt-auto rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-xs font-semibold text-purple-400 group-hover:bg-purple-500/20 transition-colors">
+              Sign in as freelancer
+            </span>
+          </button>
+        </div>
+
+        <p className="mt-8 text-sm text-white/30">
+          Don&apos;t have an account?{" "}
+          <Link href="/app/sign-up" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+            Sign up
+          </Link>
+        </p>
+      </div>
+    )
+  }
+
+  /* ── Sign-in form (role is set) ── */
+  const isOrg = role === "client"
+
+  return (
+    <div
+      className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
+      style={{ background: "#080810" }}
+    >
+      {/* Back */}
+      <button
+        type="button"
+        onClick={() => setRole(null)}
+        className="absolute top-6 left-6 flex items-center gap-1.5 text-sm text-white/35 hover:text-white/70 transition-colors"
+      >
+        <ArrowLeft size={14} />
+        Back
+      </button>
+
+      {/* Logo */}
+      <Link href="/" className="mb-10 flex items-center gap-2.5 group">
+        <Image src="/icon.png" alt="SheConnects" width={30} height={30} className="rounded-full" />
+        <span className="font-bold text-white group-hover:text-indigo-300 transition-colors">SheConnects</span>
+      </Link>
+
+      <div className="w-full max-w-sm">
+        {/* Role badge */}
+        <div className="mb-7 flex items-center gap-2">
+          <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${isOrg ? "bg-indigo-500/15" : "bg-purple-500/15"}`}>
+            {isOrg ? <Building2 size={14} className="text-indigo-400" /> : <User2 size={14} className="text-purple-400" />}
+          </div>
+          <span className={`text-xs font-semibold ${isOrg ? "text-indigo-400" : "text-purple-400"}`}>
+            {isOrg ? "Organisation account" : "Freelancer account"}
+          </span>
+        </div>
+
+        <div className="mb-7">
+          <h1 className="text-2xl font-black text-white tracking-tight">Welcome back</h1>
+          <p className="mt-1 text-sm text-white/40">Sign in to your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className={labelClass}>Email address</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@organisation.com"
+              required
+              autoComplete="email"
+              className={inputClass}
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@organisation.com"
-                required
-                autoComplete="email"
-                className="h-11 rounded-xl border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                className="h-11 rounded-xl border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-              />
-            </div>
-
-            {error && (
-              <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
-                {error}
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full h-11 rounded-xl bg-brand-600 hover:bg-brand-700 shadow-brand font-medium"
-              disabled={loading}
-            >
-              {loading ? "Signing in…" : "Sign in"}
-            </Button>
-          </form>
-
-          <div className="mt-6 space-y-2 text-center text-sm text-slate-500">
-            <p>
-              Don&apos;t have an account?{" "}
-              <Link href="/app/sign-up" className="font-medium text-brand-600 hover:text-brand-700 hover:underline">
-                Sign up
-              </Link>
-            </p>
-            <p>
-              <Link href="/app/apply" className="font-medium text-brand-600 hover:text-brand-700 hover:underline">
-                Apply as a freelancer →
-              </Link>
-            </p>
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className={labelClass}>Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className={inputClass}
+            />
           </div>
+
+          {error && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            className="w-full h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold border-0 hover:-translate-y-0.5 transition-all"
+            style={{ boxShadow: "0 0 20px rgba(79,70,229,0.35)" }}
+            disabled={loading}
+          >
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
+        </form>
+
+        <div className="mt-6 space-y-2 text-center text-sm text-white/35">
+          <p>
+            Don&apos;t have an account?{" "}
+            <Link href="/app/sign-up" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              Sign up
+            </Link>
+          </p>
+          <p>
+            <Link href="/app/apply" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              Apply as a freelancer →
+            </Link>
+          </p>
         </div>
       </div>
     </div>
