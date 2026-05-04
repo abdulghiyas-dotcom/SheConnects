@@ -10,55 +10,38 @@ const content = {
 };
 
 const logos = [
-  { id: 1, w: 72, label: "NGO A" },
-  { id: 2, w: 60, label: "NGO B" },
-  { id: 3, w: 80, label: "Foundation C" },
-  { id: 4, w: 64, label: "SME D" },
-  { id: 5, w: 76, label: "NGO E" },
+  { w: 72 }, { w: 60 }, { w: 84 }, { w: 66 }, { w: 78 },
 ];
 
 type Props = { language: Language };
 
 export default function TrustBar({ language }: Props) {
   const c = content[language];
-
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="border-y border-white/[0.05] py-8"
-      style={{ background: "rgba(255,255,255,0.015)" }}
-    >
+    <section className="border-y border-slate-100 bg-slate-50 py-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <p className="mb-6 text-center text-xs font-semibold uppercase tracking-widest text-white/25">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mb-7 text-center text-[11px] font-bold uppercase tracking-widest text-slate-400"
+        >
           {c.label}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+        </motion.p>
+        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14">
           {logos.map((logo, i) => (
             <motion.div
-              key={logo.id}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex items-center justify-center"
+              transition={{ delay: i * 0.07 }}
+              className="h-7 rounded-lg bg-slate-200/70"
               style={{ width: logo.w }}
-            >
-              {/* Placeholder logo shape */}
-              <div
-                className="h-6 rounded-md"
-                style={{
-                  width: logo.w,
-                  background: "rgba(255,255,255,0.06)",
-                }}
-                aria-label={logo.label}
-              />
-            </motion.div>
+            />
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
