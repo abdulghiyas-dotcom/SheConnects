@@ -9,9 +9,10 @@
  * Never use the raw prisma client from lib/db/client.ts in public routes.
  */
 
+import type { PrismaClient } from "@prisma/client"
 import { prisma } from "./client"
 
-function createPublicProxy() {
+function createPublicProxy(): PrismaClient {
   return new Proxy(prisma, {
     get(target, prop) {
       const value = (target as never)[prop]
