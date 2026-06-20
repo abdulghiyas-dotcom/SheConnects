@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "db:push": "dotenv -e .env.local -- prisma db push",
     "db:seed": "dotenv -e .env.local -- tsx prisma/seed.ts",
@@ -62,5 +62,6 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "5.0.4"
-  }
+  },
+  "packageManager": "pnpm@9.15.9"
 }
