@@ -84,7 +84,9 @@ type Copy = {
       childName: string;
       childAge: string;
       country: string;
+      farsiLevel: string;
       email: string;
+      countryCode: string;
       phone: string;
     };
     primaryCta: string;
@@ -112,12 +114,12 @@ const copy: Record<LandingLanguage, Copy> = {
       { label: "ثبت‌نام", href: "#enroll" },
     ],
     hero: {
-      eyebrow: "برنامه آنلاین فارسی برای کودکان خانواده‌های افغان در اروپا",
-      title: "به فرزندتان کمک کنید فارسی بیاموزد و با ریشه‌های افغان خود پیوند بماند",
+      eyebrow: "برنامه آنلاین زبان مادری برای کودکان خانواده‌های فارسی‌زبان در اروپا",
+      title: "به فرزندتان کمک کنید زبان مادری را زنده نگه دارد",
       subtitle:
-        "صنف‌های آنلاین، زنده و تعاملی فارسی/دری برای کودکان افغان در اروپا؛ با تدریس یک آموزگار باتجربه از افغانستان.",
+        "صنف‌های آنلاین، زنده و تعاملی فارسی/دری برای کودکان خانواده‌های فارسی‌زبان در اروپا؛ با تدریس یک آموزگار باتجربه از افغانستان.",
       impact:
-        "فرزند شما زبان مادری‌اش را می‌آموزد و هم‌زمان از فرصت‌های کاری معنادار برای زنان افغان حمایت می‌کند.",
+        "فرزند شما زبان مادری‌اش را می‌آموزد و هم‌زمان به زنانی در افغانستان کمک می‌کند که در این وضعیت سخت از بسیاری فرصت‌های کار محروم شده‌اند.",
       primaryCta: "همین حالا ثبت‌نام کنید",
       secondaryCta: "جزئیات برنامه",
       trust: ["صنف‌های زنده آنلاین", "گروه‌های کوچک", "آموزگار باتجربه", "مناسب سنین ۵ تا ۱۶"],
@@ -125,11 +127,11 @@ const copy: Record<LandingLanguage, Copy> = {
       schedule: "۳ جلسه زنده در هفته",
     },
     why: {
-      eyebrow: "چرا فارسی مهم است؟",
+      eyebrow: "چرا زبان مادری مهم است؟",
       title: "زبان فقط کلمه نیست؛ بخشی از هویت، خاطره و خانواده است.",
       body: [
         "بسیاری از کودکان مهاجر در اروپا آرام‌آرام ارتباط زبانی خود را با پدرکلان، مادرکلان و خانواده در افغانستان از دست می‌دهند.",
-        "وقتی کودک فارسی/دری می‌آموزد، می‌تواند قصه‌های خانواده را بفهمد، با عزیزان خود حرف بزند و با اعتمادبه‌نفس بگوید: من ریشه دارم.",
+        "وقتی کودک زبان مادری خود، فارسی/دری، را می‌آموزد، می‌تواند قصه‌های خانواده را بفهمد، با عزیزان خود حرف بزند و با اعتمادبه‌نفس بگوید: من ریشه دارم.",
       ],
       cards: [
         { title: "پیوند با خانواده", text: "گفت‌وگو با اعضای خانواده در افغانستان و اروپا آسان‌تر و گرم‌تر می‌شود." },
@@ -139,7 +141,7 @@ const copy: Record<LandingLanguage, Copy> = {
     },
     benefits: {
       eyebrow: "چرا والدین این برنامه را انتخاب می‌کنند؟",
-      title: "آموزش ساختارمند، گرم و مناسب زندگی خانواده‌های افغان در اروپا",
+      title: "آموزش ساختارمند، گرم و مناسب زندگی خانواده‌های فارسی‌زبان در اروپا",
       items: [
         "نصاب مرحله‌به‌مرحله با تمرکز بر خواندن، نوشتن و صحبت کردن",
         "روش‌های آموزشی مناسب سن و سطح کودک",
@@ -147,7 +149,7 @@ const copy: Record<LandingLanguage, Copy> = {
         "آموزگار بومی فارسی/دری با تجربه تدریس کودکان",
         "محیط گروهی کوچک برای توجه بیشتر به هر شاگرد",
         "زمان‌بندی قابل‌تنظیم برای خانواده‌های ساکن اروپا",
-        "حمایت مستقیم از زنان افغان از طریق SheConnects",
+        "حمایت مستقیم از زنان در افغانستان از طریق SheConnects",
       ],
     },
     overview: {
@@ -176,31 +178,31 @@ const copy: Record<LandingLanguage, Copy> = {
     },
     teacher: {
       eyebrow: "با استاد خود آشنا شوید",
-      title: "Farwa؛ آموزگار افغان، فارسی‌زبان و علاقه‌مند به آموزش کودکان",
+      title: "فروه؛ آموزگار فارسی‌زبان و علاقه‌مند به آموزش کودکان",
       bio:
-        "Farwa آموزگار آنلاین فارسی/دری و مترجم است. او برای شاگردان غیرفارسی‌زبان درس‌های ساده، قابل‌فهم و اعتمادساز طراحی می‌کند و با استفاده از روش‌های دو‌زبانه به کودکان کمک می‌کند تلفظ، واژگان و گفت‌وگوی روزمره را قدم‌به‌قدم یاد بگیرند.",
-      details: ["آموزگار باتجربه افغان", "فارسی/دری زبان مادری اوست", "علاقه‌مند به کار با کودکان", "آشنا با نیازهای خانواده‌های افغان در مهاجرت"],
+        "فروه آموزگار آنلاین فارسی/دری و مترجم است. او برای شاگردان غیرفارسی‌زبان درس‌های ساده، قابل‌فهم و اعتمادساز طراحی می‌کند و با استفاده از روش‌های دو‌زبانه به کودکان کمک می‌کند تلفظ، واژگان و گفت‌وگوی روزمره را قدم‌به‌قدم یاد بگیرند.",
+      details: ["آموزگار باتجربه", "فارسی/دری زبان مادری اوست", "علاقه‌مند به کار با کودکان", "آشنا با نیازهای خانواده‌های فارسی‌زبان در مهاجرت"],
       philosophyTitle: "فلسفه آموزشی",
       philosophy:
-        "کودکان زمانی بهتر یاد می‌گیرند که احساس امنیت، شادی و ارتباط کنند. Farwa آموزش زبان را با فرهنگ، خانواده و اعتمادبه‌نفس پیوند می‌دهد.",
-      cta: "دیدن پروفایل Farwa",
-      video: "نمونه تدریس Farwa",
+        "کودکان زمانی بهتر یاد می‌گیرند که احساس امنیت، شادی و ارتباط کنند. فروه آموزش زبان را با فرهنگ، خانواده و اعتمادبه‌نفس پیوند می‌دهد.",
+      cta: "دیدن پروفایل فروه",
+      video: "نمونه تدریس فروه",
     },
     impact: {
       eyebrow: "تأثیر اجتماعی",
       title: "فرزند شما می‌آموزد. یک زن کار می‌کند.",
       text:
-        "SheConnects یک استارتاپ اثر اجتماعی است که به زنان در افغانستان کمک می‌کند فرصت‌های کاری دورکار پیدا کنند. این برنامه فقط یک کورس زبان نیست؛ هر ثبت‌نام به آموزش کودک شما و درآمد معنادار برای یک زن افغان کمک می‌کند.",
-      items: ["حفظ زبان و فرهنگ افغانستان", "حمایت از آموزش باکیفیت", "ایجاد فرصت درآمد برای زنان افغان", "کمک به آموزگاران باتجربه برای ادامه حرفه خود"],
+        "SheConnects یک استارتاپ اثر اجتماعی است که به زنان در افغانستان کمک می‌کند در شرایط سخت کنونی، زمانی که بسیاری از آنان امکان کار حضوری یا دسترسی عادی به فرصت‌های شغلی را ندارند، به کار دورکار و درآمد معنادار دسترسی پیدا کنند. این برنامه فقط یک کورس زبان نیست؛ هر ثبت‌نام به آموزش کودک شما و ادامه کار یک زن متخصص در افغانستان کمک می‌کند.",
+      items: ["حفظ زبان و فرهنگ افغانستان", "حمایت از آموزش باکیفیت", "ایجاد فرصت درآمد برای زنان در افغانستان", "کمک به آموزگاران باتجربه برای ادامه حرفه خود"],
       statement: "آموزش فرزند شما می‌تواند آینده خانواده دیگری را بسازد.",
     },
     testimonials: {
       eyebrow: "نظر خانواده‌ها",
-      title: "داستان‌هایی که می‌خواهیم برای خانواده‌های افغان بسازیم",
+      title: "داستان‌هایی که می‌خواهیم برای خانواده‌های فارسی‌زبان بسازیم",
       items: [
         { quote: "دخترم حالا با مادربزرگش به فارسی حرف می‌زند و خودش از یاد گرفتن کلمات تازه خوشحال است.", parent: "مادر یک شاگرد ۸ ساله", location: "آلمان" },
         { quote: "کلاس‌ها گرم و تعاملی است. فرزند ما احساس نمی‌کند در یک درس خشک نشسته؛ بازی می‌کند و یاد می‌گیرد.", parent: "پدر یک شاگرد ۶ ساله", location: "هالند" },
-        { quote: "برای ما مهم بود که پرداخت ما هم به آموزش فرزندمان کمک کند و هم از یک زن افغان حمایت کند.", parent: "والدین یک شاگرد ۱۲ ساله", location: "سویدن" },
+        { quote: "برای ما مهم بود که پرداخت ما هم به آموزش فرزندمان کمک کند و هم از کار یک زن در افغانستان حمایت کند.", parent: "والدین یک شاگرد ۱۲ ساله", location: "سویدن" },
       ],
     },
     faq: {
@@ -214,7 +216,7 @@ const copy: Record<LandingLanguage, Copy> = {
         { question: "آیا شاگردان بر اساس سن یا سطح گروه‌بندی می‌شوند؟", answer: "هر دو معیار در نظر گرفته می‌شود تا کودک در گروهی قرار بگیرد که هم مناسب سن و هم مناسب توانایی زبانی او باشد." },
         { question: "هر جلسه چقدر طول می‌کشد؟", answer: "مدت دقیق جلسه هنگام تشکیل گروه اعلام می‌شود و برای سن کودکان مناسب‌سازی می‌گردد." },
         { question: "آیا می‌توان وسط سمستر اضافه شد؟", answer: "در صورت موجود بودن جای خالی و مناسب بودن سطح، امکان پیوستن میان‌سمستر بررسی می‌شود." },
-        { question: "SheConnects چگونه از زنان در افغانستان حمایت می‌کند؟", answer: "SheConnects فرصت‌های کاری دورکار و درآمدزا برای زنان افغان ایجاد می‌کند تا بتوانند با مهارت‌های خود، از جمله تدریس آنلاین، کار کنند." },
+        { question: "SheConnects چگونه از زنان در افغانستان حمایت می‌کند؟", answer: "SheConnects برای زنان در افغانستان فرصت‌های کاری دورکار و درآمدزا ایجاد می‌کند؛ مخصوصاً در شرایطی که بسیاری از زنان نمی‌توانند مثل گذشته کار کنند یا به فرصت‌های شغلی دسترسی داشته باشند." },
       ],
     },
     form: {
@@ -226,7 +228,9 @@ const copy: Record<LandingLanguage, Copy> = {
         childName: "نام کودک",
         childAge: "سن کودک",
         country: "کشور محل زندگی",
+        farsiLevel: "سطح فارسی کودک",
         email: "ایمیل",
+        countryCode: "کد کشور",
         phone: "شماره تماس",
       },
       primaryCta: "ثبت‌نام کنید",
@@ -235,8 +239,8 @@ const copy: Record<LandingLanguage, Copy> = {
       note: "پس از ارسال، یک ایمیل آماده می‌شود تا جزئیات را به تیم SheConnects بفرستید.",
     },
     footer: {
-      tagline: "کار دیجیتال با اثر انسانی — فرصت برای زنان افغان، کیفیت برای خانواده‌ها.",
-      profile: "پروفایل Farwa",
+      tagline: "کار دیجیتال با اثر انسانی — فرصت برای زنان در افغانستان، کیفیت برای خانواده‌ها.",
+      profile: "پروفایل فروه",
       contact: "تماس",
       copyright: "تمام حقوق محفوظ است.",
     },
@@ -252,12 +256,12 @@ const copy: Record<LandingLanguage, Copy> = {
       { label: "Enroll", href: "#enroll" },
     ],
     hero: {
-      eyebrow: "Online Farsi program for Afghan children in Europe",
-      title: "Help Your Child Learn Farsi and Stay Connected to Their Afghan Heritage",
+      eyebrow: "Online mother-tongue Farsi program for children in Europe",
+      title: "Help Your Child Keep Their Mother Tongue Alive",
       subtitle:
-        "Interactive live online Farsi/Dari classes for Afghan children living in Europe, taught by an experienced teacher from Afghanistan.",
+        "Interactive live online Farsi/Dari classes for children living in Europe, taught by an experienced teacher from Afghanistan.",
       impact:
-        "Your child learns their mother tongue while supporting meaningful work opportunities for Afghan women.",
+        "Your child learns their mother tongue while supporting women in Afghanistan who are facing severe restrictions on work and opportunity.",
       primaryCta: "Enroll Now",
       secondaryCta: "Learn More",
       trust: ["Live online classes", "Small groups", "Experienced teacher", "Ages 5–16"],
@@ -265,21 +269,21 @@ const copy: Record<LandingLanguage, Copy> = {
       schedule: "3 live sessions per week",
     },
     why: {
-      eyebrow: "Why Farsi matters",
+      eyebrow: "Why mother tongue matters",
       title: "Language is more than vocabulary; it is identity, memory, and family connection.",
       body: [
         "Many children growing up abroad gradually lose the language that connects them to grandparents, relatives, stories, and Afghanistan.",
-        "When children learn Farsi/Dari, they can speak with family, understand their heritage, and grow with the confidence of knowing where they come from.",
+        "When children learn their mother tongue, Farsi/Dari, they can speak with family, understand their roots, and grow with the confidence of knowing where they come from.",
       ],
       cards: [
         { title: "Family connection", text: "Children can communicate more warmly with relatives in Afghanistan and across Europe." },
-        { title: "Cultural confidence", text: "They learn to feel proud of their language, name, and Afghan identity." },
+        { title: "Cultural confidence", text: "They learn to feel proud of their language, family story, and identity." },
         { title: "Lasting skills", text: "Reading, writing, and speaking foundations create a path for deeper learning." },
       ],
     },
     benefits: {
       eyebrow: "Why parents choose this program",
-      title: "Structured, warm, and built for Afghan families living in Europe",
+      title: "Structured, warm, and built for Farsi-speaking families living in Europe",
       items: [
         "Step-by-step curriculum for reading, writing, and speaking",
         "Age-appropriate teaching methods",
@@ -287,7 +291,7 @@ const copy: Record<LandingLanguage, Copy> = {
         "Native Farsi/Dari-speaking teacher with children’s teaching experience",
         "Small group environment with more attention for every child",
         "Flexible for families living in European time zones",
-        "Directly supports Afghan women through SheConnects",
+        "Directly supports women in Afghanistan through SheConnects",
       ],
     },
     overview: {
@@ -316,10 +320,10 @@ const copy: Record<LandingLanguage, Copy> = {
     },
     teacher: {
       eyebrow: "Meet your teacher",
-      title: "Farwa, an Afghan educator and native Farsi/Dari speaker passionate about teaching children",
+      title: "Farwa, a native Farsi/Dari-speaking educator passionate about teaching children",
       bio:
         "Farwa is an online Persian (Dari) teacher and translator. She creates beginner-friendly lessons for non-native learners, using bilingual explanations to build vocabulary, pronunciation, conversation skills, and confidence step by step.",
-      details: ["Experienced Afghan educator", "Native Farsi/Dari speaker", "Passionate about teaching children", "Understands Afghan diaspora families"],
+      details: ["Experienced educator", "Native Farsi/Dari speaker", "Passionate about teaching children", "Understands diaspora family needs"],
       philosophyTitle: "Teaching philosophy",
       philosophy:
         "Children learn best when they feel safe, joyful, and connected. Farwa links language learning with culture, family, and confidence.",
@@ -330,17 +334,17 @@ const copy: Record<LandingLanguage, Copy> = {
       eyebrow: "Social impact",
       title: "Your Child Learns. A Woman Works.",
       text:
-        "SheConnects is a social-impact startup helping women in Afghanistan find remote work opportunities. This is not just a language course: every enrollment supports your child’s education and meaningful income for an Afghan woman.",
-      items: ["Preserving Afghan language and culture", "Supporting quality education", "Creating income opportunities for Afghan women", "Helping experienced educators continue their profession"],
+        "SheConnects is a social-impact startup helping women in Afghanistan access remote work during a difficult situation in which many cannot work or reach normal job opportunities. This is not just a language course: every enrollment supports your child’s education and meaningful income for a skilled woman in Afghanistan.",
+      items: ["Preserving language and culture", "Supporting quality education", "Creating income opportunities for women in Afghanistan", "Helping experienced educators continue their profession"],
       statement: "Your child’s education helps build another family’s future.",
     },
     testimonials: {
       eyebrow: "Testimonials",
-      title: "The kind of progress we want Afghan families to experience",
+      title: "The kind of progress we want Farsi-speaking families to experience",
       items: [
         { quote: "My daughter now speaks Farsi with her grandmother and feels excited when she learns new words.", parent: "Parent of an 8-year-old", location: "Germany" },
         { quote: "The classes feel warm and interactive. Our child does not feel like it is a dry lesson; he plays and learns.", parent: "Parent of a 6-year-old", location: "Netherlands" },
-        { quote: "We loved that our payment helps our child learn and also supports an Afghan woman’s work.", parent: "Parents of a 12-year-old", location: "Sweden" },
+        { quote: "We loved that our payment helps our child learn and also supports a woman’s work in Afghanistan.", parent: "Parents of a 12-year-old", location: "Sweden" },
       ],
     },
     faq: {
@@ -354,7 +358,7 @@ const copy: Record<LandingLanguage, Copy> = {
         { question: "Are classes grouped by age or level?", answer: "Both are considered so every child joins a group that fits their age and current Farsi ability." },
         { question: "How long is each session?", answer: "The exact session length is confirmed when groups are formed and is adapted to the age of the children." },
         { question: "Can students join mid-semester?", answer: "If there is availability and the level is a good fit, mid-semester enrollment can be considered." },
-        { question: "How does SheConnects support women in Afghanistan?", answer: "SheConnects creates remote, income-generating opportunities for Afghan women so they can continue using professional skills such as online teaching." },
+        { question: "How does SheConnects support women in Afghanistan?", answer: "SheConnects creates remote, income-generating opportunities for women in Afghanistan so they can continue using professional skills such as online teaching despite severe limits on work access." },
       ],
     },
     form: {
@@ -366,7 +370,9 @@ const copy: Record<LandingLanguage, Copy> = {
         childName: "Child Name",
         childAge: "Child Age",
         country: "Country",
+        farsiLevel: "Child's Farsi Level",
         email: "Email Address",
+        countryCode: "Country Code",
         phone: "Phone Number",
       },
       primaryCta: "Enroll Now",
@@ -375,7 +381,7 @@ const copy: Record<LandingLanguage, Copy> = {
       note: "After submitting, an email draft will open so you can send the details to the SheConnects team.",
     },
     footer: {
-      tagline: "Digital work with human impact — opportunity for Afghan women, quality for families.",
+      tagline: "Digital work with human impact — opportunity for women in Afghanistan, quality for families.",
       profile: "Farwa profile",
       contact: "Contact",
       copyright: "All rights reserved.",
@@ -391,6 +397,7 @@ export default function FarsiProgramLandingPage() {
   const isRtl = content.dir === "rtl";
 
   const inputAlign = isRtl ? "text-right" : "text-left";
+  const teacherName = language === "fa" ? "فروه" : "Farwa";
 
   const mailSubject = useMemo(
     () => encodeURIComponent("Farsi program enrollment interest"),
@@ -408,7 +415,9 @@ export default function FarsiProgramLandingPage() {
         `Child Name: ${data.get("childName") ?? ""}`,
         `Child Age: ${data.get("childAge") ?? ""}`,
         `Country: ${data.get("country") ?? ""}`,
+        `Child Farsi Level: ${data.get("farsiLevel") ?? ""}`,
         `Email: ${data.get("email") ?? ""}`,
+        `Country Code: ${data.get("countryCode") ?? ""}`,
         `Phone: ${data.get("phone") ?? ""}`,
       ].join("\n")
     );
@@ -424,7 +433,7 @@ export default function FarsiProgramLandingPage() {
             <Image src="/icon.png" alt="SheConnects logo" width={44} height={44} className="rounded-full" priority />
             <div className={isRtl ? "text-right" : "text-left"}>
               <p className="text-sm font-semibold tracking-tight text-slate-900">SheConnects</p>
-              <p className="text-[11px] font-medium text-slate-500">Farsi for Afghan children</p>
+              <p className="text-[11px] font-medium text-slate-500">Mother-tongue Farsi</p>
             </div>
           </Link>
 
@@ -492,10 +501,10 @@ export default function FarsiProgramLandingPage() {
               <div className="rounded-[1.25rem] bg-white p-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-violet-100 text-3xl font-bold text-violet-700">
-                    F
+                    {language === "fa" ? "ف" : "F"}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-600">Farwa</p>
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-600">{teacherName}</p>
                     <h2 className="mt-1 text-2xl font-bold text-slate-950">{content.teacher.title}</h2>
                   </div>
                 </div>
@@ -613,9 +622,9 @@ export default function FarsiProgramLandingPage() {
           <div className="rounded-[2rem] border border-violet-100 bg-white p-6 shadow-xl shadow-violet-100/70">
             <div className="flex flex-col items-center text-center">
               <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 p-1">
-                <div className="flex h-full w-full items-center justify-center rounded-full bg-white text-6xl font-bold text-violet-700">F</div>
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-white text-6xl font-bold text-violet-700">{language === "fa" ? "ف" : "F"}</div>
               </div>
-              <h2 className="mt-5 text-3xl font-bold text-slate-950">Farwa</h2>
+              <h2 className="mt-5 text-3xl font-bold text-slate-950">{teacherName}</h2>
               <p className="mt-2 text-violet-700">Online Persian (Dari) Teacher</p>
               <Link href={teacherProfileUrl} className="mt-5 inline-flex rounded-full bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700">
                 {content.teacher.cta}
@@ -731,8 +740,22 @@ export default function FarsiProgramLandingPage() {
                 <input name="country" required className={`mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 ${inputAlign}`} />
               </label>
               <label className="text-sm font-semibold text-slate-700">
+                {content.form.fields.farsiLevel}
+                <select name="farsiLevel" required className={`mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 ${inputAlign}`}>
+                  <option value="">{language === "fa" ? "انتخاب کنید" : "Select one"}</option>
+                  <option value="Beginner">{language === "fa" ? "ابتدایی / آشنایی کم" : "Beginner / little exposure"}</option>
+                  <option value="Understands but does not speak">{language === "fa" ? "می‌فهمد، اما کم صحبت می‌کند" : "Understands but speaks little"}</option>
+                  <option value="Conversational">{language === "fa" ? "گفت‌وگوی روزمره" : "Conversational"}</option>
+                  <option value="Reads and writes">{language === "fa" ? "خواندن و نوشتن بلد است" : "Can read and write"}</option>
+                </select>
+              </label>
+              <label className="text-sm font-semibold text-slate-700">
                 {content.form.fields.email}
                 <input name="email" type="email" required dir="ltr" className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-left text-slate-900 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100" />
+              </label>
+              <label className="text-sm font-semibold text-slate-700">
+                {content.form.fields.countryCode}
+                <input name="countryCode" type="tel" required dir="ltr" placeholder="+49" className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-left text-slate-900 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100" />
               </label>
               <label className="text-sm font-semibold text-slate-700">
                 {content.form.fields.phone}
