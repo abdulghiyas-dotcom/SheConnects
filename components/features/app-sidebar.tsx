@@ -75,13 +75,14 @@ export function AppSidebar({ variant, userName, userRole, collapsible = true }: 
   return (
     <aside
       className={cn(
-        "flex flex-col bg-slate-900 text-white transition-all duration-300 ease-in-out",
-        collapsed ? "w-16" : "w-60",
-        "min-h-screen flex-shrink-0"
+        "fixed inset-x-0 bottom-0 z-40 flex h-[68px] flex-row bg-[#193b31] text-white shadow-[0_-8px_30px_rgba(25,59,49,.14)] lg:sticky lg:top-0 lg:h-screen lg:flex-col lg:shadow-none transition-all duration-300 ease-in-out",
+        "w-full",
+        collapsed ? "lg:w-16" : "lg:w-60",
+        "lg:min-h-screen lg:flex-shrink-0"
       )}
     >
       {/* Logo */}
-      <div className={cn("flex items-center gap-3 border-b border-white/10 px-4 py-4", collapsed && "justify-center px-0")}>
+      <div className={cn("hidden items-center gap-3 border-b border-white/10 px-4 py-4 lg:flex", collapsed && "justify-center px-0")}>
         <Link href="/" className="flex-shrink-0">
           <Image
             src="/icon.png"
@@ -102,7 +103,7 @@ export function AppSidebar({ variant, userName, userRole, collapsible = true }: 
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 space-y-0.5 px-2 py-4">
+      <nav className="flex flex-1 items-center justify-around gap-1 overflow-x-auto px-2 py-2 lg:block lg:space-y-0.5 lg:px-2 lg:py-4">
         {nav.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
           return (
@@ -110,16 +111,16 @@ export function AppSidebar({ variant, userName, userRole, collapsible = true }: 
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                "flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[9px] font-medium transition-all duration-150 lg:flex-row lg:px-3 lg:py-2.5 lg:text-sm",
                 isActive
                   ? "bg-brand-600 text-white shadow-brand"
                   : "text-slate-400 hover:bg-white/10 hover:text-white",
-                collapsed && "justify-center px-0"
+                collapsed && "lg:justify-center lg:px-0"
               )}
               title={collapsed ? item.label : undefined}
             >
               <span className="flex-shrink-0">{item.icon}</span>
-              {!collapsed && <span>{item.label}</span>}
+              {!collapsed && <span className="max-w-[64px] truncate lg:max-w-none">{item.label}</span>}
               {!collapsed && item.badge !== undefined && item.badge > 0 && (
                 <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
                   {item.badge}
@@ -131,7 +132,7 @@ export function AppSidebar({ variant, userName, userRole, collapsible = true }: 
       </nav>
 
       {/* User + collapse toggle */}
-      <div className="border-t border-white/10 px-2 py-3 space-y-1">
+      <div className="hidden border-t border-white/10 px-2 py-3 space-y-1 lg:block">
         {collapsible && (
           <button
             onClick={() => setCollapsed(!collapsed)}

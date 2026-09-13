@@ -79,15 +79,16 @@ export default async function FreelancerDashboardPage() {
 
   return (
     <PlatformLayout variant="freelancer" title="Dashboard">
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="workspace-page">
 
         {/* Welcome banner */}
-        <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card flex items-start justify-between gap-6">
+        <div className="workspace-hero flex items-start justify-between gap-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            <p className="workspace-eyebrow">YOUR PROFESSIONAL SPACE</p>
+            <h1 className="workspace-title">
               {freelancer.alias ? `Welcome, ${freelancer.alias}` : "Welcome"}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">{trackLabel} track</p>
+            <p className="workspace-description">{trackLabel} track</p>
             {isActive && (
               <Link
                 href="/app/freelancer/alias"
@@ -105,8 +106,8 @@ export default async function FreelancerDashboardPage() {
 
         {/* Application progress — until ACTIVE */}
         {!isActive && freelancer.status !== "REJECTED" && (
-          <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card space-y-5">
-            <h2 className="text-sm font-semibold text-slate-700">Your application progress</h2>
+          <div className="rounded-2xl border border-[#dfe6de] bg-[#fffefa] px-7 py-6 shadow-card space-y-5">
+            <h2 className="workspace-section-title mb-0">Your application progress</h2>
             <ProgressStepper steps={STATUS_STEPS} currentStep={currentStepIndex} />
             {STATUS_NEXT_MESSAGE[freelancer.status] && (
               <p className="text-sm text-slate-500 pt-2 border-t border-slate-100">
@@ -148,7 +149,7 @@ export default async function FreelancerDashboardPage() {
 
         {/* CTA card when active & has offers */}
         {isActive && activeOffers > 0 && (
-          <div className="rounded-2xl border border-brand-100 bg-brand-50/50 px-7 py-6 flex items-center justify-between gap-4">
+          <div className="workspace-note flex items-center justify-between gap-4">
             <div>
               <h3 className="font-semibold text-brand-900">
                 You have {activeOffers} new offer{activeOffers > 1 ? "s" : ""}
@@ -167,9 +168,9 @@ export default async function FreelancerDashboardPage() {
 
         {/* What happens next — non-active states */}
         {!isActive && (
-          <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card">
-            <h3 className="font-semibold text-slate-800">What happens next?</h3>
-            <p className="mt-2 text-sm text-slate-500">
+          <div className="rounded-2xl border border-[#dfe6de] bg-[#fffefa] px-7 py-6 shadow-card">
+            <h3 className="font-bold text-[#263d32]">What happens next?</h3>
+            <p className="mt-2 text-sm text-[#637168]">
               {STATUS_NEXT_MESSAGE[freelancer.status] ?? "Keep an eye on your email — we'll be in touch soon."}
             </p>
           </div>

@@ -6,26 +6,26 @@
   :root {
     --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 239 84% 67%;
+    --background: 90 20% 97%;
+    --foreground: 150 22% 12%;
+    --card: 60 33% 99%;
+    --card-foreground: 150 22% 12%;
+    --popover: 60 33% 99%;
+    --popover-foreground: 150 22% 12%;
+    --primary: 153 49% 30%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --secondary: 108 17% 93%;
+    --secondary-foreground: 150 22% 18%;
+    --muted: 108 17% 93%;
+    --muted-foreground: 150 9% 40%;
     --accent: 45 93% 47%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 239 84% 67%;
-    --radius: 0.625rem;
+    --border: 110 13% 86%;
+    --input: 110 13% 82%;
+    --ring: 153 49% 30%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -49,6 +49,20 @@
     --input: 216 34% 17%;
     --ring: 239 84% 67%;
   }
+}
+
+@layer components {
+  .workspace-page { @apply mx-auto max-w-5xl space-y-8; }
+  .workspace-hero { @apply relative overflow-hidden rounded-[28px] border border-[#d9e5d9] bg-[#e7f0e5] px-6 py-7 shadow-card sm:px-8; }
+  .workspace-hero::after { content: ""; @apply pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#d3e7c7] opacity-70 blur-2xl; }
+  .workspace-hero > * { @apply relative z-10; }
+  .workspace-eyebrow { @apply mb-2 text-[10px] font-extrabold tracking-[.14em] text-brand-700; }
+  .workspace-title { @apply text-2xl font-bold tracking-[-.035em] text-[#17241f] sm:text-3xl; }
+  .workspace-description { @apply mt-2 max-w-xl text-sm leading-6 text-[#52675a]; }
+  .workspace-section-title { @apply mb-4 text-[11px] font-extrabold tracking-[.14em] text-[#718177] uppercase; }
+  .workspace-action { @apply flex items-center gap-4 rounded-2xl border border-[#dfe6de] bg-[#fffefa] px-5 py-4 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card-hover; }
+  .workspace-action-icon { @apply flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700; }
+  .workspace-note { @apply rounded-2xl border border-brand-100 bg-brand-50/70 px-6 py-6; }
 }
 
 @layer base {
