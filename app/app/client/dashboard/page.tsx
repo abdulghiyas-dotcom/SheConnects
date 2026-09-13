@@ -69,21 +69,22 @@ export default async function ClientDashboardPage() {
 
   return (
     <PlatformLayout variant="client" title="Dashboard">
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="workspace-page">
 
         {/* Welcome banner */}
-        <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card flex items-center justify-between gap-6">
+        <div className="workspace-hero flex items-center justify-between gap-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            <p className="workspace-eyebrow">CLIENT WORKSPACE</p>
+            <h1 className="workspace-title">
               Welcome back, {client.organizationName}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="workspace-description">
               {activeOffers > 0 || activeProjects > 0
                 ? `You have ${[activeOffers && `${activeOffers} active offer${activeOffers > 1 ? "s" : ""}`, activeProjects && `${activeProjects} project${activeProjects > 1 ? "s" : ""} in progress`].filter(Boolean).join(" and ")}.`
                 : "Start a new project or browse the freelancer directory."}
             </p>
           </div>
-          <Button asChild size="sm" className="shrink-0 rounded-xl bg-brand-600 hover:bg-brand-700 shadow-brand hidden sm:flex">
+          <Button asChild size="sm" className="shrink-0 hidden sm:flex">
             <Link href="/app/freelancers">
               Browse freelancers <ArrowRight size={14} className="ml-1.5" />
             </Link>
@@ -120,22 +121,22 @@ export default async function ClientDashboardPage() {
 
         {/* Quick actions */}
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Quick actions</h2>
+          <h2 className="workspace-section-title">Start something meaningful</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {QUICK_ACTIONS.map((action) => (
               <Link
                 key={action.href}
                 href={action.href}
-                className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-card hover:-translate-y-0.5 hover:shadow-card-hover transition-all duration-200"
+                className="workspace-action"
               >
-                <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${action.iconBg}`}>
+                <div className={`workspace-action-icon ${action.iconBg}`}>
                   <action.icon size={20} className={action.iconColor} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800">{action.label}</p>
-                  <p className="text-xs text-slate-400 truncate">{action.sub}</p>
+                  <p className="text-sm font-bold text-[#263d32]">{action.label}</p>
+                  <p className="text-xs text-[#78877d] truncate">{action.sub}</p>
                 </div>
-                <ArrowRight size={16} className="ml-auto text-slate-300 flex-shrink-0" />
+                <ArrowRight size={16} className="ml-auto text-brand-600 flex-shrink-0" />
               </Link>
             ))}
           </div>
@@ -143,7 +144,7 @@ export default async function ClientDashboardPage() {
 
         {/* Impact note — only shown before first engagement */}
         {client.freelancersEngaged === 0 && (
-          <div className="rounded-2xl border border-brand-100 bg-brand-50/50 px-7 py-6">
+          <div className="workspace-note">
             <h3 className="font-semibold text-brand-900">Ready to make an impact?</h3>
             <p className="mt-1 text-sm text-brand-700">
               Browse verified Afghan women professionals and send your first offer. Every project creates real income for someone who needs it.

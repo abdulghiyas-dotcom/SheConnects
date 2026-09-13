@@ -52,7 +52,7 @@ export function StatCard({
     <div
       ref={ref}
       className={cn(
-        "rounded-2xl bg-white border border-slate-100 p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover",
+        "rounded-2xl border border-[#dfe6de] bg-[#fffefa] p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card-hover",
         className
       )}
     >
@@ -63,14 +63,14 @@ export function StatCard({
       )}
       <p
         className={cn(
-          "text-3xl font-bold tracking-tight text-slate-900 transition-all duration-500",
+          "text-3xl font-bold tracking-tight text-[#17241f] transition-all duration-500",
           visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
         )}
       >
         {value}
       </p>
-      <p className="mt-1 text-sm font-medium text-slate-600">{label}</p>
-      {description && <p className="mt-1 text-xs text-slate-400">{description}</p>}
+      <p className="mt-1 text-sm font-bold text-[#42564a]">{label}</p>
+      {description && <p className="mt-1 text-xs text-[#78877d]">{description}</p>}
       {trend && (
         <p className={cn("mt-2 text-xs font-medium", trendColor)}>
           {trend.direction === "up" ? "↑" : trend.direction === "down" ? "↓" : "→"} {trend.value}
