@@ -1,14 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { getPreferredLanguage } from "./lib/language";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-  adjustFontFallback: false,
-});
 
 export const metadata: Metadata = {
   title: "SheConnects – Digital work with human impact",
@@ -24,7 +16,7 @@ export default function RootLayout({
   const lang = getPreferredLanguage();
 
   return (
-    <html lang={lang} className={inter.className}>
+    <html lang={lang}>
       <body className="bg-white text-slate-900">{children}</body>
     </html>
   );
