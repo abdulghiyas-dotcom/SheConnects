@@ -25,7 +25,7 @@ export function AppHeader({
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-100 bg-white/95 px-6 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#e2e6df] bg-[#fdfdfb]/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
       <div className="flex items-center gap-3 min-w-0">
         {backHref && (
           <Link
@@ -35,12 +35,12 @@ export function AppHeader({
             ← {backLabel ?? "Back"}
           </Link>
         )}
-        <h1 className="text-base font-semibold text-slate-900 truncate">{title}</h1>
+        <div><p className="hidden text-[10px] font-bold tracking-[.14em] text-[#7a897f] sm:block">SHECONNECTS WORKSPACE</p><h1 className="text-base font-bold tracking-tight text-[#17241f] truncate">{title}</h1></div>
       </div>
 
       <div className="flex items-center gap-2">
         {/* Notifications */}
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+        <button aria-label="Notifications" className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 hover:bg-[#edf2eb] hover:text-[#26735e] transition-colors">
           <Bell size={18} />
           {notificationCount > 0 && (
             <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-600 text-[9px] font-bold text-white">

@@ -1,6 +1,4 @@
 import type { Metadata } from "next"
-import "@fontsource-variable/inter"
-import "@fontsource/jetbrains-mono"
 import "./platform.css"
 
 export const metadata: Metadata = {
