@@ -1,69 +1,93 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, Code2, Globe2, HeartHandshake, Menu, ShieldCheck, Sparkles, X } from "lucide-react";
+import {
+  ArrowRight, BriefcaseBusiness, Check, CircleDollarSign, HandHeart,
+  HeartHandshake, LockKeyhole, Menu, MessagesSquare, ShieldCheck, Sparkles, X,
+} from "lucide-react";
 import type { Language } from "../lib/translations";
 
-const copy = {
+const content = {
   en: {
-    nav: ["How it works", "For organisations", "For talent", "Our impact"],
-    signIn: "Sign in", start: "Find your match", eyebrow: "A trusted talent network with purpose",
-    title: "Exceptional digital work.\nMeaningful opportunity.",
-    text: "SheConnects brings ambitious organisations together with vetted Afghan women professionals — with the support, safeguards, and project structure to do great work together.",
-    client: "Hire talent", talent: "Join the network", proof: "Vetted professionals", flow: "A calmer way to build great work",
-    flowText: "From a focused brief to a successful delivery, every step is designed to build confidence on both sides.",
-    impact: "Work that creates opportunity", impactText: "Every project connects businesses with real, long-term economic opportunity for Afghan women.",
-    final: "Make your next project matter.", finalText: "Start with a brief, meet the right professional, and get meaningful work moving.",
+    nav: ["How it works", "Why it matters", "For teams", "For women"],
+    signIn: "Sign in", join: "Work with us",
+    eyebrow: "Digital work with human impact",
+    title: "The work is real.\nThe opportunity is life-changing.",
+    intro: "SheConnects connects organisations with talented Afghan women for exceptional digital work — creating dignified, lasting access to the global economy.",
+    hire: "Find your collaborator", apply: "Apply to join", trusted: "Built around privacy, fairness, and real partnership",
+    storyKicker: "ONE PROJECT, A WIDER RIPPLE", storyTitle: "When great work travels, opportunity stays.",
+    storyText: "A project is more than a deliverable. It can mean independent income, strengthened skills, and a future shaped by choice — while your team gets work it can be proud of.",
+    storyPoints: ["Fair, paid professional work", "A privacy-first, supported experience", "Long-term skills and confidence"],
+    stepsKicker: "HOW WE MAKE IT WORK", stepsTitle: "Thoughtful matching. Clear collaboration. Shared momentum.",
+    steps: [["Tell us what matters", "Share a brief, a challenge, or simply the kind of support you need."], ["Meet a brilliant match", "Connect with a vetted professional whose skills and working style fit."], ["Build something meaningful", "Manage the work in one calm space, with people behind you at every step."]],
+    trustKicker: "DESIGNED WITH CARE", trustTitle: "A platform that protects people — and delivers for teams.",
+    trust: [["Privacy is foundational", "Women control how they are represented. Personal information stays protected."], ["Quality is human", "Every professional is thoughtfully vetted, supported, and valued for her craft."], ["Partnership over transactions", "Clear briefs, fair terms, and ongoing support make good work possible."], ["Impact you can stand behind", "Your budget supports dignified work, not a promise or a percentage."]],
+    audiencesKicker: "TWO SIDES, ONE SHARED PURPOSE", orgTitle: "For organisations", orgText: "Bring skilled capacity into your team and make every project part of a more equitable digital economy.", orgList: ["Explore a vetted talent network", "Get help shaping the right brief", "Keep projects, milestones, and messages together"], orgCta: "Start a project",
+    womenTitle: "For Afghan women", womenText: "Your talent belongs in the world. Build experience, earn independently, and work with organisations that value what you bring.", womenCta: "Begin your application",
+    closeKicker: "MAKE ROOM FOR POSSIBILITY", closeTitle: "Your next project can do more.", closeText: "Choose exceptional work and help create a future where talented women can be seen, trusted, and paid for what they do best.", closeCta: "Create meaningful work",
+    footer: "Work that moves people forward.",
   },
   it: {
-    nav: ["Come funziona", "Per le organizzazioni", "Per il talento", "Il nostro impatto"],
-    signIn: "Accedi", start: "Trova il tuo match", eyebrow: "Una rete di talenti affidabile e con uno scopo",
-    title: "Lavoro digitale eccellente.\nOpportunità concrete.",
-    text: "SheConnects mette in contatto organizzazioni ambiziose con professioniste afghane selezionate, offrendo supporto, tutele e una struttura di progetto per lavorare al meglio insieme.",
-    client: "Trova talenti", talent: "Unisciti alla rete", proof: "Professioniste selezionate", flow: "Un modo più semplice di fare grandi cose",
-    flowText: "Dal brief alla consegna, ogni passaggio è progettato per creare fiducia da entrambe le parti.",
-    impact: "Lavoro che crea opportunità", impactText: "Ogni progetto crea opportunità economiche concrete e durature per le donne afghane.",
-    final: "Rendi importante il tuo prossimo progetto.", finalText: "Inizia da un brief, incontra la persona giusta e dai slancio a un lavoro significativo.",
+    nav: ["Come funziona", "Perché conta", "Per i team", "Per le donne"],
+    signIn: "Accedi", join: "Lavora con noi",
+    eyebrow: "Lavoro digitale con impatto umano",
+    title: "Il lavoro è reale.\nL’opportunità cambia la vita.",
+    intro: "SheConnects mette in contatto organizzazioni e donne afghane di talento per un lavoro digitale eccellente, creando un accesso dignitoso e duraturo all’economia globale.",
+    hire: "Trova la tua collaboratrice", apply: "Candidati", trusted: "Privacy, equità e partnership reale al centro",
+    storyKicker: "UN PROGETTO, UN EFFETTO PIÙ AMPIO", storyTitle: "Quando il buon lavoro viaggia, l’opportunità resta.",
+    storyText: "Un progetto è più di una consegna. Può significare reddito indipendente, competenze più solide e un futuro scelto in autonomia, mentre il tuo team riceve un lavoro di cui essere orgoglioso.",
+    storyPoints: ["Lavoro professionale, equo e retribuito", "Un’esperienza supportata e attenta alla privacy", "Competenze e fiducia nel lungo periodo"],
+    stepsKicker: "COME FUNZIONA", stepsTitle: "Matching attento. Collaborazione chiara. Slancio condiviso.",
+    steps: [["Raccontaci cosa conta", "Condividi un brief, una sfida o il tipo di supporto che ti serve."], ["Incontra il match giusto", "Connettiti con una professionista selezionata per competenze e stile di lavoro."], ["Costruite qualcosa di significativo", "Gestisci il lavoro in uno spazio semplice, con persone pronte a supportarti."],],
+    trustKicker: "PROGETTATO CON CURA", trustTitle: "Una piattaforma che protegge le persone e fa crescere i team.",
+    trust: [["La privacy è fondamentale", "Ogni donna controlla come viene rappresentata. I dati personali restano protetti."], ["La qualità è umana", "Ogni professionista è selezionata, supportata e valorizzata per il suo lavoro."], ["Partnership, non transazioni", "Brief chiari, condizioni eque e supporto continuo rendono possibile un buon lavoro."], ["Un impatto concreto", "Il tuo budget sostiene lavoro dignitoso, non una promessa o una percentuale."],],
+    audiencesKicker: "DUE PARTI, UNO SCOPO CONDIVISO", orgTitle: "Per le organizzazioni", orgText: "Aggiungi competenze al tuo team e rendi ogni progetto parte di un’economia digitale più equa.", orgList: ["Esplora una rete di talenti selezionati", "Ricevi aiuto per definire il brief", "Tieni insieme progetti, milestone e messaggi"], orgCta: "Inizia un progetto",
+    womenTitle: "Per le donne afghane", womenText: "Il tuo talento ha spazio nel mondo. Fai esperienza, guadagna in autonomia e lavora con organizzazioni che valorizzano ciò che porti.", womenCta: "Inizia la candidatura",
+    closeKicker: "FAI SPAZIO ALLE POSSIBILITÀ", closeTitle: "Il tuo prossimo progetto può fare di più.", closeText: "Scegli un lavoro eccellente e contribuisci a un futuro in cui le donne di talento siano viste, credute e retribuite per ciò che sanno fare.", closeCta: "Crea lavoro significativo",
+    footer: "Lavoro che fa avanzare le persone.",
   },
 } as const;
 
-const services = [
-  [Code2, "Digital & product", "Web development, engineering and technical support."],
-  [Globe2, "Language & research", "Translation, localisation, research and data work."],
-  [Sparkles, "Creative services", "Design, content and thoughtful brand experiences."],
-];
+const icons = [BriefcaseBusiness, Sparkles, MessagesSquare];
+const trustIcons = [LockKeyhole, ShieldCheck, HeartHandshake, CircleDollarSign];
 
 export default function PlatformLanding({ initialLanguage }: { initialLanguage: Language }) {
-  const [lang, setLang] = useState<Language>(initialLanguage === "it" ? "it" : "en");
-  const [open, setOpen] = useState(false);
-  const t = copy[lang];
-  useEffect(() => { document.cookie = `lang=${lang}; path=/; max-age=31536000`; }, [lang]);
-  const navLinks = ["#how-it-works", "#organisations", "#talent", "#impact"];
+  const [language, setLanguage] = useState<Language>(initialLanguage === "it" ? "it" : "en");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const t = content[language];
+  const anchors = ["#how-it-works", "#why-it-matters", "#for-teams", "#for-women"];
 
-  return <div className="marketing-shell">
-    <header className="marketing-nav">
-      <Link href="/" className="brand"><Image src="/icon.png" alt="SheConnects" width={32} height={32} className="rounded-xl" /><span>SheConnects</span></Link>
-      <nav className="marketing-links">{t.nav.map((label, i) => <a key={label} href={navLinks[i]}>{label}</a>)}</nav>
-      <div className="marketing-actions"><div className="lang-switch"><button onClick={() => setLang("en")} aria-pressed={lang === "en"} className={lang === "en" ? "active" : ""}>EN</button><button onClick={() => setLang("it")} aria-pressed={lang === "it"} className={lang === "it" ? "active" : ""}>IT</button></div><Link href="/app/sign-in" className="sign-in">{t.signIn}</Link><Link href="/app/sign-up" className="nav-cta">{t.start}</Link></div>
-      <button className="mobile-menu" onClick={() => setOpen(!open)} aria-label="Toggle navigation">{open ? <X /> : <Menu />}</button>
-      {open && <div className="mobile-drawer">{t.nav.map((label, i) => <a key={label} href={navLinks[i]} onClick={() => setOpen(false)}>{label}</a>)}<Link href="/app/sign-in">{t.signIn}</Link><Link href="/app/sign-up" className="nav-cta">{t.start}</Link></div>}
-    </header>
+  useEffect(() => { document.cookie = `lang=${language}; path=/; max-age=31536000`; }, [language]);
 
-    <main>
-      <section className="hero-new"><div className="hero-orb orb-one" /><div className="hero-orb orb-two" />
-        <div className="hero-copy"><p className="eyebrow"><span />{t.eyebrow}</p><h1>{t.title.split("\n").map((line, i) => <span key={line}>{line}{i === 0 && <br />}</span>)}</h1><p className="hero-text">{t.text}</p><div className="hero-buttons"><Link href="/app/sign-up" className="button-primary">{t.client} <ArrowRight size={17} /></Link><Link href="/app/apply" className="button-secondary">{t.talent}</Link></div><div className="hero-proof"><ShieldCheck size={18} /><span>{t.proof}</span><i /><span>Human-first delivery</span><i /><span>EU-based platform</span></div></div>
-        <div className="hero-visual" aria-label="Project matching preview"><div className="visual-top"><span>PROJECT MATCH</span><span className="live-dot">● Live</span></div><h2>Website localisation</h2><p>Italian → English · Product launch</p><div className="match-card"><div className="avatar-gradient">ZN</div><div><strong>Zahra N.</strong><small>Translation specialist</small></div><span className="match-score">98% match</span></div><div className="visual-metrics"><div><strong>4.9</strong><span>average rating</span></div><div><strong>48h</strong><span>typical response</span></div><div><strong>100%</strong><span>vetted work</span></div></div><div className="visual-footer"><span>Matched by skills, availability & fit</span><Check size={16} /></div></div>
-      </section>
+  return (
+    <div className="impact-site">
+      <header className="impact-nav">
+        <Link href="/" className="impact-brand"><Image src="/icon.png" alt="SheConnects" width={34} height={34} /><span>SheConnects</span></Link>
+        <nav className="impact-nav-links">{t.nav.map((item, index) => <a href={anchors[index]} key={item}>{item}</a>)}</nav>
+        <div className="impact-nav-actions"><div className="impact-language"><button onClick={() => setLanguage("en")} className={language === "en" ? "selected" : ""}>EN</button><button onClick={() => setLanguage("it")} className={language === "it" ? "selected" : ""}>IT</button></div><Link href="/app/sign-in" className="impact-signin">{t.signIn}</Link><Link href="/app/sign-up" className="impact-nav-cta">{t.join}</Link></div>
+        <button className="impact-menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Toggle navigation">{menuOpen ? <X /> : <Menu />}</button>
+        {menuOpen && <div className="impact-mobile-menu">{t.nav.map((item, index) => <a href={anchors[index]} key={item} onClick={() => setMenuOpen(false)}>{item}</a>)}<Link href="/app/sign-in">{t.signIn}</Link><Link href="/app/sign-up" className="impact-nav-cta">{t.join}</Link></div>}
+      </header>
 
-      <section className="trust-strip"><span>TRUSTED, THOUGHTFUL DELIVERY FOR</span><div>Social enterprises</div><div>Purpose-led teams</div><div>Growing businesses</div><div>Global organisations</div></section>
-      <section id="how-it-works" className="section flow-section"><div className="section-heading"><p className="section-kicker">HOW IT WORKS</p><h2>{t.flow}</h2><p>{t.flowText}</p></div><div className="flow-grid">{[["01", "Share what you need", "Create a simple brief or explore talent directly."],["02", "Meet the right person", "We make it easy to find a skilled professional who fits."],["03", "Work with clarity", "Keep offers, milestones, messages and payments in one place."]].map(([n, h, p]) => <article key={n} className="flow-card"><span>{n}</span><h3>{h}</h3><p>{p}</p><ArrowRight size={18} /></article>)}</div></section>
-      <section id="organisations" className="section audience-section"><div className="audience-panel client-panel"><p className="section-kicker">FOR ORGANISATIONS</p><h2>Reliable talent, without the usual search.</h2><p>Build a project team from a skilled, carefully supported professional network.</p><ul>{["Browse verified profiles", "Use a guided AI brief", "Manage delivery in one workspace"].map(x => <li key={x}><Check size={16} />{x}</li>)}</ul><Link href="/app/sign-up" className="text-link">Start a project <ArrowRight size={16} /></Link></div><div id="talent" className="audience-panel talent-panel"><HeartHandshake size={28} /><p className="section-kicker">FOR AFGHAN WOMEN</p><h2>Your skills deserve a global stage.</h2><p>Join a professional community designed around privacy, growth, and fair opportunity.</p><Link href="/app/apply" className="text-link">Apply to join <ArrowRight size={16} /></Link></div></section>
-      <section className="section services-section"><div className="section-heading"><p className="section-kicker">WHAT YOU CAN GET DONE</p><h2>Specialist support, ready for real work.</h2></div><div className="service-grid">{services.map(([Icon, title, description]) => { const ServiceIcon = Icon as typeof Code2; return <article key={title as string}><div className="service-icon"><ServiceIcon size={23} /></div><h3>{title as string}</h3><p>{description as string}</p><a href="#organisations">Explore services <ArrowRight size={15} /></a></article>})}</div></section>
-      <section id="impact" className="impact-section"><div><p className="section-kicker">IMPACT, BUILT IN</p><h2>{t.impact}</h2><p>{t.impactText}</p><Link href="/about" className="button-light">Our story <ArrowRight size={16} /></Link></div><div className="impact-stats"><div><strong>4</strong><span>professional tracks</span></div><div><strong>1</strong><span>shared purpose</span></div><div><strong>∞</strong><span>potential unlocked</span></div></div></section>
-      <section className="final-cta"><div><p className="section-kicker">READY WHEN YOU ARE</p><h2>{t.final}</h2><p>{t.finalText}</p></div><Link href="/app/sign-up" className="button-primary">{t.start} <ArrowRight size={17} /></Link></section>
-    </main>
-    <footer className="marketing-footer"><Link href="/" className="brand"><Image src="/icon.png" alt="" width={28} height={28} className="rounded-lg" /><span>SheConnects</span></Link><p>Digital work with human impact.</p><div><Link href="/about">About</Link><Link href="/blog">Stories</Link><Link href="/privacy">Privacy</Link></div></footer>
-  </div>;
+      <main>
+        <section className="impact-hero">
+          <div className="impact-hero-copy"><p className="impact-overline"><HandHeart size={15} /> {t.eyebrow}</p><h1>{t.title.split("\n").map((line, index) => <span key={line}>{line}{index === 0 && <br />}</span>)}</h1><p className="impact-hero-intro">{t.intro}</p><div className="impact-hero-actions"><Link href="/app/sign-up" className="impact-button-primary">{t.hire}<ArrowRight size={17} /></Link><Link href="/app/apply" className="impact-button-secondary">{t.apply}</Link></div><p className="impact-hero-proof"><Check size={15} />{t.trusted}</p></div>
+          <div className="impact-hero-art" aria-label="A visual representation of collaboration and opportunity"><div className="impact-sun" /><div className="impact-line line-one" /><div className="impact-line line-two" /><div className="impact-person person-one"><span>SK</span><small>Creative</small></div><div className="impact-person person-two"><span>ZN</span><small>Language</small></div><div className="impact-person person-three"><span>FR</span><small>Research</small></div><div className="impact-connection"><HeartHandshake size={21} /><span>Meaningful collaboration</span></div><div className="impact-art-note"><Sparkles size={15} /><span>Skills that travel far</span></div></div>
+        </section>
+
+        <section id="why-it-matters" className="impact-story"><div className="impact-story-aside"><p>{t.storyKicker}</p><span className="impact-story-mark">↗</span></div><div><h2>{t.storyTitle}</h2><p className="impact-story-text">{t.storyText}</p><div className="impact-story-list">{t.storyPoints.map(point => <div key={point}><Check size={17} /><span>{point}</span></div>)}</div></div></section>
+
+        <section id="how-it-works" className="impact-steps"><div className="impact-section-heading"><p>{t.stepsKicker}</p><h2>{t.stepsTitle}</h2></div><div className="impact-step-grid">{t.steps.map(([title, description], index) => { const Icon = icons[index]; return <article key={title}><div className="impact-step-icon"><Icon size={22} /></div><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>})}</div></section>
+
+        <section className="impact-trust"><div className="impact-section-heading"><p>{t.trustKicker}</p><h2>{t.trustTitle}</h2></div><div className="impact-trust-grid">{t.trust.map(([title, description], index) => { const Icon = trustIcons[index]; return <article key={title}><Icon size={21} /><h3>{title}</h3><p>{description}</p></article>})}</div></section>
+
+        <section className="impact-audiences"><p className="impact-audience-overline">{t.audiencesKicker}</p><div className="impact-audience-grid"><article id="for-teams" className="impact-audience-card impact-team-card"><BriefcaseBusiness size={30} /><h2>{t.orgTitle}</h2><p>{t.orgText}</p><ul>{t.orgList.map(item => <li key={item}><Check size={16} />{item}</li>)}</ul><Link href="/app/sign-up">{t.orgCta}<ArrowRight size={16} /></Link></article><article id="for-women" className="impact-audience-card impact-women-card"><HeartHandshake size={31} /><h2>{t.womenTitle}</h2><p>{t.womenText}</p><Link href="/app/apply">{t.womenCta}<ArrowRight size={16} /></Link></article></div></section>
+
+        <section className="impact-close"><div><p>{t.closeKicker}</p><h2>{t.closeTitle}</h2><span>{t.closeText}</span></div><Link href="/app/sign-up" className="impact-button-light">{t.closeCta}<ArrowRight size={17} /></Link></section>
+      </main>
+      <footer className="impact-footer"><Link href="/" className="impact-brand"><Image src="/icon.png" alt="" width={30} height={30} /><span>SheConnects</span></Link><p>{t.footer}</p><div><Link href="/about">About</Link><Link href="/blog">Stories</Link><Link href="/privacy">Privacy</Link></div></footer>
+    </div>
+  );
 }
