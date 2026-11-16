@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle2, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { WizardShell } from "@/components/features/application-wizard"
+import { WizardShell, WizardActions } from "@/components/features/application-wizard"
+import { IconTile } from "@/components/ui/icon-tile"
+import { FormError } from "@/components/ui/field"
 
 interface Section {
   title: string
@@ -50,15 +52,13 @@ export function ReviewClient({ sections, userId: _ }: Props) {
   if (submitted) {
     return (
       <WizardShell currentStep={9} title="Application submitted">
-        <div className="text-center py-8 space-y-4">
-          <CheckCircle2 className="mx-auto text-trust-500" size={48} />
-          <div>
-            <h2 className="text-lg font-semibold">You're all set</h2>
-            <p className="text-sm text-muted-foreground mt-2 max-w-sm mx-auto">
-              Your application is being reviewed by the SheConnects team. We'll be in touch within a few days.
-            </p>
-          </div>
-          <Button variant="outline" onClick={() => router.push("/app/freelancer/dashboard")}>
+        <div className="flex flex-col items-center py-6 text-center">
+          <IconTile icon={CheckCircle2} tone="emerald" size="lg" className="mb-5" />
+          <h2 className="text-xl font-black tracking-tight text-slate-900">You&apos;re all set</h2>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-500">
+            Your application is being reviewed by the SheConnects team. We&apos;ll be in touch within a few days.
+          </p>
+          <Button className="mt-7" onClick={() => router.push("/app/freelancer/dashboard")}>
             Go to your dashboard
           </Button>
         </div>
@@ -72,44 +72,44 @@ export function ReviewClient({ sections, userId: _ }: Props) {
       title="Review & submit"
       subtitle="Check everything looks right before you submit your application."
     >
-      <div className="space-y-6">
+      <div className="space-y-4">
         {sections.map((section) => (
-          <div key={section.title} className="rounded-lg border border-border p-4">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-semibold text-foreground">{section.title}</p>
+          <div key={section.title} className="rounded-2xl border border-slate-200/70 bg-slate-50/60 p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-bold text-slate-900">{section.title}</p>
               <Link
                 href={section.editPath}
-                className="flex items-center gap-1 text-xs text-primary hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 transition-colors hover:text-indigo-700"
               >
                 <Pencil size={12} /> Edit
               </Link>
             </div>
-            <div className="space-y-1.5">
+            <dl className="space-y-1.5">
               {section.rows.map((row) => (
                 <div key={row.label} className="flex gap-3 text-sm">
-                  <span className="text-muted-foreground w-28 shrink-0">{row.label}</span>
-                  <span className="text-foreground">{row.value}</span>
+                  <dt className="w-28 shrink-0 text-slate-500">{row.label}</dt>
+                  <dd className="min-w-0 text-slate-800">{row.value}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
         ))}
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <div className="rounded-lg bg-brand-50 border border-brand-200 p-4 text-sm text-brand-800">
+        <p className="rounded-2xl border border-indigo-100 bg-indigo-50 px-5 py-4 text-sm leading-relaxed text-indigo-700">
           By submitting, you confirm that all information is accurate and you agree to the SheConnects
           freelancer terms.
-        </div>
+        </p>
 
-        <div className="flex justify-between pt-2">
+        <WizardActions>
           <Button variant="ghost" onClick={() => router.push("/app/apply/voice")}>
             Back
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
             {loading ? "Submitting…" : "Submit application"}
           </Button>
-        </div>
+        </WizardActions>
       </div>
     </WizardShell>
   )

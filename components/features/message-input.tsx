@@ -2,7 +2,9 @@
 
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
+import { Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 
 export function MessageInput({ projectId }: { projectId: string }) {
   const router = useRouter()
@@ -42,18 +44,19 @@ export function MessageInput({ projectId }: { projectId: string }) {
 
   return (
     <div className="space-y-2">
-      <textarea
+      <Textarea
         ref={textareaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={onKeyDown}
         rows={3}
         placeholder="Write a message… (Ctrl+Enter to send)"
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+        className="resize-none"
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-xs text-red-600">{error}</p>}
       <div className="flex justify-end">
         <Button size="sm" onClick={send} disabled={loading || !text.trim()}>
+          <Send size={12} />
           {loading ? "Sending…" : "Send"}
         </Button>
       </div>

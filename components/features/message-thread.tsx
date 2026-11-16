@@ -1,5 +1,6 @@
 import type { FC } from "react"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
+import { InitialsAvatar } from "@/components/ui/initials-avatar"
 
 function displayName(author: {
   role: string
@@ -31,7 +32,7 @@ async function MessageThreadAsync({ projectId }: { projectId: string }) {
 
   if (messages.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground text-center py-6">
+      <p className="py-6 text-center text-sm text-slate-400">
         No messages yet. Send the first one below.
       </p>
     )
@@ -39,22 +40,28 @@ async function MessageThreadAsync({ projectId }: { projectId: string }) {
 
   return (
     <div className="space-y-3">
-      {messages.map((m) => (
-        <div key={m.id} className="bg-white rounded-xl border border-border px-4 py-3">
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="text-xs font-medium text-foreground">{displayName(m.author)}</span>
-            <time className="text-xs text-muted-foreground">
-              {new Date(m.createdAt).toLocaleString("en-GB", {
-                day: "numeric",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </time>
+      {messages.map((m) => {
+        const name = displayName(m.author)
+        return (
+          <div key={m.id} className="flex gap-3">
+            <InitialsAvatar name={name} size="sm" className="mt-0.5" />
+            <div className="min-w-0 flex-1 rounded-2xl rounded-tl-md border border-slate-100 bg-slate-50 px-4 py-3">
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <span className="text-xs font-bold text-slate-900">{name}</span>
+                <time className="text-[11px] text-slate-400">
+                  {new Date(m.createdAt).toLocaleString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </time>
+              </div>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">{m.bodyOriginal}</p>
+            </div>
           </div>
-          <p className="text-sm text-foreground whitespace-pre-line">{m.bodyOriginal}</p>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

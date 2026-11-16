@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { WizardShell } from "@/components/features/application-wizard"
+import { WizardShell, WizardActions } from "@/components/features/application-wizard"
+import { FormError } from "@/components/ui/field"
 import { FileUpload, type UploadedFile } from "@/components/features/file-upload"
 
 export function PortfolioForm({ r2Configured }: { r2Configured: boolean }) {
@@ -62,20 +63,20 @@ export function PortfolioForm({ r2Configured }: { r2Configured: boolean }) {
           uploadedFiles={files}
         />
 
-        <p className="text-sm text-muted-foreground">
-          No portfolio yet? That's fine — skip this step and add work samples later from your dashboard.
+        <p className="text-sm leading-relaxed text-slate-500">
+          No portfolio yet? That&apos;s fine — skip this step and add work samples later from your dashboard.
         </p>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <div className="flex justify-between pt-2">
+        <WizardActions>
           <Button variant="ghost" onClick={() => router.push("/app/apply/experience")}>
             Back
           </Button>
           <Button onClick={handleContinue} disabled={saving}>
             {saving ? "Saving…" : files.length > 0 ? "Save & continue" : "Skip for now"}
           </Button>
-        </div>
+        </WizardActions>
       </div>
     </WizardShell>
   )

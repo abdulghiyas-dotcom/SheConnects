@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
-import "@fontsource-variable/inter"
 import "@fontsource/jetbrains-mono"
-import "./platform.css"
 
 export const metadata: Metadata = {
   title: {
@@ -11,14 +9,12 @@ export const metadata: Metadata = {
   description: "Digital work with human impact",
 }
 
+// Fonts, tokens and base styles come from the root layout (app/layout.tsx +
+// app/globals.css) so the platform and the marketing site share one design language.
 export default function PlatformLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <div className="font-sans antialiased min-h-screen bg-background">
-      {children}
-    </div>
-  )
+  return <div className="min-h-screen font-sans text-slate-900 antialiased">{children}</div>
 }

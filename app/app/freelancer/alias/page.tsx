@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { AliasForm } from "./alias-form"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { PageHeader } from "@/components/ui/page-header"
 
 function buildSuggestions(firstName: string, lastName: string): string[] {
   const first = firstName.trim()
@@ -46,7 +47,11 @@ export default async function AliasPage() {
     : []
 
   return (
-    <PlatformLayout variant="freelancer" title="My Alias">
+    <PlatformLayout variant="freelancer">
+      <PageHeader
+        title="Choose your alias"
+        description="This is how clients will see you — your real name is never shown."
+      />
       <AliasForm
         currentAlias={freelancer.alias}
         suggestions={suggestions}

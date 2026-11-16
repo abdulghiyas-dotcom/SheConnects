@@ -40,7 +40,7 @@ export function MilestoneSubmitForm({ projectId, milestoneId, milestoneStatus }:
         <Button size="sm" variant="outline" onClick={() => post("start")} disabled={!!loading}>
           {loading === "start" ? "Starting…" : "Start work"}
         </Button>
-        {error && <p className="text-xs text-destructive">{error}</p>}
+        {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
     )
   }
@@ -51,7 +51,7 @@ export function MilestoneSubmitForm({ projectId, milestoneId, milestoneStatus }:
         <Button size="sm" onClick={() => post("submit")} disabled={!!loading}>
           {loading === "submit" ? "Submitting…" : "Submit for review"}
         </Button>
-        {error && <p className="text-xs text-destructive">{error}</p>}
+        {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
     )
   }

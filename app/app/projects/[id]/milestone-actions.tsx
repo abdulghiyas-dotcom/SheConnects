@@ -37,20 +37,14 @@ export function MilestoneActions({ projectId, milestoneId, milestoneStatus }: Pr
   if (milestoneStatus !== "SUBMITTED") return null
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col items-stretch gap-2">
       <Button size="sm" onClick={() => post("approve")} disabled={!!loading}>
         {loading === "approve" ? "Approving…" : "Approve"}
       </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        className="text-amber-700 border-amber-200 hover:bg-amber-50"
-        onClick={() => post("revision")}
-        disabled={!!loading}
-      >
+      <Button size="sm" variant="warning" onClick={() => post("revision")} disabled={!!loading}>
         {loading === "revision" ? "Requesting…" : "Request revision"}
       </Button>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-right text-xs text-red-600">{error}</p>}
     </div>
   )
 }

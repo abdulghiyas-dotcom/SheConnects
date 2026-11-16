@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils/cn"
 import { Button } from "@/components/ui/button"
-import { WizardShell } from "@/components/features/application-wizard"
+import { WizardShell, WizardActions } from "@/components/features/application-wizard"
+import { ChoiceChip } from "@/components/ui/badge"
+import { Eyebrow } from "@/components/ui/card"
+import { FormError } from "@/components/ui/field"
 
 interface Skill {
   id: string
@@ -79,52 +81,38 @@ export function SkillsForm({ skills, selectedIds: initial }: Props) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {Object.entries(grouped).map(([category, catSkills]) => (
           <div key={category}>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              {category}
-            </p>
+            <Eyebrow className="mb-2.5">{category}</Eyebrow>
             <div className="flex flex-wrap gap-2">
-              {catSkills.map((skill) => {
-                const isSelected = selected.has(skill.id)
-                return (
-                  <button
-                    key={skill.id}
-                    type="button"
-                    onClick={() => toggle(skill.id)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-sm border transition-all",
-                      isSelected
-                        ? "bg-brand-500 text-white border-brand-500"
-                        : "bg-white text-foreground border-border hover:border-brand-400"
-                    )}
-                  >
-                    {skill.name}
-                  </button>
-                )
-              })}
+              {catSkills.map((skill) => (
+                <ChoiceChip key={skill.id} selected={selected.has(skill.id)} onClick={() => toggle(skill.id)}>
+                  {skill.name}
+                </ChoiceChip>
+              ))}
             </div>
           </div>
         ))}
 
         {skills.length === 0 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500">
             No skills found for your track. You can add them later from your profile.
           </p>
         )}
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <p className="text-xs text-muted-foreground">
-          {selected.size} skill{selected.size !== 1 ? "s" : ""} selected
-        </p>
-
-        <div className="flex justify-between pt-2">
+        <WizardActions>
           <Button type="button" variant="ghost" onClick={() => router.push("/app/apply/track")}>
             Back
           </Button>
-          <Button type="submit" disabled={loading || selected.size === 0}>
-            {loading ? "Saving…" : "Continue"}
-          </Button>
-        </div>
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-semibold text-slate-500">
+              {selected.size} skill{selected.size !== 1 ? "s" : ""} selected
+            </span>
+            <Button type="submit" disabled={loading || selected.size === 0}>
+              {loading ? "Saving…" : "Continue"}
+            </Button>
+          </div>
+        </WizardActions>
       </form>
     </WizardShell>
   )

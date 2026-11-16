@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react"
 import { UploadCloud, File, X, AlertTriangle, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
-import { Button } from "@/components/ui/button"
+import { Callout } from "@/components/ui/callout"
 
 export interface UploadedFile {
   fileId: string
@@ -108,22 +108,15 @@ export function FileUpload({
   )
 
   if (!r2Configured) {
+    const code = "rounded bg-amber-100 px-1 font-mono text-[11px]"
     return (
-      <div className="rounded-xl border-2 border-amber-200 bg-amber-50 p-5">
-        <div className="flex gap-3 items-start">
-          <AlertTriangle className="text-amber-500 mt-0.5 shrink-0" size={18} />
-          <div>
-            <p className="text-sm font-medium text-amber-800">File uploads not yet configured</p>
-            <p className="text-xs text-amber-700 mt-1">
-              R2 storage keys are missing from the server. Add{" "}
-              <code className="bg-amber-100 px-1 rounded">R2_ACCOUNT_ID</code>,{" "}
-              <code className="bg-amber-100 px-1 rounded">R2_ACCESS_KEY_ID</code>,{" "}
-              <code className="bg-amber-100 px-1 rounded">R2_SECRET_ACCESS_KEY</code>, and{" "}
-              <code className="bg-amber-100 px-1 rounded">R2_BUCKET_NAME</code> to .env.local to enable uploads.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Callout tone="amber" icon={AlertTriangle} title="File uploads not yet configured">
+        <span className="text-xs">
+          R2 storage keys are missing from the server. Add <code className={code}>R2_ACCOUNT_ID</code>,{" "}
+          <code className={code}>R2_ACCESS_KEY_ID</code>, <code className={code}>R2_SECRET_ACCESS_KEY</code>, and{" "}
+          <code className={code}>R2_BUCKET_NAME</code> to .env.local to enable uploads.
+        </span>
+      </Callout>
     )
   }
 
@@ -135,8 +128,10 @@ export function FileUpload({
         onDrop={onDrop}
         onClick={() => !uploading && inputRef.current?.click()}
         className={cn(
-          "relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-colors",
-          dragging ? "border-brand-400 bg-brand-50" : "border-border hover:border-brand-300 bg-secondary/30",
+          "relative cursor-pointer rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-colors",
+          dragging
+            ? "border-indigo-400 bg-indigo-50"
+            : "border-slate-200 bg-slate-50/60 hover:border-indigo-300 hover:bg-indigo-50/40",
           uploading && "cursor-wait opacity-70"
         )}
       >
@@ -148,22 +143,24 @@ export function FileUpload({
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
         />
-        <UploadCloud className="mx-auto mb-2 text-muted-foreground" size={28} />
+        <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50">
+          <UploadCloud className="text-indigo-600" size={20} />
+        </div>
         {uploading ? (
-          <p className="text-sm text-muted-foreground">Uploading {uploading}…</p>
+          <p className="text-sm text-slate-500">Uploading {uploading}…</p>
         ) : (
           <>
-            <p className="text-sm font-medium text-foreground">{label}</p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-sm font-bold text-slate-900">{label}</p>
+            <p className="mt-1 text-xs text-slate-500">
               Drag & drop or click to select · Max {maxSizeMb}MB
             </p>
-            {hint && <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>}
+            {hint && <p className="mt-0.5 text-xs text-slate-400">{hint}</p>}
           </>
         )}
       </div>
 
       {error && (
-        <p className="text-sm text-destructive flex items-center gap-1.5">
+        <p className="flex items-center gap-1.5 text-sm text-red-600">
           <AlertTriangle size={14} /> {error}
         </p>
       )}
@@ -173,19 +170,20 @@ export function FileUpload({
           {uploadedFiles.map((f) => (
             <li
               key={f.fileId}
-              className="flex items-center gap-3 rounded-lg border border-trust-200 bg-trust-50 px-3 py-2"
+              className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5"
             >
-              <CheckCircle2 className="text-trust-500 shrink-0" size={16} />
-              <File className="text-muted-foreground shrink-0" size={14} />
-              <span className="text-sm text-foreground truncate flex-1">{f.filename}</span>
-              <span className="text-xs text-muted-foreground shrink-0">
+              <CheckCircle2 className="shrink-0 text-emerald-500" size={16} />
+              <File className="shrink-0 text-slate-400" size={14} />
+              <span className="flex-1 truncate text-sm font-medium text-slate-800">{f.filename}</span>
+              <span className="shrink-0 text-xs tabular-nums text-slate-500">
                 {(f.sizeBytes / 1024 / 1024).toFixed(1)}MB
               </span>
               {onRemove && (
                 <button
                   type="button"
+                  aria-label={`Remove ${f.filename}`}
                   onClick={(e) => { e.stopPropagation(); onRemove(f.fileId) }}
-                  className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                  className="shrink-0 text-slate-400 transition-colors hover:text-red-600"
                 >
                   <X size={14} />
                 </button>

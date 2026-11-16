@@ -2,7 +2,13 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Sparkles, CheckCircle } from "lucide-react"
+import { Sparkles, CheckCircle2, ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Field, FormError } from "@/components/ui/field"
+import { IconTile } from "@/components/ui/icon-tile"
 
 const TRACK_LABELS: Record<string, string> = {
   PROGRAMMING:     "Programming & Development",
@@ -83,137 +89,119 @@ export function BriefBuilder() {
     }
   }
 
-  const fieldClass = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 focus:outline-none"
-
   if (step === "done") {
     return (
-      <div className="rounded-2xl border border-trust-200 bg-white shadow-card p-8 text-center space-y-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-trust-50 mx-auto">
-          <CheckCircle className="text-trust-600" size={28} />
-        </div>
-        <h2 className="text-lg font-bold text-slate-900">Brief saved!</h2>
-        <p className="text-sm text-slate-500">
+      <Card className="flex flex-col items-center px-6 py-12 text-center">
+        <IconTile icon={CheckCircle2} tone="emerald" size="lg" className="mb-5" />
+        <h2 className="text-xl font-black tracking-tight text-slate-900">Brief saved!</h2>
+        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-slate-500">
           You can now browse freelancers and send them this brief as an offer.
         </p>
-        <div className="flex gap-3 justify-center pt-2">
-          <button
-            onClick={() => router.push("/app/freelancers")}
-            className="h-10 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-          >
-            Browse freelancers
-          </button>
-          <button
-            onClick={() => router.push("/app/client/dashboard")}
-            className="h-10 rounded-xl bg-brand-600 hover:bg-brand-700 px-4 text-sm font-semibold text-white shadow-brand transition-colors"
-          >
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Button variant="outline" onClick={() => router.push("/app/client/dashboard")}>
             Dashboard
-          </button>
+          </Button>
+          <Button onClick={() => router.push("/app/freelancers")}>
+            Browse freelancers <ArrowRight size={14} />
+          </Button>
         </div>
-      </div>
+      </Card>
     )
   }
 
   if (step === "review" && suggestion) {
     return (
       <div className="space-y-4">
-        {/* AI analysis card */}
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
-          <div className="flex items-center gap-2 text-brand-700">
+        {/* AI analysis */}
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-6">
+          <div className="flex items-center gap-2 text-indigo-700">
             <Sparkles size={15} />
-            <span className="text-sm font-semibold">AI analysis</span>
+            <span className="text-[11px] font-bold uppercase tracking-widest">AI analysis</span>
           </div>
-          <p className="text-sm text-slate-700">{suggestion.summary}</p>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-slate-500 pt-1">
-            <span>Suggested track</span>
-            <span className="text-slate-800 font-semibold">{TRACK_LABELS[suggestion.track] ?? suggestion.track}</span>
-            <span>Confidence</span>
-            <span className="text-slate-700">{Math.round(suggestion.confidence * 100)}%</span>
-          </div>
+          <p className="mt-3 text-sm leading-relaxed text-slate-700">{suggestion.summary}</p>
+          <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-indigo-100 pt-4">
+            <div>
+              <dt className="text-xs text-slate-500">Suggested track</dt>
+              <dd className="mt-0.5 text-sm font-bold text-slate-900">{TRACK_LABELS[suggestion.track] ?? suggestion.track}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-slate-500">Confidence</dt>
+              <dd className="mt-0.5 text-sm font-bold tabular-nums text-slate-900">{Math.round(suggestion.confidence * 100)}%</dd>
+            </div>
+          </dl>
         </div>
 
-        {/* Brief review card */}
-        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5 space-y-4">
+        {/* Brief review */}
+        <Card className="space-y-5 p-6">
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Title</p>
-            <p className="text-sm font-semibold text-slate-800">{title}</p>
+            <Eyebrow className="mb-1.5">Title</Eyebrow>
+            <p className="text-sm font-bold text-slate-900">{title}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Description</p>
-            <p className="text-sm text-slate-600 whitespace-pre-line">{description}</p>
+            <Eyebrow className="mb-1.5">Description</Eyebrow>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">{description}</p>
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-              Estimated hours
-              <span className="text-slate-400 font-normal normal-case ml-1">(AI suggested {suggestion.estimatedHours}h — adjust if needed)</span>
-            </label>
-            <input
+          <Field
+            label="Estimated hours"
+            htmlFor="hours"
+            hint={`AI suggested ${suggestion.estimatedHours}h — adjust if needed`}
+          >
+            <Input
+              id="hours"
               type="number"
               min={1}
               max={9999}
               value={estimatedHours}
               onChange={(e) => setEstimatedHours(e.target.value === "" ? "" : Number(e.target.value))}
-              className="w-28 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 focus:outline-none"
+              className="w-32"
             />
-          </div>
-        </div>
+          </Field>
+        </Card>
 
-        {saveError && <p className="text-xs text-red-600">{saveError}</p>}
+        <FormError>{saveError}</FormError>
 
         <div className="flex gap-3">
-          <button
-            onClick={() => setStep("form")}
-            disabled={saving}
-            className="h-10 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 transition-colors"
-          >
+          <Button variant="outline" onClick={() => setStep("form")} disabled={saving}>
             Back
-          </button>
-          <button
-            onClick={save}
-            disabled={saving}
-            className="h-10 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 px-5 text-sm font-semibold text-white shadow-brand transition-colors"
-          >
+          </Button>
+          <Button onClick={save} disabled={saving}>
             {saving ? "Saving…" : "Save brief"}
-          </button>
+          </Button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6 space-y-5">
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-slate-700">Project title</label>
-        <input
+    <Card className="space-y-5 p-6 sm:p-8">
+      <Field label="Project title" htmlFor="title">
+        <Input
+          id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Redesign our company website"
           maxLength={200}
-          className={fieldClass}
         />
-      </div>
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-slate-700">Describe what you need</label>
-        <textarea
+      <Field label="Describe what you need" htmlFor="description">
+        <Textarea
+          id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={6}
           placeholder="Describe the project in as much detail as you can — goals, deliverables, audience, tech stack, timeline, etc."
-          className={`${fieldClass} resize-none`}
+          className="resize-none"
         />
-      </div>
+      </Field>
 
-      {analyzeError && <p className="text-xs text-red-600">{analyzeError}</p>}
+      <FormError>{analyzeError}</FormError>
 
-      <button
-        onClick={analyze}
-        disabled={analyzing || !title.trim() || !description.trim()}
-        className="inline-flex items-center gap-2 h-10 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 px-5 text-sm font-semibold text-white shadow-brand transition-colors"
-      >
+      <Button onClick={analyze} disabled={analyzing || !title.trim() || !description.trim()}>
         <Sparkles size={14} />
         {analyzing ? "Analyzing…" : "Analyze with AI"}
-      </button>
-    </div>
+      </Button>
+    </Card>
   )
 }

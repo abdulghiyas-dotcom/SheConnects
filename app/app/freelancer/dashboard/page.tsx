@@ -3,11 +3,15 @@ import Link from "next/link"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { PageHeader } from "@/components/ui/page-header"
 import { StatCard } from "@/components/ui/stat-card"
 import { StatusBadge } from "@/components/ui/status-badge"
-import { ProgressStepper } from "@/components/ui/progress-stepper"
+import { Stepper } from "@/components/ui/stepper"
+import { Card, CardTitle } from "@/components/ui/card"
+import { Callout } from "@/components/ui/callout"
+import { CtaBanner } from "@/components/ui/cta-banner"
 import { Button } from "@/components/ui/button"
-import { Inbox, FolderOpen, DollarSign, ArrowRight } from "lucide-react"
+import { Inbox, FolderOpen, Wallet, Info } from "lucide-react"
 
 const STATUS_LABELS: Record<string, string> = {
   APPLIED:   "Application received",
@@ -78,103 +82,76 @@ export default async function FreelancerDashboardPage() {
   const statusVariant    = STATUS_VARIANT_MAP[freelancer.status] ?? "default"
 
   return (
-    <PlatformLayout variant="freelancer" title="Dashboard">
-      <div className="max-w-5xl mx-auto space-y-8">
-
-        {/* Welcome banner */}
-        <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card flex items-start justify-between gap-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-              {freelancer.alias ? `Welcome, ${freelancer.alias}` : "Welcome"}
-            </h1>
-            <p className="mt-1 text-sm text-slate-500">{trackLabel} track</p>
-            {isActive && (
-              <Link
-                href="/app/freelancer/alias"
-                className="mt-1 inline-block text-xs text-brand-600 hover:underline"
-              >
-                Change alias →
-              </Link>
-            )}
-          </div>
+    <PlatformLayout variant="freelancer">
+      <PageHeader
+        title={freelancer.alias ? `Welcome, ${freelancer.alias}` : "Welcome"}
+        badge={
           <StatusBadge
             variant={statusVariant}
             label={STATUS_LABELS[freelancer.status] ?? freelancer.status}
           />
-        </div>
-
-        {/* Application progress — until ACTIVE */}
-        {!isActive && freelancer.status !== "REJECTED" && (
-          <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card space-y-5">
-            <h2 className="text-sm font-semibold text-slate-700">Your application progress</h2>
-            <ProgressStepper steps={STATUS_STEPS} currentStep={currentStepIndex} />
-            {STATUS_NEXT_MESSAGE[freelancer.status] && (
-              <p className="text-sm text-slate-500 pt-2 border-t border-slate-100">
-                {STATUS_NEXT_MESSAGE[freelancer.status]}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Stats — only when ACTIVE */}
-        {isActive && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard
-              icon={Inbox}
-              iconBg="bg-accent-50"
-              iconColor="text-accent-600"
-              value={activeOffers}
-              label="Pending offers"
-              description={activeOffers > 0 ? "Awaiting your response" : "No new offers yet"}
-            />
-            <StatCard
-              icon={FolderOpen}
-              iconBg="bg-brand-50"
-              iconColor="text-brand-600"
-              value={activeProjects}
-              label="Active projects"
-              description={activeProjects > 0 ? "Currently in progress" : "No active projects"}
-            />
-            <StatCard
-              icon={DollarSign}
-              iconBg="bg-trust-50"
-              iconColor="text-trust-600"
-              value={`€${totalEarned.toFixed(0)}`}
-              label="Total earned"
-              description={`${freelancer.completedProjectCount} project${freelancer.completedProjectCount !== 1 ? "s" : ""} completed`}
-            />
-          </div>
-        )}
-
-        {/* CTA card when active & has offers */}
-        {isActive && activeOffers > 0 && (
-          <div className="rounded-2xl border border-brand-100 bg-brand-50/50 px-7 py-6 flex items-center justify-between gap-4">
-            <div>
-              <h3 className="font-semibold text-brand-900">
-                You have {activeOffers} new offer{activeOffers > 1 ? "s" : ""}
-              </h3>
-              <p className="mt-1 text-sm text-brand-700">
-                Review and respond to keep clients engaged.
-              </p>
-            </div>
-            <Button asChild size="sm" className="shrink-0 rounded-xl bg-brand-600 hover:bg-brand-700 shadow-brand">
-              <Link href="/app/freelancer/offers">
-                View offers <ArrowRight size={14} className="ml-1.5" />
-              </Link>
+        }
+        description={`${trackLabel} track`}
+        actions={
+          isActive && (
+            <Button asChild variant="outline" size="sm">
+              <Link href="/app/freelancer/alias">Change alias</Link>
             </Button>
-          </div>
-        )}
+          )
+        }
+      />
 
-        {/* What happens next — non-active states */}
-        {!isActive && (
-          <div className="rounded-2xl border border-slate-100 bg-white px-7 py-6 shadow-card">
-            <h3 className="font-semibold text-slate-800">What happens next?</h3>
-            <p className="mt-2 text-sm text-slate-500">
-              {STATUS_NEXT_MESSAGE[freelancer.status] ?? "Keep an eye on your email — we'll be in touch soon."}
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Application progress — until ACTIVE */}
+      {!isActive && freelancer.status !== "REJECTED" && (
+        <Card className="space-y-6 p-6 sm:p-8">
+          <CardTitle>Your application progress</CardTitle>
+          <Stepper steps={STATUS_STEPS} currentStep={currentStepIndex} />
+        </Card>
+      )}
+
+      {/* Stats — only when ACTIVE */}
+      {isActive && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard
+            icon={Inbox}
+            tone="amber"
+            value={activeOffers}
+            label="Pending offers"
+            description={activeOffers > 0 ? "Awaiting your response" : "No new offers yet"}
+          />
+          <StatCard
+            icon={FolderOpen}
+            tone="indigo"
+            value={activeProjects}
+            label="Active projects"
+            description={activeProjects > 0 ? "Currently in progress" : "No active projects"}
+          />
+          <StatCard
+            icon={Wallet}
+            tone="emerald"
+            value={`€${totalEarned.toFixed(0)}`}
+            label="Total earned"
+            description={`${freelancer.completedProjectCount} project${freelancer.completedProjectCount !== 1 ? "s" : ""} completed`}
+          />
+        </div>
+      )}
+
+      {/* CTA when active & has offers */}
+      {isActive && activeOffers > 0 && (
+        <CtaBanner
+          title={`You have ${activeOffers} new offer${activeOffers > 1 ? "s" : ""}`}
+          description="Review and respond to keep clients engaged."
+          href="/app/freelancer/offers"
+          cta="View offers"
+        />
+      )}
+
+      {/* What happens next — non-active states */}
+      {!isActive && (
+        <Callout tone="indigo" icon={Info} title="What happens next?">
+          {STATUS_NEXT_MESSAGE[freelancer.status] ?? "Keep an eye on your email — we'll be in touch soon."}
+        </Callout>
+      )}
     </PlatformLayout>
   )
 }

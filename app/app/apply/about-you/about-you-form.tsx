@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { WizardShell } from "@/components/features/application-wizard"
+import { Field, FormError } from "@/components/ui/field"
+import { WizardShell, WizardActions } from "@/components/features/application-wizard"
 
 interface Props {
   initialData: {
@@ -68,9 +68,8 @@ export function AboutYouForm({ initialData }: Props) {
       subtitle="This information is private and never shown to clients."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="firstName">First name (legal)</Label>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label="First name (legal)" htmlFor="firstName">
             <Input
               id="firstName"
               value={form.legalFirstName}
@@ -78,9 +77,8 @@ export function AboutYouForm({ initialData }: Props) {
               placeholder="Fatima"
               required
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="lastName">Last name (legal)</Label>
+          </Field>
+          <Field label="Last name (legal)" htmlFor="lastName">
             <Input
               id="lastName"
               value={form.legalLastName}
@@ -88,11 +86,10 @@ export function AboutYouForm({ initialData }: Props) {
               placeholder="Ahmadi"
               required
             />
-          </div>
+          </Field>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="dob">Date of birth</Label>
+        <Field label="Date of birth" htmlFor="dob">
           <Input
             id="dob"
             type="date"
@@ -100,36 +97,35 @@ export function AboutYouForm({ initialData }: Props) {
             onChange={(e) => update("dateOfBirth", e.target.value)}
             max={new Date().toISOString().slice(0, 10)}
           />
-        </div>
+        </Field>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="country">Country of residence</Label>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label="Country of residence" htmlFor="country">
             <Input
               id="country"
               value={form.countryOfResidence}
               onChange={(e) => update("countryOfResidence", e.target.value)}
               placeholder="Italy"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
+          </Field>
+          <Field label="City" htmlFor="city">
             <Input
               id="city"
               value={form.cityOfResidence}
               onChange={(e) => update("cityOfResidence", e.target.value)}
               placeholder="Milan"
             />
-          </div>
+          </Field>
         </div>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <div className="flex justify-end pt-2">
+        <WizardActions>
+          <span />
           <Button type="submit" disabled={loading}>
             {loading ? "Saving…" : "Continue"}
           </Button>
-        </div>
+        </WizardActions>
       </form>
     </WizardShell>
   )

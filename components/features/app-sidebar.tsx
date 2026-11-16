@@ -1,10 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils/cn"
 import {
   LayoutDashboard,
   Inbox,
@@ -12,164 +10,162 @@ import {
   Users,
   ClipboardList,
   CreditCard,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
   LogOut,
-  User,
+  UserRound,
+  Building2,
+  ShieldCheck,
   Sparkles,
   Search,
+  Menu,
+  X,
+  type LucideIcon,
 } from "lucide-react"
+import { cn } from "@/lib/utils/cn"
+import { Badge } from "@/components/ui/badge"
+import type { Tone } from "@/components/ui/tones"
+import { Brand } from "./brand"
 
-type NavItem = {
-  label: string
-  href: string
-  icon: React.ReactNode
-  badge?: number
+export type ShellVariant = "client" | "freelancer" | "admin"
+
+type NavItem = { label: string; href: string; icon: LucideIcon; exact?: boolean }
+
+const NAV: Record<ShellVariant, NavItem[]> = {
+  client: [
+    { label: "Dashboard",   href: "/app/client/dashboard", icon: LayoutDashboard },
+    { label: "Freelancers", href: "/app/freelancers",      icon: Search },
+    { label: "AI matching", href: "/app/brief/new",        icon: Sparkles },
+    { label: "Offers",      href: "/app/offers",           icon: Inbox },
+    { label: "Projects",    href: "/app/projects",         icon: FolderOpen },
+  ],
+  freelancer: [
+    { label: "Dashboard", href: "/app/freelancer/dashboard", icon: LayoutDashboard },
+    { label: "Offers",    href: "/app/freelancer/offers",    icon: Inbox },
+    { label: "Projects",  href: "/app/freelancer/projects",  icon: FolderOpen },
+    { label: "My alias",  href: "/app/freelancer/alias",     icon: UserRound },
+  ],
+  admin: [
+    { label: "Overview",     href: "/app/admin",              icon: LayoutDashboard, exact: true },
+    { label: "Applications", href: "/app/admin/applications", icon: ClipboardList },
+    { label: "Freelancers",  href: "/app/admin/freelancers",  icon: Users },
+    { label: "Clients",      href: "/app/admin/clients",      icon: Building2 },
+    { label: "Projects",     href: "/app/admin/projects",     icon: FolderOpen },
+    { label: "Payments",     href: "/app/admin/payments",     icon: CreditCard },
+  ],
 }
 
-type SidebarVariant = "client" | "freelancer" | "admin"
-
-const clientNav: NavItem[] = [
-  { label: "Dashboard",   href: "/app/client/dashboard", icon: <LayoutDashboard size={18} /> },
-  { label: "Freelancers", href: "/app/freelancers",       icon: <Search size={18} /> },
-  { label: "AI Matching", href: "/app/brief/new",         icon: <Sparkles size={18} /> },
-  { label: "Offers",      href: "/app/offers",            icon: <Inbox size={18} /> },
-  { label: "Projects",    href: "/app/projects",          icon: <FolderOpen size={18} /> },
-]
-
-const freelancerNav: NavItem[] = [
-  { label: "Dashboard", href: "/app/freelancer/dashboard", icon: <LayoutDashboard size={18} /> },
-  { label: "Offers",    href: "/app/freelancer/offers",    icon: <Inbox size={18} /> },
-  { label: "Projects",  href: "/app/freelancer/projects",  icon: <FolderOpen size={18} /> },
-  { label: "My Alias",  href: "/app/freelancer/alias",     icon: <User size={18} /> },
-]
-
-const adminNav: NavItem[] = [
-  { label: "Overview",     href: "/app/admin",              icon: <LayoutDashboard size={18} /> },
-  { label: "Applications", href: "/app/admin/applications", icon: <ClipboardList size={18} /> },
-  { label: "Freelancers",  href: "/app/admin/freelancers",  icon: <Users size={18} /> },
-  { label: "Clients",      href: "/app/admin/clients",      icon: <User size={18} /> },
-  { label: "Projects",     href: "/app/admin/projects",     icon: <FolderOpen size={18} /> },
-  { label: "Payments",     href: "/app/admin/payments",     icon: <CreditCard size={18} /> },
-]
-
-const variantNav: Record<SidebarVariant, NavItem[]> = {
-  client: clientNav,
-  freelancer: freelancerNav,
-  admin: adminNav,
+const WORKSPACE: Record<ShellVariant, { label: string; tone: Tone; icon: LucideIcon }> = {
+  client:     { label: "Organisation", tone: "indigo", icon: Building2 },
+  freelancer: { label: "Freelancer",   tone: "purple", icon: UserRound },
+  admin:      { label: "Admin",        tone: "slate",  icon: ShieldCheck },
 }
 
-type Props = {
-  variant: SidebarVariant
-  userName?: string
-  userRole?: string
-  collapsible?: boolean
-}
-
-export function AppSidebar({ variant, userName, userRole, collapsible = true }: Props) {
+function NavList({ variant, onNavigate }: { variant: ShellVariant; onNavigate?: () => void }) {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
-  const nav = variantNav[variant]
+  const workspace = WORKSPACE[variant]
 
   return (
-    <aside
-      className={cn(
-        "flex flex-col bg-slate-900 text-white transition-all duration-300 ease-in-out",
-        collapsed ? "w-16" : "w-60",
-        "min-h-screen flex-shrink-0"
-      )}
-    >
-      {/* Logo */}
-      <div className={cn("flex items-center gap-3 border-b border-white/10 px-4 py-4", collapsed && "justify-center px-0")}>
-        <Link href="/" className="flex-shrink-0">
-          <Image
-            src="/icon.png"
-            alt="SheConnects"
-            width={32}
-            height={32}
-            className="rounded-full"
-          />
-        </Link>
-        {!collapsed && (
-          <div className="min-w-0">
-            <p className="text-sm font-semibold leading-none">SheConnects</p>
-            <p className="mt-0.5 text-[10px] text-slate-400 leading-none truncate">
-              {variant === "admin" ? "Admin Panel" : variant === "freelancer" ? "Freelancer" : "Platform"}
-            </p>
-          </div>
-        )}
+    <div className="flex h-full flex-col">
+      <div className="px-3">
+        <Badge tone={workspace.tone} eyebrow>
+          <workspace.icon size={11} />
+          {workspace.label}
+        </Badge>
       </div>
 
-      {/* Nav items */}
-      <nav className="flex-1 space-y-0.5 px-2 py-4">
-        {nav.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+      <nav className="mt-4 flex-1 space-y-1" aria-label="Platform">
+        {NAV[variant].map((item) => {
+          const active = item.exact
+            ? pathname === item.href
+            : pathname === item.href || pathname.startsWith(item.href + "/")
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
-                isActive
-                  ? "bg-brand-600 text-white shadow-brand"
-                  : "text-slate-400 hover:bg-white/10 hover:text-white",
-                collapsed && "justify-center px-0"
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors",
+                active
+                  ? "bg-indigo-50 font-semibold text-indigo-700"
+                  : "font-medium text-slate-600 hover:bg-indigo-50/60 hover:text-indigo-600"
               )}
-              title={collapsed ? item.label : undefined}
             >
-              <span className="flex-shrink-0">{item.icon}</span>
-              {!collapsed && <span>{item.label}</span>}
-              {!collapsed && item.badge !== undefined && item.badge > 0 && (
-                <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
-                  {item.badge}
-                </span>
-              )}
+              <item.icon size={18} className={active ? "text-indigo-600" : "text-slate-400"} />
+              {item.label}
             </Link>
           )
         })}
       </nav>
 
-      {/* User + collapse toggle */}
-      <div className="border-t border-white/10 px-2 py-3 space-y-1">
-        {collapsible && (
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={cn(
-              "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-slate-400 hover:bg-white/10 hover:text-white transition-colors",
-              collapsed && "justify-center px-0"
-            )}
-          >
-            {collapsed ? <ChevronRight size={16} /> : <><ChevronLeft size={16} /><span>Collapse</span></>}
-          </button>
-        )}
-
-        {userName && (
-          <div className={cn("flex items-center gap-3 rounded-xl px-3 py-2", collapsed && "justify-center px-0")}>
-            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
-              {userName.slice(0, 2).toUpperCase()}
-            </div>
-            {!collapsed && (
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-white truncate">{userName}</p>
-                {userRole && <p className="text-[10px] text-slate-400 truncate">{userRole}</p>}
-              </div>
-            )}
-          </div>
-        )}
-
+      <div className="border-t border-slate-100 pt-3">
         <Link
           href="/app/sign-in"
-          className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-slate-400 hover:bg-white/10 hover:text-red-400 transition-colors",
-            collapsed && "justify-center px-0"
-          )}
-          title={collapsed ? "Sign out" : undefined}
+          onClick={onNavigate}
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900"
         >
-          <LogOut size={16} className="flex-shrink-0" />
-          {!collapsed && <span>Sign out</span>}
+          <LogOut size={18} className="text-slate-400" />
+          Sign out
         </Link>
       </div>
-    </aside>
+    </div>
+  )
+}
+
+export function AppSidebar({ variant }: { variant: ShellVariant }) {
+  const pathname = usePathname()
+  const [open, setOpen] = useState(false)
+
+  // Close the mobile drawer on navigation and lock scroll while it is open.
+  useEffect(() => setOpen(false), [pathname])
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [open])
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-slate-100 bg-white lg:flex">
+        <div className="flex h-16 items-center px-6">
+          <Brand tagline />
+        </div>
+        <div className="flex-1 overflow-y-auto px-3 pb-4 pt-4">
+          <NavList variant={variant} />
+        </div>
+      </aside>
+
+      {/* Mobile top bar */}
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-100 bg-white/95 px-4 backdrop-blur-md lg:hidden">
+        <Brand />
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600"
+        >
+          <Menu size={18} />
+        </button>
+      </header>
+
+      {/* Mobile drawer */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
+          <div className="flex h-14 items-center justify-between border-b border-slate-100 px-4">
+            <Brand />
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto px-3 py-5">
+            <NavList variant={variant} onNavigate={() => setOpen(false)} />
+          </div>
+        </div>
+      )}
+    </>
   )
 }

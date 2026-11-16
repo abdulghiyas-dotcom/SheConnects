@@ -1,6 +1,9 @@
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { PageHeader } from "@/components/ui/page-header"
+import { ListSection, ListRow, RowAmount } from "@/components/ui/list"
+import { ProgressBar } from "@/components/ui/progress-bar"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { EmptyState } from "@/components/ui/empty-state"
 import { formatEur } from "@/lib/utils/pricing"
@@ -45,80 +48,53 @@ export default async function AdminProjectsPage() {
   function Row({ p }: { p: typeof projects[0] }) {
     const approved = p.milestones.filter((m) => m.status === "APPROVED").length
     const total    = p.milestones.length
-    const progress = total > 0 ? Math.round((approved / total) * 100) : 0
 
     return (
-      <div className="flex items-center justify-between gap-4 px-5 py-4">
-        <div className="min-w-0 flex-1">
-          <p className="font-semibold text-sm text-slate-800 truncate">{p.title}</p>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-xs text-slate-400">
+      <ListRow
+        title={p.title}
+        subtitle={
+          <div className="flex items-center gap-3">
+            <span className="truncate">
               {p.client.organizationName} → {p.freelancer.alias ?? "—"}
-            </p>
-            {total > 0 && (
-              <div className="flex items-center gap-1.5">
-                <div className="h-1.5 w-16 rounded-full bg-slate-100 overflow-hidden">
-                  <div className="h-full rounded-full bg-trust-500" style={{ width: `${progress}%` }} />
-                </div>
-                <span className="text-xs text-slate-400">{approved}/{total}</span>
-              </div>
-            )}
+            </span>
+            {total > 0 && <ProgressBar value={approved} max={total} size="sm" className="w-28 flex-shrink-0" />}
           </div>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="text-sm font-medium text-slate-700 tabular-nums hidden sm:block">
-            {formatEur(p.totalCents)}
-          </span>
-          {p.payment && (
-            <StatusBadge
-              variant={PAYMENT_VARIANT[p.payment.status] ?? "default"}
-              label={p.payment.status === "SUCCEEDED" ? "Paid" : p.payment.status === "FAILED" ? "Failed" : "Unpaid"}
-              dot={false}
-            />
-          )}
+        }
+      >
+        <RowAmount>{formatEur(p.totalCents)}</RowAmount>
+        {p.payment && (
           <StatusBadge
-            variant={STATUS_VARIANT[p.status] ?? "default"}
-            label={p.status.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}
+            variant={PAYMENT_VARIANT[p.payment.status] ?? "default"}
+            label={p.payment.status === "SUCCEEDED" ? "Paid" : p.payment.status === "FAILED" ? "Failed" : "Unpaid"}
             dot={false}
           />
-        </div>
-      </div>
+        )}
+        <StatusBadge
+          variant={STATUS_VARIANT[p.status] ?? "default"}
+          label={p.status.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}
+          dot={false}
+        />
+      </ListRow>
     )
   }
 
   return (
-    <PlatformLayout variant="admin" title="Projects">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Projects</h1>
+    <PlatformLayout variant="admin">
+      <PageHeader title="Projects" description={`${active.length} active · ${past.length} past`} />
 
-        {projects.length === 0 && (
-          <div className="rounded-2xl border border-slate-100 bg-white shadow-card">
-            <EmptyState icon={FolderOpen} title="No projects yet" />
-          </div>
-        )}
+      {projects.length === 0 && <EmptyState icon={FolderOpen} title="No projects yet" />}
 
-        {active.length > 0 && (
-          <section>
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-              Active ({active.length})
-            </h2>
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
-              {active.map((p) => <Row key={p.id} p={p} />)}
-            </div>
-          </section>
-        )}
+      {active.length > 0 && (
+        <ListSection title="Active" count={active.length}>
+          {active.map((p) => <Row key={p.id} p={p} />)}
+        </ListSection>
+      )}
 
-        {past.length > 0 && (
-          <section>
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-              Past ({past.length})
-            </h2>
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card divide-y divide-slate-50 overflow-hidden">
-              {past.map((p) => <Row key={p.id} p={p} />)}
-            </div>
-          </section>
-        )}
-      </div>
+      {past.length > 0 && (
+        <ListSection title="Past" count={past.length}>
+          {past.map((p) => <Row key={p.id} p={p} />)}
+        </ListSection>
+      )}
     </PlatformLayout>
   )
 }

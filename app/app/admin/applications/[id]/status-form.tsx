@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { FormError } from "@/components/ui/field"
 
 const TRANSITIONS: Record<string, { next: string; label: string; nextLabel: string }> = {
   APPLIED:   { next: "SCREENING",  label: "Move to screening",   nextLabel: "Screening" },
@@ -42,7 +43,9 @@ export function StatusForm({ freelancerId, currentStatus }: Props) {
     }
   }
 
-  if (!transition) return null
+  if (!transition) {
+    return <p className="text-sm text-slate-400">No further status changes available.</p>
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -50,16 +53,11 @@ export function StatusForm({ freelancerId, currentStatus }: Props) {
         {loading === transition.next ? "Saving…" : transition.label}
       </Button>
       {currentStatus !== "APPLIED" && (
-        <Button
-          variant="outline"
-          className="text-destructive hover:text-destructive"
-          onClick={() => update("REJECTED")}
-          disabled={!!loading}
-        >
+        <Button variant="danger" onClick={() => update("REJECTED")} disabled={!!loading}>
           {loading === "REJECTED" ? "Rejecting…" : "Reject"}
         </Button>
       )}
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      <FormError>{error}</FormError>
     </div>
   )
 }

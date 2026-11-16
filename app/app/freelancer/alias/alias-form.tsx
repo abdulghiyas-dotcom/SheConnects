@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Check, X, Loader2 } from "lucide-react"
+import { Check, X, Loader2, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils/cn"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { ChoiceChip } from "@/components/ui/badge"
+import { Callout } from "@/components/ui/callout"
+import { Field, FormError } from "@/components/ui/field"
 
 function toSlug(alias: string): string {
   return alias
@@ -106,42 +108,23 @@ export function AliasForm({ currentAlias, suggestions }: Props) {
     !saving
 
   return (
-    <div className="flex justify-center py-8">
-      <div className="w-full max-w-md space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Choose your alias</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            This is how clients will see you — your real name is never shown.
-          </p>
-        </div>
-
-        {/* Suggestions */}
-        <div className="space-y-2">
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Suggestions
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setAlias(s)}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-sm border transition-all",
-                  alias === s
-                    ? "bg-brand-500 text-white border-brand-500"
-                    : "bg-white text-foreground border-border hover:border-brand-400"
-                )}
-              >
-                {s}
-              </button>
-            ))}
+    <div className="max-w-xl space-y-4">
+      <Card className="space-y-6 p-6 sm:p-8">
+        {suggestions.length > 0 && (
+          <div>
+            <Eyebrow className="mb-2.5">Suggestions</Eyebrow>
+            <div className="flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <ChoiceChip key={s} selected={alias === s} onClick={() => setAlias(s)}>
+                  {s}
+                </ChoiceChip>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <form onSubmit={handleSave} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="alias">Your alias</Label>
+        <form onSubmit={handleSave} className="space-y-5">
+          <Field label="Your alias" htmlFor="alias">
             <div className="relative">
               <Input
                 id="alias"
@@ -150,69 +133,67 @@ export function AliasForm({ currentAlias, suggestions }: Props) {
                 placeholder="e.g. Fatima A."
                 maxLength={40}
                 autoComplete="off"
-                className="pr-8"
+                className="pr-10"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                {availability === "checking" && <Loader2 size={14} className="animate-spin text-muted-foreground" />}
+              <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
+                {availability === "checking" && <Loader2 size={15} className="animate-spin text-slate-400" />}
                 {(availability === "available" || availability === "yours") && alias.trim().length >= 2 && (
-                  <Check size={14} className="text-trust-500" />
+                  <Check size={15} className="text-emerald-500" />
                 )}
-                {availability === "taken" && <X size={14} className="text-destructive" />}
+                {availability === "taken" && <X size={15} className="text-red-500" />}
               </div>
             </div>
 
             {/* Availability message */}
             {availability === "taken" && (
-              <p className="text-xs text-destructive">This alias is already taken.</p>
+              <p className="text-xs font-medium text-red-600">This alias is already taken.</p>
             )}
             {availability === "available" && (
-              <p className="text-xs text-trust-600">Available!</p>
+              <p className="text-xs font-medium text-emerald-600">Available!</p>
             )}
             {availability === "yours" && alias === currentAlias && (
-              <p className="text-xs text-muted-foreground">This is your current alias.</p>
+              <p className="text-xs text-slate-400">This is your current alias.</p>
             )}
 
             {/* Slug preview */}
             {slug && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Public profile:{" "}
-                <span className="font-mono text-foreground">/freelancers/{slug}</span>
+                <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-slate-700">/freelancers/{slug}</span>
               </p>
             )}
-          </div>
+          </Field>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          <FormError>{error}</FormError>
 
           {saved && (
-            <p className="text-sm text-trust-600 flex items-center gap-1.5">
+            <p className="flex items-center gap-1.5 text-sm font-medium text-emerald-600">
               <Check size={14} /> Alias saved — redirecting…
             </p>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
               onClick={() => router.push("/app/freelancer/dashboard")}
             >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1" disabled={!canSave}>
+            <Button type="submit" disabled={!canSave}>
               {saving ? "Saving…" : "Save alias"}
             </Button>
           </div>
         </form>
+      </Card>
 
-        <div className="rounded-lg bg-secondary border border-border p-4 text-xs text-muted-foreground space-y-1">
-          <p className="font-medium text-foreground text-sm">Tips for a good alias</p>
-          <ul className="list-disc list-inside space-y-0.5">
-            <li>Use only your first name, or first name + last initial (e.g. "Fatima A.")</li>
-            <li>Avoid your full legal name — this protects your privacy</li>
-            <li>You can change your alias again at any time</li>
-          </ul>
-        </div>
-      </div>
+      <Callout tone="indigo" icon={ShieldCheck} title="Tips for a good alias">
+        <ul className="list-inside list-disc space-y-0.5 text-xs">
+          <li>Use only your first name, or first name + last initial (e.g. &ldquo;Fatima A.&rdquo;)</li>
+          <li>Avoid your full legal name — this protects your privacy</li>
+          <li>You can change your alias again at any time</li>
+        </ul>
+      </Callout>
     </div>
   )
 }

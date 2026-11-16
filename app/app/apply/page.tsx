@@ -6,8 +6,9 @@ import Link from "next/link"
 import { createClient } from "@/lib/auth/supabase-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Field, FormError } from "@/components/ui/field"
 import { WizardShell } from "@/components/features/application-wizard"
+import { authLinkClass } from "@/components/features/auth-shell"
 
 export default function ApplyPage() {
   const router = useRouter()
@@ -108,8 +109,11 @@ export default function ApplyPage() {
     return (
       <WizardShell currentStep={1} title="Check your email" subtitle={`We sent a 6-digit code to ${email}. Enter it below to confirm your account.`}>
         <form onSubmit={handleVerify} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="otp">Confirmation code</Label>
+          <Field
+            label="Confirmation code"
+            htmlFor="otp"
+            hint="You can also click the confirmation link in the email instead."
+          >
             <Input
               id="otp"
               type="text"
@@ -121,22 +125,20 @@ export default function ApplyPage() {
               required
               autoComplete="one-time-code"
               autoFocus
+              className="h-14 text-center font-mono text-xl tracking-[0.4em]"
             />
-            <p className="text-xs text-muted-foreground">
-              You can also click the confirmation link in the email instead.
-            </p>
-          </div>
+          </Field>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          <FormError>{error}</FormError>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
             {loading ? "Verifying…" : "Confirm email"}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center">
             <button
               type="button"
-              className="text-primary hover:underline"
+              className="text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
               onClick={() => { setStep("form"); setOtp(""); setError("") }}
             >
               ← Back
@@ -150,8 +152,11 @@ export default function ApplyPage() {
   return (
     <WizardShell currentStep={1} title="Create your account" subtitle="Your identity stays private — clients will only see an alias.">
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email address</Label>
+        <Field
+          label="Email address"
+          htmlFor="email"
+          hint="Use a personal email. Work emails linked to organisations in Afghanistan may not be safe."
+        >
           <Input
             id="email"
             type="email"
@@ -161,13 +166,9 @@ export default function ApplyPage() {
             required
             autoComplete="email"
           />
-          <p className="text-xs text-muted-foreground">
-            Use a personal email. Work emails linked to organisations in Afghanistan may not be safe.
-          </p>
-        </div>
+        </Field>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+        <Field label="Password" htmlFor="password">
           <Input
             id="password"
             type="password"
@@ -178,17 +179,17 @@ export default function ApplyPage() {
             required
             autoComplete="new-password"
           />
-        </div>
+        </Field>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" size="lg" className="w-full" disabled={loading}>
           {loading ? "Creating account…" : "Start application"}
         </Button>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-slate-500">
           Already applied?{" "}
-          <Link href="/app/sign-in" className="text-primary hover:underline">
+          <Link href="/app/sign-in" className={authLinkClass}>
             Sign in to continue
           </Link>
         </p>

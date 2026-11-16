@@ -29,11 +29,11 @@ export function PayoutMarkSentButton({ payoutId }: { payoutId: string }) {
   }
 
   return (
-    <div>
+    <div className="text-right">
       <Button size="sm" variant="outline" onClick={markSent} disabled={loading}>
         {loading ? "Saving…" : "Mark sent"}
       </Button>
-      {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   )
 }

@@ -3,12 +3,37 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
 import { createClient } from "@/lib/auth/supabase-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Field, FormError } from "@/components/ui/field"
+import { Badge } from "@/components/ui/badge"
+import { IconTile } from "@/components/ui/icon-tile"
+import { AuthShell, authLinkClass } from "@/components/features/auth-shell"
 import { Building2, User2, ArrowLeft, ArrowRight } from "lucide-react"
+
+const ROLES = [
+  {
+    role: "client" as const,
+    icon: Building2,
+    tone: "indigo" as const,
+    title: "I represent an organisation",
+    sub: "NGOs, SMEs, social enterprises",
+    cta: "Sign in as organisation",
+    hover: "hover:border-indigo-300",
+    ctaColor: "text-indigo-600",
+  },
+  {
+    role: "freelancer" as const,
+    icon: User2,
+    tone: "purple" as const,
+    title: "I am an Afghan woman",
+    sub: "Sign in to your freelancer account",
+    cta: "Sign in as freelancer",
+    hover: "hover:border-purple-300",
+    ctaColor: "text-purple-600",
+  },
+]
 
 type Role = "client" | "freelancer" | null
 
@@ -51,68 +76,35 @@ export default function SignInPage() {
   /* ── Role picker ── */
   if (!role) {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
-        {/* Top bar */}
-        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <Image src="/icon.png" alt="SheConnects" width={30} height={30} className="rounded-full" />
-            <span className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors text-sm">SheConnects</span>
-          </Link>
-          <p className="text-sm text-slate-500">
-            No account?{" "}
-            <Link href="/app/sign-up" className="font-semibold text-indigo-600 hover:text-indigo-700">Sign up</Link>
-          </p>
+      <AuthShell
+        topRight={<>No account? <Link href="/app/sign-up" className={authLinkClass}>Sign up</Link></>}
+      >
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">Welcome back</h1>
+          <p className="mt-2 text-base text-slate-500">How do you want to sign in?</p>
         </div>
 
-        {/* Picker */}
-        <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-          {/* Subtle tint */}
-          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, #EEF2FF 0%, transparent 70%)" }} />
-
-          <div className="relative text-center mb-12">
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">Welcome back</h1>
-            <p className="mt-2 text-base text-slate-500">How do you want to sign in?</p>
-          </div>
-
-          <div className="relative grid w-full max-w-lg gap-4 sm:grid-cols-2">
-            {/* Org card */}
+        <div className="grid w-full max-w-xl gap-4 sm:grid-cols-2">
+          {ROLES.map((r) => (
             <button
+              key={r.role}
               type="button"
-              onClick={() => setRole("client")}
-              className="group flex flex-col items-center gap-5 rounded-2xl border-2 border-slate-200 bg-white px-6 py-8 text-center shadow-sm transition-all hover:border-indigo-400 hover:shadow-lg hover:-translate-y-1"
+              onClick={() => setRole(r.role)}
+              className={`group flex flex-col items-center gap-5 rounded-2xl border border-slate-200 bg-white px-6 py-8 text-center shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover ${r.hover}`}
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 border border-indigo-100 group-hover:bg-indigo-100 transition-colors">
-                <Building2 size={28} className="text-indigo-600" />
-              </div>
+              <IconTile icon={r.icon} tone={r.tone} size="lg" />
               <div>
-                <p className="text-base font-black text-slate-900">I represent an organisation</p>
-                <p className="mt-1.5 text-xs text-slate-400">NGOs, SMEs, social enterprises</p>
+                <p className="text-base font-black text-slate-900">{r.title}</p>
+                <p className="mt-1.5 text-xs text-slate-500">{r.sub}</p>
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-1.5 text-xs font-bold text-white">
-                Sign in as organisation <ArrowRight size={11} />
+              <span className={`inline-flex items-center gap-1.5 text-xs font-bold ${r.ctaColor}`}>
+                {r.cta}
+                <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
               </span>
             </button>
-
-            {/* Freelancer card */}
-            <button
-              type="button"
-              onClick={() => setRole("freelancer")}
-              className="group flex flex-col items-center gap-5 rounded-2xl border-2 border-slate-200 bg-white px-6 py-8 text-center shadow-sm transition-all hover:border-purple-400 hover:shadow-lg hover:-translate-y-1"
-            >
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50 border border-purple-100 group-hover:bg-purple-100 transition-colors">
-                <User2 size={28} className="text-purple-600" />
-              </div>
-              <div>
-                <p className="text-base font-black text-slate-900">I am an Afghan woman</p>
-                <p className="mt-1.5 text-xs text-slate-400">Sign in to your freelancer account</p>
-              </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-600 px-4 py-1.5 text-xs font-bold text-white">
-                Sign in as freelancer <ArrowRight size={11} />
-              </span>
-            </button>
-          </div>
+          ))}
         </div>
-      </div>
+      </AuthShell>
     )
   }
 
@@ -120,55 +112,45 @@ export default function SignInPage() {
   const isOrg = role === "client"
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
-      {/* Top bar */}
-      <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-        <button type="button" onClick={() => setRole(null)} className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
-          <ArrowLeft size={14} /> Back
+    <AuthShell
+      topLeft={
+        <button
+          type="button"
+          onClick={() => setRole(null)}
+          className="group flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
+        >
+          <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" /> Back
         </button>
-        <Link href="/" className="flex items-center gap-2 group">
-          <Image src="/icon.png" alt="SheConnects" width={26} height={26} className="rounded-full" />
-          <span className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">SheConnects</span>
-        </Link>
-        <p className="text-sm text-slate-500">
-          <Link href="/app/sign-up" className="font-semibold text-indigo-600 hover:text-indigo-700">Create account</Link>
-        </p>
-      </div>
+      }
+      topRight={<Link href="/app/sign-up" className={authLinkClass}>Create account</Link>}
+    >
+      <div className="w-full max-w-sm">
+        <Badge tone={isOrg ? "indigo" : "purple"} eyebrow className="mb-6">
+          {isOrg ? <Building2 size={11} /> : <User2 size={11} />}
+          {isOrg ? "Organisation account" : "Freelancer account"}
+        </Badge>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-        <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, #EEF2FF 0%, transparent 70%)" }} />
+        <h1 className="text-3xl font-black tracking-tight text-slate-900">Welcome back</h1>
+        <p className="mt-1.5 text-sm text-slate-500">Sign in to your account</p>
 
-        <div className="relative w-full max-w-sm">
-          {/* Role badge */}
-          <div className={`mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${isOrg ? "bg-indigo-50 text-indigo-600 border border-indigo-100" : "bg-purple-50 text-purple-600 border border-purple-100"}`}>
-            {isOrg ? <Building2 size={12} /> : <User2 size={12} />}
-            {isOrg ? "Organisation account" : "Freelancer account"}
-          </div>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <Field label="Email address" htmlFor="email">
+            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@organisation.com" required autoComplete="email" />
+          </Field>
+          <Field label="Password" htmlFor="password">
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+          </Field>
+          <FormError>{error}</FormError>
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
+        </form>
 
-          <h1 className="text-2xl font-black tracking-tight text-slate-900">Welcome back</h1>
-          <p className="mt-1 text-sm text-slate-500">Sign in to your account</p>
-
-          <form onSubmit={handleSubmit} className="mt-7 space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm font-semibold text-slate-700">Email address</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@organisation.com" required autoComplete="email" className="h-11 rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm font-semibold text-slate-700">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" className="h-11 rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" />
-            </div>
-            {error && <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
-            <Button type="submit" className={`w-full h-11 rounded-xl font-bold border-0 ${isOrg ? "bg-indigo-600 hover:bg-indigo-700" : "bg-purple-600 hover:bg-purple-700"}`} disabled={loading}>
-              {loading ? "Signing in…" : "Sign in"}
-            </Button>
-          </form>
-
-          <div className="mt-6 space-y-2 text-center text-sm text-slate-500">
-            <p>Don&apos;t have an account?{" "}<Link href="/app/sign-up" className="font-semibold text-indigo-600 hover:text-indigo-700">Sign up</Link></p>
-            <p><Link href="/app/apply" className="font-semibold text-indigo-600 hover:text-indigo-700">Apply as a freelancer →</Link></p>
-          </div>
+        <div className="mt-6 space-y-2 text-center text-sm text-slate-500">
+          <p>Don&apos;t have an account?{" "}<Link href="/app/sign-up" className={authLinkClass}>Sign up</Link></p>
+          <p><Link href="/app/apply" className={authLinkClass}>Apply as a freelancer →</Link></p>
         </div>
       </div>
-    </div>
+    </AuthShell>
   )
 }

@@ -1,9 +1,14 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { MilestoneCard } from "@/components/features/milestone-card"
+import { PageHeader } from "@/components/ui/page-header"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { PriceRows } from "@/components/ui/price-rows"
+import { ProgressBar } from "@/components/ui/progress-bar"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { MilestoneSubmitForm } from "./submit-form"
 import { MessageThread } from "@/components/features/message-thread"
@@ -59,108 +64,89 @@ export default async function FreelancerProjectDetailPage({ params }: { params: 
   const total    = project.milestones.length
 
   return (
-    <PlatformLayout variant="freelancer" title={project.title}>
-      <div className="max-w-3xl mx-auto space-y-6">
+    <PlatformLayout variant="freelancer">
+      <PageHeader
+        back={{ href: "/app/freelancer/projects", label: "All projects" }}
+        title={project.title}
+        badge={<StatusBadge variant={PROJECT_VARIANT[project.status] ?? "default"} label={statusLabel} />}
+        description={project.client.organizationName}
+      />
 
-        <Link href="/app/freelancer/projects" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
-          <ArrowLeft size={14} /> All projects
-        </Link>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="space-y-8 lg:col-span-2">
+          <Card className="p-6">
+            <Eyebrow className="mb-3">Brief</Eyebrow>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">{project.description}</p>
+          </Card>
 
-        {/* Header */}
-        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-xl font-bold text-slate-900">{project.title}</h1>
-              <p className="text-sm text-slate-500 mt-1">{project.client.organizationName}</p>
-            </div>
-            <StatusBadge variant={PROJECT_VARIANT[project.status] ?? "default"} label={statusLabel} />
-          </div>
-
-          <p className="text-sm text-slate-700 whitespace-pre-line">{project.description}</p>
-
-          {/* Progress bar */}
-          {total > 0 && (
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs text-slate-500">Milestone progress</span>
-                <span className="text-xs font-medium text-slate-700">{approved}/{total}</span>
-              </div>
-              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-trust-500 transition-all"
-                  style={{ width: `${Math.round((approved / total) * 100)}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs text-slate-500 border-t border-slate-100 pt-4 mt-4">
-            <span>Your earnings</span><span className="text-right tabular-nums">{formatEur(project.freelancerPriceCents)}</span>
-            <span>Platform fee</span><span className="text-right tabular-nums">{formatEur(project.commissionCents)}</span>
-          </div>
-          <Link href={`/app/freelancer/offers/${project.offer.id}`} className="mt-3 inline-block text-xs text-slate-400 hover:text-slate-600 hover:underline">
-            View original offer →
-          </Link>
-        </div>
-
-        {/* Milestones */}
-        <div>
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Milestones</h2>
-          <div className="space-y-2">
-            {project.milestones.map((m, idx) => (
-              <div key={m.id} className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-500 mt-0.5">
-                      {idx + 1}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-sm text-slate-800">{m.title}</p>
-                      {m.description && (
-                        <p className="text-xs text-slate-500 mt-1 whitespace-pre-line">{m.description}</p>
-                      )}
-                      {m.dueAt && (
-                        <p className="text-xs text-slate-400 mt-1">
-                          Due {new Date(m.dueAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}
-                        </p>
-                      )}
-                      {m.status === "REVISION_REQUESTED" && (
-                        <p className="text-xs text-amber-700 mt-1 font-medium">The client has requested a revision.</p>
-                      )}
-                      {m.approvedAt && (
-                        <p className="text-xs text-trust-600 mt-1 font-medium">
-                          Approved {new Date(m.approvedAt).toLocaleDateString("en-GB")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 shrink-0">
-                    <StatusBadge
-                      variant={MILESTONE_VARIANT[m.status] ?? "default"}
-                      label={MILESTONE_LABEL[m.status] ?? m.status}
-                      dot={false}
-                    />
+          <section>
+            <Eyebrow className="mb-3">Milestones</Eyebrow>
+            <div className="space-y-3">
+              {project.milestones.map((m, idx) => (
+                <MilestoneCard
+                  key={m.id}
+                  index={idx}
+                  title={m.title}
+                  description={m.description}
+                  statusVariant={MILESTONE_VARIANT[m.status] ?? "default"}
+                  statusLabel={MILESTONE_LABEL[m.status] ?? m.status}
+                  action={
                     <MilestoneSubmitForm
                       projectId={project.id}
                       milestoneId={m.id}
                       milestoneStatus={m.status}
                     />
-                  </div>
-                </div>
+                  }
+                >
+                  {m.dueAt && (
+                    <p>Due {new Date(m.dueAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</p>
+                  )}
+                  {m.status === "REVISION_REQUESTED" && (
+                    <p className="font-semibold text-amber-700">The client has requested a revision.</p>
+                  )}
+                  {m.approvedAt && (
+                    <p className="font-semibold text-emerald-600">
+                      Approved {new Date(m.approvedAt).toLocaleDateString("en-GB")}
+                    </p>
+                  )}
+                </MilestoneCard>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <Eyebrow className="mb-3">Messages</Eyebrow>
+            <Card className="p-6">
+              <MessageThread projectId={project.id} />
+              <div className="mt-4 border-t border-slate-100 pt-4">
+                <MessageInput projectId={project.id} />
               </div>
-            ))}
-          </div>
+            </Card>
+          </section>
         </div>
 
-        {/* Messages */}
-        <div>
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Messages</h2>
-          <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-            <MessageThread projectId={project.id} />
-            <div className="mt-3">
-              <MessageInput projectId={project.id} />
-            </div>
-          </div>
+        {/* Summary */}
+        <div className="space-y-4">
+          {total > 0 && (
+            <Card className="p-6">
+              <Eyebrow className="mb-3">Milestone progress</Eyebrow>
+              <ProgressBar value={approved} max={total} />
+            </Card>
+          )}
+
+          <Card className="p-6">
+            <Eyebrow className="mb-4">Earnings</Eyebrow>
+            <PriceRows
+              rows={[{ label: "Platform fee (paid by client)", cents: project.commissionCents }]}
+              total={{ label: "Your earnings", cents: project.freelancerPriceCents }}
+            />
+            <Link
+              href={`/app/freelancer/offers/${project.offer.id}`}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-indigo-600"
+            >
+              View original offer <ArrowRight size={12} />
+            </Link>
+          </Card>
         </div>
       </div>
     </PlatformLayout>

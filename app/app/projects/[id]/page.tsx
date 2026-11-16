@@ -1,15 +1,21 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowRight, CheckCircle2, AlertCircle, Clock } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { MilestoneCard } from "@/components/features/milestone-card"
+import { PageHeader } from "@/components/ui/page-header"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { PriceRows } from "@/components/ui/price-rows"
+import { ProgressBar } from "@/components/ui/progress-bar"
 import { StatusBadge } from "@/components/ui/status-badge"
+import { Callout } from "@/components/ui/callout"
+import { Button } from "@/components/ui/button"
 import { MilestoneActions } from "./milestone-actions"
 import { MessageThread } from "@/components/features/message-thread"
 import { MessageInput } from "@/components/features/message-input"
 import { formatEur } from "@/lib/utils/pricing"
-import { cn } from "@/lib/utils/cn"
 
 type StatusVariant = "pending" | "in_progress" | "completed" | "cancelled" | "declined" | "default"
 
@@ -60,148 +66,129 @@ export default async function ClientProjectDetailPage({ params }: { params: { id
   const approved = project.milestones.filter((m) => m.status === "APPROVED").length
   const total    = project.milestones.length
 
+  const paymentFailed = project.payment?.status === "FAILED"
+
   return (
-    <PlatformLayout variant="client" title={project.title}>
-      <div className="max-w-3xl mx-auto space-y-6">
-
-        <Link href="/app/projects" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
-          <ArrowLeft size={14} /> All projects
-        </Link>
-
-        {/* Payment banner */}
-        {project.payment && project.payment.status !== "SUCCEEDED" && (
-          <div className={cn(
-            "rounded-2xl border p-4 flex items-center justify-between gap-4",
-            project.payment.status === "FAILED" ? "bg-red-50 border-red-200" : "bg-amber-50 border-amber-200"
-          )}>
-            <div>
-              <p className={cn("text-sm font-semibold", project.payment.status === "FAILED" ? "text-red-800" : "text-amber-800")}>
-                {project.payment.status === "FAILED"
-                  ? "Payment failed — please try again."
-                  : `Payment of ${formatEur(project.payment.totalCents)} is due.`}
-              </p>
-              <p className="text-xs text-slate-500 mt-0.5">Work begins once payment is confirmed.</p>
-            </div>
-            <Link
-              href={`/app/projects/${project.id}/pay`}
-              className="shrink-0 rounded-xl bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800 transition-colors"
-            >
-              Pay now
+    <PlatformLayout variant="client">
+      <PageHeader
+        back={{ href: "/app/projects", label: "All projects" }}
+        title={project.title}
+        badge={<StatusBadge variant={PROJECT_VARIANT[project.status] ?? "default"} label={statusLabel} />}
+        description={
+          <>
+            with{" "}
+            <Link href={`/app/freelancers/${project.freelancer.aliasSlug}`} className="font-semibold text-indigo-600 hover:text-indigo-700">
+              {project.freelancer.alias}
             </Link>
-          </div>
-        )}
+          </>
+        }
+      />
 
-        {project.payment?.status === "SUCCEEDED" && (
-          <div className="rounded-2xl border border-trust-200 bg-trust-50 px-4 py-3 text-sm font-medium text-trust-700">
-            Payment received — thank you.
-          </div>
-        )}
+      {/* Payment banner */}
+      {project.payment && project.payment.status !== "SUCCEEDED" && (
+        <Callout
+          tone={paymentFailed ? "red" : "amber"}
+          icon={paymentFailed ? AlertCircle : Clock}
+          title={
+            paymentFailed
+              ? "Payment failed — please try again."
+              : `Payment of ${formatEur(project.payment.totalCents)} is due.`
+          }
+          action={
+            <Button asChild>
+              <Link href={`/app/projects/${project.id}/pay`}>
+                Pay now <ArrowRight size={14} />
+              </Link>
+            </Button>
+          }
+        >
+          Work begins once payment is confirmed.
+        </Callout>
+      )}
 
-        {/* Header */}
-        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-xl font-bold text-slate-900">{project.title}</h1>
-              <p className="text-sm text-slate-500 mt-1">
-                with{" "}
-                <Link href={`/app/freelancers/${project.freelancer.aliasSlug}`} className="font-medium text-brand-600 hover:underline">
-                  {project.freelancer.alias}
-                </Link>
-              </p>
-            </div>
-            <StatusBadge variant={PROJECT_VARIANT[project.status] ?? "default"} label={statusLabel} />
-          </div>
+      {project.payment?.status === "SUCCEEDED" && (
+        <Callout tone="emerald" icon={CheckCircle2} title="Payment received — thank you." />
+      )}
 
-          <p className="text-sm text-slate-700 whitespace-pre-line">{project.description}</p>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="space-y-8 lg:col-span-2">
+          <Card className="p-6">
+            <Eyebrow className="mb-3">Brief</Eyebrow>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">{project.description}</p>
+          </Card>
 
-          {/* Progress bar */}
-          {total > 0 && (
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs text-slate-500">Milestone progress</span>
-                <span className="text-xs font-medium text-slate-700">{approved}/{total}</span>
-              </div>
-              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-trust-500 transition-all"
-                  style={{ width: `${Math.round((approved / total) * 100)}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs text-slate-500 border-t border-slate-100 pt-4 mt-4">
-            <span>Freelancer fee</span><span className="text-right tabular-nums">{formatEur(project.freelancerPriceCents)}</span>
-            <span>Platform fee</span><span className="text-right tabular-nums">{formatEur(project.commissionCents)}</span>
-            {project.vatCents > 0 && (<><span>VAT</span><span className="text-right tabular-nums">{formatEur(project.vatCents)}</span></>)}
-            <span className="font-semibold text-slate-800">Total</span>
-            <span className="text-right font-semibold text-slate-800 tabular-nums">{formatEur(project.totalCents)}</span>
-          </div>
-          <Link href={`/app/offers/${project.offer.id}`} className="mt-3 inline-block text-xs text-slate-400 hover:text-slate-600 hover:underline">
-            View original offer →
-          </Link>
-        </div>
-
-        {/* Milestones */}
-        <div>
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Milestones</h2>
-          <div className="space-y-2">
-            {project.milestones.map((m, idx) => (
-              <div key={m.id} className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-500 mt-0.5">
-                      {idx + 1}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-sm text-slate-800">{m.title}</p>
-                      {m.description && (
-                        <p className="text-xs text-slate-500 mt-1 whitespace-pre-line">{m.description}</p>
-                      )}
-                      {m.dueAt && (
-                        <p className="text-xs text-slate-400 mt-1">
-                          Due {new Date(m.dueAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}
-                        </p>
-                      )}
-                      {m.submittedAt && m.status === "SUBMITTED" && (
-                        <p className="text-xs text-slate-400 mt-1">
-                          Submitted {new Date(m.submittedAt).toLocaleDateString("en-GB")}
-                        </p>
-                      )}
-                      {m.approvedAt && (
-                        <p className="text-xs text-trust-600 mt-1 font-medium">
-                          Approved {new Date(m.approvedAt).toLocaleDateString("en-GB")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 shrink-0">
-                    <StatusBadge
-                      variant={MILESTONE_VARIANT[m.status] ?? "default"}
-                      label={MILESTONE_LABEL[m.status] ?? m.status}
-                      dot={false}
-                    />
+          <section>
+            <Eyebrow className="mb-3">Milestones</Eyebrow>
+            <div className="space-y-3">
+              {project.milestones.map((m, idx) => (
+                <MilestoneCard
+                  key={m.id}
+                  index={idx}
+                  title={m.title}
+                  description={m.description}
+                  statusVariant={MILESTONE_VARIANT[m.status] ?? "default"}
+                  statusLabel={MILESTONE_LABEL[m.status] ?? m.status}
+                  action={
                     <MilestoneActions
                       projectId={project.id}
                       milestoneId={m.id}
                       milestoneStatus={m.status}
                     />
-                  </div>
-                </div>
+                  }
+                >
+                  {m.dueAt && (
+                    <p>Due {new Date(m.dueAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</p>
+                  )}
+                  {m.submittedAt && m.status === "SUBMITTED" && (
+                    <p>Submitted {new Date(m.submittedAt).toLocaleDateString("en-GB")}</p>
+                  )}
+                  {m.approvedAt && (
+                    <p className="font-semibold text-emerald-600">
+                      Approved {new Date(m.approvedAt).toLocaleDateString("en-GB")}
+                    </p>
+                  )}
+                </MilestoneCard>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <Eyebrow className="mb-3">Messages</Eyebrow>
+            <Card className="p-6">
+              <MessageThread projectId={project.id} />
+              <div className="mt-4 border-t border-slate-100 pt-4">
+                <MessageInput projectId={project.id} />
               </div>
-            ))}
-          </div>
+            </Card>
+          </section>
         </div>
 
-        {/* Messages */}
-        <div>
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Messages</h2>
-          <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-            <MessageThread projectId={project.id} />
-            <div className="mt-3">
-              <MessageInput projectId={project.id} />
-            </div>
-          </div>
+        {/* Summary */}
+        <div className="space-y-4">
+          {total > 0 && (
+            <Card className="p-6">
+              <Eyebrow className="mb-3">Milestone progress</Eyebrow>
+              <ProgressBar value={approved} max={total} />
+            </Card>
+          )}
+
+          <Card className="p-6">
+            <Eyebrow className="mb-4">Budget</Eyebrow>
+            <PriceRows
+              rows={[
+                { label: "Freelancer fee", cents: project.freelancerPriceCents },
+                { label: "Platform fee", cents: project.commissionCents },
+                ...(project.vatCents > 0 ? [{ label: "VAT", cents: project.vatCents }] : []),
+              ]}
+              total={{ label: "Total", cents: project.totalCents }}
+            />
+            <Link
+              href={`/app/offers/${project.offer.id}`}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-indigo-600"
+            >
+              View original offer <ArrowRight size={12} />
+            </Link>
+          </Card>
         </div>
       </div>
     </PlatformLayout>

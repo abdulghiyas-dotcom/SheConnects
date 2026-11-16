@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { PageHeader } from "@/components/ui/page-header"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { Tag } from "@/components/ui/badge"
 import { StatusBadge } from "@/components/ui/status-badge"
+import { TrackBadge } from "@/components/features/track"
 import { StatusForm } from "./status-form"
 
 type StatusVariant = "applied" | "screening" | "interview" | "training" | "active" | "declined" | "default"
@@ -16,13 +18,6 @@ const STATUS_VARIANT: Record<string, StatusVariant> = {
   TRAINING:  "training",
   ACTIVE:    "active",
   REJECTED:  "declined",
-}
-
-const TRACK_LABEL: Record<string, string> = {
-  PROGRAMMING:     "Dev & Tech",
-  CREATIVE_DESIGN: "Creative Design",
-  TRANSLATION:     "Translation",
-  RESEARCH_DATA:   "Research & Data",
 }
 
 export default async function AdminApplicationDetailPage({ params }: { params: { id: string } }) {
@@ -42,108 +37,112 @@ export default async function AdminApplicationDetailPage({ params }: { params: {
 
   const voiceIntroFileId = (freelancer.applicationData as { voiceIntroFileId?: string } | null)?.voiceIntroFileId
 
+  const dates = [
+    { label: "Applied",  value: freelancer.appliedAt },
+    { label: "Screened", value: freelancer.screenedAt },
+    { label: "Accepted", value: freelancer.acceptedAt },
+  ].filter((d) => d.value)
+
   return (
-    <PlatformLayout variant="admin" title="Application Review">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <PlatformLayout variant="admin">
+      <PageHeader
+        back={{ href: "/app/admin/applications", label: "All applications" }}
+        title={`${freelancer.displayCity ? `${freelancer.displayCity}, ` : ""}${freelancer.displayCountry ?? "Unknown location"}`}
+        badge={
+          <StatusBadge
+            variant={STATUS_VARIANT[freelancer.status] ?? "default"}
+            label={freelancer.status.charAt(0) + freelancer.status.slice(1).toLowerCase()}
+          />
+        }
+        description={freelancer.user.email}
+      />
 
-        <Link href="/app/admin/applications" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
-          <ArrowLeft size={14} /> All applications
-        </Link>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main info */}
-          <div className="lg:col-span-2 space-y-4">
-
-            {/* Profile */}
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div>
-                  <h1 className="text-xl font-bold text-slate-900">
-                    {freelancer.displayCity ? `${freelancer.displayCity}, ` : ""}{freelancer.displayCountry ?? "Unknown location"}
-                  </h1>
-                  <p className="text-sm text-slate-500 mt-1">{freelancer.user.email}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Track: <span className="font-semibold text-slate-600">{TRACK_LABEL[freelancer.track] ?? freelancer.track.replace(/_/g, " ")}</span>
-                  </p>
-                </div>
-                <StatusBadge
-                  variant={STATUS_VARIANT[freelancer.status] ?? "default"}
-                  label={freelancer.status.charAt(0) + freelancer.status.slice(1).toLowerCase()}
-                />
-              </div>
-
-              {freelancer.tagline && (
-                <p className="text-sm font-semibold text-slate-700 mb-2">{freelancer.tagline}</p>
-              )}
-              {freelancer.bio && (
-                <p className="text-sm text-slate-500 whitespace-pre-line">{freelancer.bio}</p>
-              )}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Main info */}
+        <div className="space-y-4 lg:col-span-2">
+          <Card className="p-6">
+            <div className="flex items-center justify-between gap-3">
+              <Eyebrow>Profile</Eyebrow>
+              <TrackBadge track={freelancer.track} />
             </div>
+            {freelancer.tagline && (
+              <p className="mt-4 text-base font-bold text-slate-900">{freelancer.tagline}</p>
+            )}
+            {freelancer.bio ? (
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600">{freelancer.bio}</p>
+            ) : (
+              !freelancer.tagline && <p className="mt-4 text-sm text-slate-400">No headline or bio provided yet.</p>
+            )}
+          </Card>
 
-            {/* Skills */}
-            {freelancer.skills.length > 0 && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Skills</h2>
-                <div className="flex flex-wrap gap-2">
-                  {freelancer.skills.map((s) => (
-                    <span key={s.skillId} className="rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
-                      {s.skill.name} · {s.level.toLowerCase()}
-                    </span>
-                  ))}
+          {freelancer.skills.length > 0 && (
+            <Card className="p-6">
+              <Eyebrow className="mb-3">Skills</Eyebrow>
+              <div className="flex flex-wrap gap-2">
+                {freelancer.skills.map((s) => (
+                  <Tag key={s.skillId}>
+                    {s.skill.name} <span className="ml-1.5 text-slate-400">· {s.level.toLowerCase()}</span>
+                  </Tag>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {freelancer.languages.length > 0 && (
+            <Card className="p-6">
+              <Eyebrow className="mb-3">Languages</Eyebrow>
+              <div className="flex flex-wrap gap-2">
+                {freelancer.languages.map((l) => (
+                  <Tag key={l.language}>
+                    {l.language} <span className="ml-1.5 text-slate-400">· {l.proficiency.toLowerCase()}</span>
+                  </Tag>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {freelancer.portfolioItems.length > 0 && (
+            <Card className="p-6">
+              <Eyebrow className="mb-4">Portfolio</Eyebrow>
+              <div className="space-y-4">
+                {freelancer.portfolioItems.map((item) => (
+                  <div key={item.id} className="border-l-2 border-indigo-200 pl-4">
+                    <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{item.description.slice(0, 150)}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {voiceIntroFileId && (
+            <Card className="p-6">
+              <Eyebrow className="mb-2">Voice intro</Eyebrow>
+              <p className="font-mono text-xs text-slate-500">File ID: {voiceIntroFileId}</p>
+            </Card>
+          )}
+        </div>
+
+        {/* Sidebar — actions */}
+        <div className="space-y-4">
+          <Card className="p-6">
+            <Eyebrow className="mb-4">Update status</Eyebrow>
+            <StatusForm freelancerId={freelancer.id} currentStatus={freelancer.status} />
+          </Card>
+
+          <Card className="p-6">
+            <Eyebrow className="mb-3">Timeline</Eyebrow>
+            <dl className="space-y-2 text-sm">
+              {dates.map((d) => (
+                <div key={d.label} className="flex items-center justify-between">
+                  <dt className="text-slate-500">{d.label}</dt>
+                  <dd className="font-semibold tabular-nums text-slate-800">
+                    {new Date(d.value!).toLocaleDateString("en-GB")}
+                  </dd>
                 </div>
-              </div>
-            )}
-
-            {/* Languages */}
-            {freelancer.languages.length > 0 && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Languages</h2>
-                <div className="flex flex-wrap gap-2">
-                  {freelancer.languages.map((l) => (
-                    <span key={l.language} className="rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
-                      {l.language} · {l.proficiency.toLowerCase()}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Portfolio */}
-            {freelancer.portfolioItems.length > 0 && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Portfolio</h2>
-                <div className="space-y-3">
-                  {freelancer.portfolioItems.map((item) => (
-                    <div key={item.id} className="border-l-2 border-brand-200 pl-3">
-                      <p className="text-sm font-semibold text-slate-800">{item.title}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{item.description.slice(0, 150)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {voiceIntroFileId && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Voice intro</h2>
-                <p className="text-xs text-slate-400">File ID: {voiceIntroFileId}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar — actions */}
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Update status</h2>
-              <StatusForm freelancerId={freelancer.id} currentStatus={freelancer.status} />
-            </div>
-
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5 space-y-1.5 text-xs text-slate-400">
-              <p>Applied: <span className="text-slate-600 font-medium">{new Date(freelancer.appliedAt).toLocaleDateString("en-GB")}</span></p>
-              {freelancer.screenedAt && <p>Screened: <span className="text-slate-600 font-medium">{new Date(freelancer.screenedAt).toLocaleDateString("en-GB")}</span></p>}
-              {freelancer.acceptedAt && <p>Accepted: <span className="text-slate-600 font-medium">{new Date(freelancer.acceptedAt).toLocaleDateString("en-GB")}</span></p>}
-            </div>
-          </div>
+              ))}
+            </dl>
+          </Card>
         </div>
       </div>
     </PlatformLayout>

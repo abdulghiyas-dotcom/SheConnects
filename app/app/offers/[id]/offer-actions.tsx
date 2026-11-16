@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { FormError } from "@/components/ui/field"
 
 interface Props {
   offerId: string
@@ -36,25 +37,21 @@ export function ClientOfferActions({ offerId, status }: Props) {
   if (!["SENT", "COUNTERED", "CLIENT_REVIEWING"].includes(status)) return null
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-2">
       {status === "COUNTERED" && (
-        <Button
-          className="w-full"
-          onClick={() => post("accept")}
-          disabled={!!loading}
-        >
+        <Button onClick={() => post("accept")} disabled={!!loading}>
           {loading === "accept" ? "Accepting…" : "Accept counter-offer"}
         </Button>
       )}
-      <Button
-        variant="outline"
-        className="w-full text-destructive hover:text-destructive"
-        onClick={() => post("withdraw")}
-        disabled={!!loading}
-      >
+      <Button variant="danger" onClick={() => post("withdraw")} disabled={!!loading}>
         {loading === "withdraw" ? "Withdrawing…" : "Withdraw offer"}
       </Button>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {status !== "COUNTERED" && (
+        <p className="text-xs leading-relaxed text-slate-400">
+          Waiting for the freelancer to respond. You can withdraw the offer until then.
+        </p>
+      )}
+      <FormError>{error}</FormError>
     </div>
   )
 }

@@ -4,8 +4,10 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { calculatePricing, formatEur } from "@/lib/utils/pricing"
+import { Textarea } from "@/components/ui/textarea"
+import { Field, FormError } from "@/components/ui/field"
+import { PriceRows } from "@/components/ui/price-rows"
+import { calculatePricing } from "@/lib/utils/pricing"
 
 interface Props {
   offerId: string
@@ -49,73 +51,65 @@ export function RespondForm({ offerId, currentPriceCents, vatRate, vatLabel }: P
   if (mode === "counter") {
     return (
       <div className="space-y-4">
-        <h3 className="font-medium">Propose a counter-offer</h3>
+        <h3 className="text-sm font-bold text-slate-900">Propose a counter-offer</h3>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>Your fee (€)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">€</span>
-              <Input
-                type="number"
-                min="1"
-                step="0.01"
-                value={priceInput}
-                onChange={(e) => setPriceInput(e.target.value)}
-                className="pl-7"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label>Proposed timeline</Label>
+        <Field label="Your fee (€)" htmlFor="counter-price">
+          <div className="relative">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400">€</span>
             <Input
-              value={timeline}
-              onChange={(e) => setTimeline(e.target.value)}
-              placeholder="e.g. 3 weeks"
+              id="counter-price"
+              type="number"
+              min="1"
+              step="0.01"
+              value={priceInput}
+              onChange={(e) => setPriceInput(e.target.value)}
+              className="pl-8"
             />
           </div>
-        </div>
+        </Field>
+
+        <Field label="Proposed timeline" htmlFor="counter-timeline">
+          <Input
+            id="counter-timeline"
+            value={timeline}
+            onChange={(e) => setTimeline(e.target.value)}
+            placeholder="e.g. 3 weeks"
+          />
+        </Field>
 
         {pricing && (
-          <div className="rounded-lg bg-secondary/60 border border-border p-3 text-xs space-y-1">
-            <div className="flex justify-between text-muted-foreground">
-              <span>Your earnings</span><span>{formatEur(pricing.freelancerPriceCents)}</span>
-            </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>Platform fee (20%)</span><span>{formatEur(pricing.commissionCents)}</span>
-            </div>
-            {pricing.vatCents > 0 && (
-              <div className="flex justify-between text-muted-foreground">
-                <span>{vatLabel}</span><span>{formatEur(pricing.vatCents)}</span>
-              </div>
-            )}
-            <div className="flex justify-between font-semibold text-foreground border-t border-border pt-1 mt-1">
-              <span>Client pays</span><span>{formatEur(pricing.totalCents)}</span>
-            </div>
+          <div className="rounded-2xl border border-slate-200/70 bg-slate-50 p-4">
+            <PriceRows
+              rows={[
+                { label: "Your earnings", cents: pricing.freelancerPriceCents },
+                { label: "Platform fee (20%)", cents: pricing.commissionCents },
+                ...(pricing.vatCents > 0 ? [{ label: vatLabel, cents: pricing.vatCents }] : []),
+              ]}
+              total={{ label: "Client pays", cents: pricing.totalCents }}
+            />
           </div>
         )}
 
-        <div className="space-y-2">
-          <Label>Message <span className="text-muted-foreground font-normal">(optional)</span></Label>
-          <textarea
+        <Field label="Message" htmlFor="counter-message" optional>
+          <Textarea
+            id="counter-message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={2}
             placeholder="Explain your counter-proposal…"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y"
           />
-        </div>
+        </Field>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setMode("idle")}>Cancel</Button>
+        <div className="flex flex-col gap-2">
           <Button
             onClick={() => post("counter", { freelancerPriceCents: counterCents, timeline, message })}
             disabled={!!loading || counterCents < 100 || !timeline.trim()}
           >
             {loading === "counter" ? "Sending…" : "Send counter-offer"}
           </Button>
+          <Button variant="ghost" onClick={() => setMode("idle")}>Cancel</Button>
         </div>
       </div>
     )
@@ -124,20 +118,18 @@ export function RespondForm({ offerId, currentPriceCents, vatRate, vatLabel }: P
   if (mode === "decline") {
     return (
       <div className="space-y-4">
-        <h3 className="font-medium">Decline this offer</h3>
-        <div className="space-y-2">
-          <Label>Reason <span className="text-muted-foreground font-normal">(optional)</span></Label>
-          <textarea
+        <h3 className="text-sm font-bold text-slate-900">Decline this offer</h3>
+        <Field label="Reason" htmlFor="decline-reason" optional>
+          <Textarea
+            id="decline-reason"
             value={declinedReason}
             onChange={(e) => setDeclinedReason(e.target.value)}
             rows={2}
             placeholder="Let the client know why you're declining (optional)"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y"
           />
-        </div>
-        {error && <p className="text-sm text-destructive">{error}</p>}
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setMode("idle")}>Cancel</Button>
+        </Field>
+        <FormError>{error}</FormError>
+        <div className="flex flex-col gap-2">
           <Button
             variant="destructive"
             onClick={() => post("decline", { declinedReason })}
@@ -145,30 +137,26 @@ export function RespondForm({ offerId, currentPriceCents, vatRate, vatLabel }: P
           >
             {loading === "decline" ? "Declining…" : "Confirm decline"}
           </Button>
+          <Button variant="ghost" onClick={() => setMode("idle")}>Cancel</Button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-3">
-      <Button className="w-full" onClick={() => post("accept")} disabled={!!loading}>
+    <div className="flex flex-col gap-2">
+      <Button onClick={() => post("accept")} disabled={!!loading}>
         {loading === "accept" ? "Accepting…" : "Accept offer"}
       </Button>
       <div className="grid grid-cols-2 gap-2">
         <Button variant="outline" onClick={() => setMode("counter")} disabled={!!loading}>
           Counter
         </Button>
-        <Button
-          variant="outline"
-          className="text-destructive hover:text-destructive"
-          onClick={() => setMode("decline")}
-          disabled={!!loading}
-        >
+        <Button variant="danger" onClick={() => setMode("decline")} disabled={!!loading}>
           Decline
         </Button>
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      <FormError>{error}</FormError>
     </div>
   )
 }

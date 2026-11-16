@@ -4,9 +4,11 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Input, NativeSelect } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { WizardShell } from "@/components/features/application-wizard"
+import { Field, FormError } from "@/components/ui/field"
+import { WizardShell, WizardActions } from "@/components/features/application-wizard"
 
 const LANGUAGE_OPTIONS = [
   "Dari",
@@ -102,10 +104,7 @@ export function ExperienceForm({ initialData }: Props) {
       subtitle="Write in the language you're most comfortable with — English, Dari, or Italian."
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="tagline">
-            Professional headline <span className="text-muted-foreground font-normal">(optional)</span>
-          </Label>
+        <Field label="Professional headline" htmlFor="tagline" optional hint={`${tagline.length}/120`}>
           <Input
             id="tagline"
             value={tagline}
@@ -113,49 +112,48 @@ export function ExperienceForm({ initialData }: Props) {
             placeholder="Dari–English translator with 5 years in legal and NGO work"
             maxLength={120}
           />
-          <p className="text-xs text-muted-foreground">{tagline.length}/120</p>
-        </div>
+        </Field>
 
-        <div className="space-y-2">
-          <Label htmlFor="bio">About you</Label>
-          <textarea
+        <Field label="About you" htmlFor="bio" hint={`${bio.length} characters`}>
+          <Textarea
             id="bio"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={6}
             placeholder="Describe your background, skills, and what kind of projects you enjoy. At least 50 characters."
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y"
           />
-          <p className="text-xs text-muted-foreground">{bio.length} characters</p>
-        </div>
+        </Field>
 
         <div className="space-y-3">
           <Label>Languages</Label>
           {languages.map((lang, i) => (
             <div key={i} className="flex items-center gap-2">
-              <select
+              <NativeSelect
+                aria-label="Language"
                 value={lang.language}
                 onChange={(e) => updateLanguage(i, "language", e.target.value)}
-                className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="flex-1"
               >
                 {LANGUAGE_OPTIONS.map((l) => (
                   <option key={l} value={l}>{l}</option>
                 ))}
-              </select>
-              <select
+              </NativeSelect>
+              <NativeSelect
+                aria-label="Proficiency"
                 value={lang.proficiency}
                 onChange={(e) => updateLanguage(i, "proficiency", e.target.value)}
-                className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="flex-1"
               >
                 {PROFICIENCY_OPTIONS.map((p) => (
                   <option key={p.value} value={p.value}>{p.label}</option>
                 ))}
-              </select>
+              </NativeSelect>
               {languages.length > 1 && (
                 <button
                   type="button"
+                  aria-label="Remove language"
                   onClick={() => removeLanguage(i)}
-                  className="text-muted-foreground hover:text-destructive transition-colors"
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
                 >
                   <X size={16} />
                 </button>
@@ -166,23 +164,23 @@ export function ExperienceForm({ initialData }: Props) {
             <button
               type="button"
               onClick={addLanguage}
-              className="flex items-center gap-1 text-sm text-primary hover:underline"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-700"
             >
               <Plus size={14} /> Add language
             </button>
           )}
         </div>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <div className="flex justify-between pt-2">
+        <WizardActions>
           <Button type="button" variant="ghost" onClick={() => router.push("/app/apply/skills")}>
             Back
           </Button>
           <Button type="submit" disabled={loading}>
             {loading ? "Saving…" : "Continue"}
           </Button>
-        </div>
+        </WizardActions>
       </form>
     </WizardShell>
   )

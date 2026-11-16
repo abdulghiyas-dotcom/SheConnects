@@ -8,6 +8,7 @@ const inter = Inter({
   display: "swap",
   preload: false,
   adjustFontFallback: false,
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default function RootLayout({
   const lang = getPreferredLanguage();
 
   return (
-    <html lang={lang} className={inter.className}>
+    <html lang={lang} className={`${inter.className} ${inter.variable}`}>
       <body className="bg-white text-slate-900">{children}</body>
     </html>
   );

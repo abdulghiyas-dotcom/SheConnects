@@ -3,7 +3,10 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { WizardShell } from "@/components/features/application-wizard"
+import { Mic } from "lucide-react"
+import { Callout } from "@/components/ui/callout"
+import { FormError } from "@/components/ui/field"
+import { WizardShell, WizardActions } from "@/components/features/application-wizard"
 import { FileUpload, type UploadedFile } from "@/components/features/file-upload"
 
 export function VoiceForm({ r2Configured }: { r2Configured: boolean }) {
@@ -61,31 +64,30 @@ export function VoiceForm({ r2Configured }: { r2Configured: boolean }) {
           uploadedFiles={file ? [file] : []}
         />
 
-        <div className="rounded-lg bg-secondary/50 border border-border p-4 text-sm text-muted-foreground space-y-1">
-          <p className="font-medium text-foreground">Tips for a great voice intro</p>
-          <ul className="list-disc list-inside space-y-0.5 text-xs">
+        <Callout tone="indigo" icon={Mic} title="Tips for a great voice intro">
+          <ul className="list-inside list-disc space-y-0.5 text-xs">
             <li>Introduce yourself and your professional background</li>
             <li>Mention your main languages and skills</li>
             <li>Say what kinds of projects you enjoy</li>
-            <li>Speak in the language you'd use with clients (English or Italian)</li>
+            <li>Speak in the language you&apos;d use with clients (English or Italian)</li>
           </ul>
-        </div>
+        </Callout>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm leading-relaxed text-slate-500">
           Voice intros are optional but highly recommended — applicants with them receive significantly more
           enquiries.
         </p>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <FormError>{error}</FormError>
 
-        <div className="flex justify-between pt-2">
+        <WizardActions>
           <Button variant="ghost" onClick={() => router.push("/app/apply/identity")}>
             Back
           </Button>
           <Button onClick={handleContinue} disabled={saving}>
             {saving ? "Saving…" : file ? "Save & continue" : "Skip for now"}
           </Button>
-        </div>
+        </WizardActions>
       </div>
     </WizardShell>
   )

@@ -1,11 +1,12 @@
 import { notFound, redirect } from "next/navigation"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { Lock } from "lucide-react"
 import { requireRole } from "@/lib/auth/server"
 import { prismaAdmin } from "@/lib/db/prisma-admin"
 import { PlatformLayout } from "@/components/features/platform-layout"
+import { PageHeader } from "@/components/ui/page-header"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { PriceRows } from "@/components/ui/price-rows"
 import { PaymentForm } from "./payment-form"
-import { formatEur } from "@/lib/utils/pricing"
 import { isStripeConfigured } from "@/lib/services/stripe"
 
 export default async function PayProjectPage({ params }: { params: { id: string } }) {
@@ -28,35 +29,40 @@ export default async function PayProjectPage({ params }: { params: { id: string 
   const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 
   return (
-    <PlatformLayout variant="client" title="Pay for project">
-      <div className="max-w-lg mx-auto space-y-6">
-        <Link href={`/app/projects/${project.id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
-          <ArrowLeft size={14} /> Back to project
-        </Link>
+    <PlatformLayout variant="client">
+      <PageHeader
+        back={{ href: `/app/projects/${project.id}`, label: "Back to project" }}
+        title="Pay for project"
+        description={project.title}
+      />
 
-        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-          <h1 className="text-xl font-bold text-slate-900">Pay for project</h1>
-          <p className="text-sm text-slate-500 mt-1">{project.title}</p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Order summary</h2>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs text-slate-500 mb-4">
-            <span>Freelancer fee</span><span className="text-right tabular-nums">{formatEur(project.payment.freelancerPriceCents)}</span>
-            <span>Platform fee</span><span className="text-right tabular-nums">{formatEur(project.payment.commissionCents)}</span>
-            {project.payment.vatCents > 0 && (
-              <><span>VAT</span><span className="text-right tabular-nums">{formatEur(project.payment.vatCents)}</span></>
-            )}
-            <span className="font-semibold text-slate-800 pt-2 border-t border-slate-100">Total</span>
-            <span className="font-semibold text-slate-800 pt-2 border-t border-slate-100 text-right tabular-nums">{formatEur(project.payment.totalCents)}</span>
-          </div>
-
+      <div className="grid max-w-4xl grid-cols-1 gap-6 lg:grid-cols-5">
+        <Card className="p-6 lg:col-span-3">
+          <Eyebrow className="mb-4">Payment details</Eyebrow>
           <PaymentForm
             projectId={project.id}
             totalCents={project.payment.totalCents}
             publishableKey={publishableKey}
             stripeConfigured={isStripeConfigured}
           />
+        </Card>
+
+        <div className="lg:col-span-2">
+          <Card className="p-6">
+            <Eyebrow className="mb-4">Order summary</Eyebrow>
+            <PriceRows
+              rows={[
+                { label: "Freelancer fee", cents: project.payment.freelancerPriceCents },
+                { label: "Platform fee", cents: project.payment.commissionCents },
+                ...(project.payment.vatCents > 0 ? [{ label: "VAT", cents: project.payment.vatCents }] : []),
+              ]}
+              total={{ label: "Total", cents: project.payment.totalCents }}
+            />
+          </Card>
+          <p className="mt-4 flex items-center gap-1.5 px-1 text-xs text-slate-400">
+            <Lock size={12} className="text-emerald-500" />
+            Payments are processed securely by Stripe.
+          </p>
         </div>
       </div>
     </PlatformLayout>

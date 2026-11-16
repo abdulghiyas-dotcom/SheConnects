@@ -1,25 +1,15 @@
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, MapPin, Star, Globe, CheckCircle2 } from "lucide-react"
+import { MapPin, Star, Globe, CheckCircle2, ShieldCheck, ArrowRight, Briefcase } from "lucide-react"
 import { requireAuth } from "@/lib/auth/server"
 import { prismaPublic } from "@/lib/db/prisma-public"
 import { Button } from "@/components/ui/button"
+import { BackLink } from "@/components/ui/page-header"
+import { Card, Eyebrow } from "@/components/ui/card"
+import { Tag } from "@/components/ui/badge"
+import { InitialsAvatar } from "@/components/ui/initials-avatar"
 import { PlatformLayout } from "@/components/features/platform-layout"
-import { cn } from "@/lib/utils/cn"
-
-const TRACK_BADGE: Record<string, string> = {
-  PROGRAMMING:     "bg-brand-50 text-brand-700",
-  CREATIVE_DESIGN: "bg-accent-50 text-accent-700",
-  TRANSLATION:     "bg-trust-50 text-trust-700",
-  RESEARCH_DATA:   "bg-secondary text-foreground",
-}
-
-const TRACK_LABEL: Record<string, string> = {
-  PROGRAMMING:     "Dev & Tech",
-  CREATIVE_DESIGN: "Creative Design",
-  TRANSLATION:     "Translation",
-  RESEARCH_DATA:   "Research & Data",
-}
+import { TrackBadge } from "@/components/features/track"
 
 const PROFICIENCY_LABEL: Record<string, string> = {
   NATIVE:          "Native",
@@ -95,153 +85,142 @@ export default async function FreelancerProfilePage({
   }
 
   return (
-    <PlatformLayout variant="client" title={freelancer.alias}>
-      <div className="max-w-4xl mx-auto">
-        {/* Back */}
-        <Link
-          href="/app/freelancers"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-6"
-        >
-          <ArrowLeft size={14} /> All freelancers
-        </Link>
+    <PlatformLayout variant="client">
+      <BackLink href="/app/freelancers">All freelancers</BackLink>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column — main content */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Hero card */}
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">{freelancer.alias}</h1>
-                  {freelancer.tagline && (
-                    <p className="text-slate-500 mt-1">{freelancer.tagline}</p>
-                  )}
-                  <div className="flex items-center gap-3 mt-3 text-sm text-slate-500 flex-wrap">
-                    <span className={cn("text-xs px-2.5 py-0.5 rounded-full font-medium", TRACK_BADGE[freelancer.track])}>
-                      {TRACK_LABEL[freelancer.track] ?? freelancer.track}
-                    </span>
-                    {location && (
-                      <span className="flex items-center gap-1">
-                        <MapPin size={12} /> {location}
-                      </span>
-                    )}
-                    {(freelancer.averageRating ?? 0) > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Star size={12} className="fill-amber-400 text-amber-400" />
-                        {freelancer.averageRating?.toFixed(1)} ({freelancer.ratingCount} review{freelancer.ratingCount !== 1 ? "s" : ""})
-                      </span>
-                    )}
-                    {freelancer.completedProjectCount > 0 && (
-                      <span>{freelancer.completedProjectCount} project{freelancer.completedProjectCount !== 1 ? "s" : ""} completed</span>
-                    )}
-                  </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left column — main content */}
+        <div className="space-y-4 lg:col-span-2">
+          {/* Hero card */}
+          <Card className="p-6 sm:p-8">
+            <div className="flex items-start gap-4">
+              <InitialsAvatar name={freelancer.alias} size="lg" />
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">{freelancer.alias}</h1>
+                  <ShieldCheck size={18} className="flex-shrink-0 text-emerald-500" />
                 </div>
+                {freelancer.tagline && <p className="mt-1 text-sm text-slate-500">{freelancer.tagline}</p>}
               </div>
+            </div>
 
-              {/* Bio */}
-              {freelancer.bio && (
-                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
-                  {freelancer.bio}
-                </p>
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500">
+              <TrackBadge track={freelancer.track} />
+              {location && (
+                <span className="flex items-center gap-1">
+                  <MapPin size={13} /> {location}
+                </span>
+              )}
+              {(freelancer.averageRating ?? 0) > 0 && (
+                <span className="flex items-center gap-1">
+                  <Star size={13} className="fill-amber-400 text-amber-400" />
+                  <span className="font-semibold text-slate-700">{freelancer.averageRating?.toFixed(1)}</span>
+                  ({freelancer.ratingCount} review{freelancer.ratingCount !== 1 ? "s" : ""})
+                </span>
+              )}
+              {freelancer.completedProjectCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <Briefcase size={13} />
+                  {freelancer.completedProjectCount} project{freelancer.completedProjectCount !== 1 ? "s" : ""} completed
+                </span>
               )}
             </div>
 
-            {/* Skills */}
-            {freelancer.skills.length > 0 && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Skills</h2>
-                <div className="space-y-4">
-                  {Object.keys(skillsByCategory).map((category) => (
-                    <div key={category}>
-                      <p className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-2">
-                        {category}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {skillsByCategory[category].map((s) => (
-                          <span
-                            key={s.skill.name}
-                            className="rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600"
-                          >
-                            {s.skill.name}
-                            {s.isPrimary && (
-                              <span className="ml-1.5 text-slate-400">· {SKILL_LEVEL_LABEL[s.level]}</span>
-                            )}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Portfolio */}
-            {freelancer.portfolioItems.length > 0 && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-6">
-                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Portfolio</h2>
-                <div className="space-y-4">
-                  {freelancer.portfolioItems.map((item) => (
-                    <div key={item.title} className="border-l-2 border-brand-200 pl-4">
-                      <p className="font-semibold text-sm text-slate-800">{item.title}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{item.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right column — sidebar */}
-          <div className="space-y-4">
-            {/* CTA card */}
-            <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5 space-y-4">
-              {freelancer.acceptingOffers ? (
-                <>
-                  <div className="flex items-center gap-1.5 text-trust-600 text-sm font-medium">
-                    <CheckCircle2 size={16} /> Available for new projects
-                  </div>
-                  <Button asChild className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-white shadow-brand text-sm font-semibold">
-                    <Link href={`/app/offers/new?freelancer=${freelancer.aliasSlug}`}>
-                      Send an offer
-                    </Link>
-                  </Button>
-                  <p className="text-xs text-slate-400 text-center">
-                    You'll be able to discuss details before anything is confirmed.
-                  </p>
-                </>
-              ) : (
-                <p className="text-sm text-slate-400 text-center py-2">
-                  Not accepting new projects at this time.
-                </p>
-              )}
-            </div>
-
-            {/* Languages */}
-            {freelancer.languages.length > 0 && (
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-card p-5">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                  <Globe size={13} /> Languages
-                </h3>
-                <ul className="space-y-1.5">
-                  {freelancer.languages.map((l) => (
-                    <li key={l.language} className="flex items-center justify-between text-sm">
-                      <span className="text-slate-700">{l.language}</span>
-                      <span className="text-xs text-slate-400">
-                        {PROFICIENCY_LABEL[l.proficiency] ?? l.proficiency}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Privacy note */}
-            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-xs text-slate-400">
-              <p>
-                Freelancers use a pseudonym to protect their identity. SheConnects verifies all
-                professionals before they appear on the platform.
+            {freelancer.bio && (
+              <p className="mt-6 whitespace-pre-line border-t border-slate-100 pt-6 text-sm leading-relaxed text-slate-700">
+                {freelancer.bio}
               </p>
-            </div>
+            )}
+          </Card>
+
+          {/* Skills */}
+          {freelancer.skills.length > 0 && (
+            <Card className="p-6 sm:p-8">
+              <Eyebrow className="mb-4">Skills</Eyebrow>
+              <div className="space-y-5">
+                {Object.keys(skillsByCategory).map((category) => (
+                  <div key={category}>
+                    <p className="mb-2 text-sm font-bold text-slate-900">{category}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {skillsByCategory[category].map((s) => (
+                        <Tag key={s.skill.name}>
+                          {s.skill.name}
+                          {s.isPrimary && (
+                            <span className="ml-1.5 text-slate-400">· {SKILL_LEVEL_LABEL[s.level]}</span>
+                          )}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Portfolio */}
+          {freelancer.portfolioItems.length > 0 && (
+            <Card className="p-6 sm:p-8">
+              <Eyebrow className="mb-4">Portfolio</Eyebrow>
+              <div className="space-y-4">
+                {freelancer.portfolioItems.map((item) => (
+                  <div key={item.title} className="border-l-2 border-indigo-200 pl-4">
+                    <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+        </div>
+
+        {/* Right column — sidebar */}
+        <div className="space-y-4">
+          <Card className="space-y-4 p-6">
+            {freelancer.acceptingOffers ? (
+              <>
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600">
+                  <CheckCircle2 size={16} /> Available for new projects
+                </div>
+                <Button asChild size="lg" className="w-full">
+                  <Link href={`/app/offers/new?freelancer=${freelancer.aliasSlug}`}>
+                    Send an offer <ArrowRight size={14} />
+                  </Link>
+                </Button>
+                <p className="text-center text-xs leading-relaxed text-slate-400">
+                  You&apos;ll be able to discuss details before anything is confirmed.
+                </p>
+              </>
+            ) : (
+              <p className="py-2 text-center text-sm text-slate-400">
+                Not accepting new projects at this time.
+              </p>
+            )}
+          </Card>
+
+          {freelancer.languages.length > 0 && (
+            <Card className="p-6">
+              <Eyebrow className="mb-3 flex items-center gap-1.5">
+                <Globe size={12} /> Languages
+              </Eyebrow>
+              <ul className="space-y-2">
+                {freelancer.languages.map((l) => (
+                  <li key={l.language} className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-slate-700">{l.language}</span>
+                    <span className="text-xs text-slate-400">
+                      {PROFICIENCY_LABEL[l.proficiency] ?? l.proficiency}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          <div className="flex gap-2.5 rounded-2xl border border-slate-200/70 bg-white/60 p-4 text-xs leading-relaxed text-slate-500">
+            <ShieldCheck size={15} className="mt-0.5 flex-shrink-0 text-emerald-500" />
+            <p>
+              Freelancers use a pseudonym to protect their identity. SheConnects verifies all
+              professionals before they appear on the platform.
+            </p>
           </div>
         </div>
       </div>
