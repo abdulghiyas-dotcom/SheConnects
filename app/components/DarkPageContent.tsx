@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DarkHeader from "./DarkHeader";
+import SiteHeader from "./SiteHeader";
 import DarkHero from "./DarkHero";
 import TrustBar from "./TrustBar";
 import HowItWorksNew from "./HowItWorksNew";
@@ -27,7 +27,7 @@ export default function DarkPageContent({ initialLanguage = defaultLanguage }: P
 
   return (
     <>
-      <DarkHeader language={language} onLanguageChange={setLanguage} />
+      <SiteHeader language={language} onLanguageChange={setLanguage} overlay />
       <DarkHero language={language} />
       <TrustBar language={language} />
       <HowItWorksNew language={language} />

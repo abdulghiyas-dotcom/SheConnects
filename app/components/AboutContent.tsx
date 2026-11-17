@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import Header from "./Header";
+import SiteHeader from "./SiteHeader";
 import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
 import { motion } from "framer-motion";
@@ -47,12 +47,7 @@ export default function AboutContent({
 
   return (
     <>
-      <Header
-        content={content.header}
-        language={language}
-        onLanguageChange={setLanguage}
-        languageNames={content.languageNames}
-      />
+      <SiteHeader language={language} onLanguageChange={setLanguage} />
 
       {/* Hero */}
       <section

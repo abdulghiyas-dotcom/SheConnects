@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import Header from "./Header";
+import SiteHeader from "./SiteHeader";
 import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
 import {
@@ -35,12 +35,7 @@ export default function PrivacyContent({
 
   return (
     <>
-      <Header
-        content={content.header}
-        language={language}
-        onLanguageChange={setLanguage}
-        languageNames={content.languageNames}
-      />
+      <SiteHeader language={language} onLanguageChange={setLanguage} />
 
       {/* Header section */}
       <section className="border-b border-slate-100 bg-white py-12">

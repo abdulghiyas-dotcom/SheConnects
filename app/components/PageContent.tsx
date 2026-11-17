@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Header from "./Header";
+import SiteHeader from "./SiteHeader";
 import FreelancersPreview from "./FreelancersPreview";
 import Hero from "./Hero";
 import Services from "./Services";
@@ -47,12 +47,7 @@ export default function PageContent({
 
   return (
     <>
-      <Header
-        content={content.header}
-        language={language}
-        onLanguageChange={setLanguage}
-        languageNames={content.languageNames}
-      />
+      <SiteHeader language={language} onLanguageChange={setLanguage} />
 
       <Hero content={content.hero} common={content.common} />
 

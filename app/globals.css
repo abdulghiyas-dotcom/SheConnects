@@ -4,6 +4,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Keep anchored sections (/#how-it-works …) clear of the fixed site header */
+  scroll-padding-top: 80px;
 }
 
 body {

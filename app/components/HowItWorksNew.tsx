@@ -65,9 +65,12 @@ const palette = {
 
 type Col = { label: string; color: "indigo" | "amber"; steps: { icon: React.ComponentType<{ size: number; className: string }>; title: string; desc: string }[] };
 
-function StepColumn({ col, delay }: { col: Col; delay: number }) {
+function StepColumn({ col, delay, id }: { col: Col; delay: number; id?: string }) {
   const pal = palette[col.color];
+  // The anchor id sits on a still wrapper: the card slides in, and an anchor on
+  // the moving element would scroll to where it starts, not where it ends up.
   return (
+    <div id={id}>
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -106,6 +109,7 @@ function StepColumn({ col, delay }: { col: Col; delay: number }) {
         })}
       </div>
     </motion.div>
+    </div>
   );
 }
 
@@ -156,6 +160,7 @@ export default function HowItWorksNew({ language }: Props) {
             delay={0}
           />
           <StepColumn
+            id="vas"
             col={{ label: c.womenLabel, color: "amber", steps: c.womenSteps as Col["steps"] }}
             delay={0.1}
           />

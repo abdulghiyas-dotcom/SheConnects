@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { freelancers } from "../../lib/freelancers";
-import Header from "../../components/Header";
+import SiteHeader from "../../components/SiteHeader";
 import Footer from "../../components/Footer";
 import { defaultLanguage, translations, Language } from "../../lib/translations";
 import { ShieldCheck, ExternalLink, ArrowRight, FileText } from "lucide-react";
@@ -39,7 +39,7 @@ export default function FreelancerProfileClient({ slug, initialLanguage = defaul
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
-      <Header content={content.header} language={language} onLanguageChange={setLanguage} languageNames={content.languageNames} />
+      <SiteHeader language={language} onLanguageChange={setLanguage} />
 
       {/* Profile hero */}
       <section

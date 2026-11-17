@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import Header from "./Header";
+import SiteHeader from "./SiteHeader";
 import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
 import { BlogPost } from "../blog/posts";
@@ -38,12 +38,7 @@ export default function BlogContent({
 
   return (
     <>
-      <Header
-        content={content.header}
-        language={language}
-        onLanguageChange={setLanguage}
-        languageNames={content.languageNames}
-      />
+      <SiteHeader language={language} onLanguageChange={setLanguage} />
 
       <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8">

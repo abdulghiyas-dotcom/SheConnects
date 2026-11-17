@@ -14,6 +14,7 @@ const content = {
     forOrgs: "For organisations",
     forWomen: "For Afghan women",
     impact: "Impact",
+    blog: "Blog",
     signIn: "Sign in",
     getStarted: "Get started",
     iAmOrg: "I represent an organisation",
@@ -26,6 +27,7 @@ const content = {
     forOrgs: "Per le organizzazioni",
     forWomen: "Per le donne afghane",
     impact: "Impatto",
+    blog: "Blog",
     signIn: "Accedi",
     getStarted: "Inizia ora",
     iAmOrg: "Rappresento un'organizzazione",
@@ -35,9 +37,17 @@ const content = {
   },
 };
 
-type Props = { language: Language; onLanguageChange: (lang: Language) => void };
+type Props = {
+  language: Language;
+  onLanguageChange: (lang: Language) => void;
+  /** Float over the page (home hero). Other pages get a spacer so content starts below the header. */
+  overlay?: boolean;
+};
 
-export default function Header({ language, onLanguageChange }: Props) {
+// One header for every public page. Its height is fixed so the spacer below matches exactly.
+const HEADER_HEIGHT = "h-16";
+
+export default function SiteHeader({ language, onLanguageChange, overlay = false }: Props) {
   const [signInOpen, setSignInOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -63,6 +73,7 @@ export default function Header({ language, onLanguageChange }: Props) {
     { href: "/#organizations", label: c.forOrgs },
     { href: "/#vas", label: c.forWomen },
     { href: "/#impact", label: c.impact },
+    { href: "/blog", label: c.blog },
   ];
 
   return (
@@ -176,6 +187,7 @@ export default function Header({ language, onLanguageChange }: Props) {
           </button>
         </nav>
       </motion.header>
+      {!overlay && <div aria-hidden className={HEADER_HEIGHT} />}
 
       {/* Mobile overlay */}
       <AnimatePresence>
