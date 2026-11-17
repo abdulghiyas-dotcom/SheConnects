@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/db/client"
+import { getAppUrl } from "@/lib/utils/app-url"
 
 /**
  * GET /api/health — deployment self-check.
@@ -21,7 +22,7 @@ type Check = { name: string; ok: boolean; detail: string; fix?: string }
 const SETTINGS: Record<string, { needed: string[]; anyOf?: string[][]; feature: string }> = {
   core: {
     feature: "Sign-in, dashboards and every button",
-    needed: ["DATABASE_URL", "DIRECT_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "NEXT_PUBLIC_APP_URL"],
+    needed: ["DATABASE_URL", "DIRECT_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"],
   },
   payments: {
     feature: "Card payments (Stripe)",
@@ -177,9 +178,55 @@ async function supabaseCheck(): Promise<Check | null> {
   }
 }
 
+/** Supabase project ref from a URL — public information (it is in the browser bundle). */
+function supabaseRef(raw: string | undefined): string | null {
+  if (!raw) return null
+  try {
+    const u = new URL(raw)
+    // https://<ref>.supabase.co · db.<ref>.supabase.co · postgres.<ref>@…pooler.supabase.com
+    const fromUser = /^postgres\.([a-z0-9]+)$/.exec(decodeURIComponent(u.username))?.[1]
+    const fromHost = /^(?:db\.)?([a-z0-9]{15,})\.supabase\.co$/.exec(u.hostname)?.[1]
+    return fromUser ?? fromHost ?? null
+  } catch {
+    return null
+  }
+}
+
+function projectChecks(): Check[] {
+  const checks: Check[] = []
+  const authRef = supabaseRef(process.env.NEXT_PUBLIC_SUPABASE_URL)
+  const dbRef = supabaseRef(process.env.DATABASE_URL)
+  if (authRef && dbRef && authRef !== dbRef) {
+    checks.push({
+      name: "supabase: same project",
+      ok: false,
+      detail: `Sign-in uses Supabase project ${authRef} but the database is project ${dbRef}`,
+      fix: "People would sign in to one project and their data would be looked up in another. Take DATABASE_URL, DIRECT_URL and the API keys from the same Supabase project.",
+    })
+  } else if (authRef || dbRef) {
+    checks.push({ name: "supabase: same project", ok: true, detail: `Using Supabase project ${authRef ?? dbRef}` })
+  }
+
+  const appUrl = getAppUrl()
+  const appHost = (() => { try { return new URL(appUrl).host } catch { return appUrl } })()
+  const isPreview = process.env.VERCEL_ENV === "preview"
+  const pinned = !!process.env.NEXT_PUBLIC_APP_URL?.trim()
+  checks.push(
+    isPreview && pinned
+      ? {
+          name: "email links (optional)",
+          ok: false,
+          detail: `This is a preview, but NEXT_PUBLIC_APP_URL is set, so emails from it link to ${appHost}`,
+          fix: "In Vercel, set NEXT_PUBLIC_APP_URL for Production only. Previews then link to their own address.",
+        }
+      : { name: "email links", ok: true, detail: `Emails link to ${appHost}` }
+  )
+  return checks
+}
+
 export async function GET() {
   const [db, supabase] = await Promise.all([databaseChecks(), supabaseCheck()])
-  const checks = [...settingsChecks(), connectionStringCheck(), ...db, supabase].filter((c): c is Check => c !== null)
+  const checks = [...settingsChecks(), connectionStringCheck(), ...db, supabase, ...projectChecks()].filter((c): c is Check => c !== null)
 
   // Only core problems mean "the buttons won't work"; optional features are reported but don't fail the check.
   const coreFailures = checks.filter((c) => !c.ok && !c.name.endsWith("(optional)"))

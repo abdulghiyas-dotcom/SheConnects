@@ -1,4 +1,5 @@
 import { Resend } from "resend"
+import { getAppUrl } from "@/lib/utils/app-url"
 
 export const isEmailConfigured = !!process.env.RESEND_API_KEY
 
@@ -13,7 +14,7 @@ const FROM = process.env.EMAIL_FROM
   ?? (process.env.RESEND_FROM_EMAIL
       ? `${process.env.RESEND_FROM_NAME ?? "SheConnects"} <${process.env.RESEND_FROM_EMAIL}>`
       : "SheConnects <hello@sheconnects.work>")
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+const APP_URL = getAppUrl()
 
 async function send(to: string, subject: string, html: string) {
   if (!isEmailConfigured) return

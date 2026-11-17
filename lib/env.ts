@@ -1,6 +1,8 @@
 // Type-safe environment variable access
 // Throws at startup if required variables are missing
 
+import { getAppUrl } from "@/lib/utils/app-url"
+
 function required(key: string): string {
   const value = process.env[key]
   if (!value) throw new Error(`Missing required environment variable: ${key}`)
@@ -13,7 +15,7 @@ function optional(key: string): string | undefined {
 
 export const env = {
   // Core
-  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  appUrl: getAppUrl(),
   nodeEnv: process.env.NODE_ENV ?? "development",
 
   // Database
