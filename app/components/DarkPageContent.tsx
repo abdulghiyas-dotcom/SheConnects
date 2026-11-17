@@ -9,8 +9,8 @@ import StudioTracks from "./StudioTracks";
 import ImpactCounters from "./ImpactCounters";
 import MissionSection from "./MissionSection";
 import FinalCtaDark from "./FinalCtaDark";
-import DarkFooter from "./DarkFooter";
-import { Language, defaultLanguage } from "../lib/translations";
+import Footer from "./Footer";
+import { Language, defaultLanguage, translations } from "../lib/translations";
 
 function normalizeLanguage(value: string | undefined): Language {
   return value === "it" ? "it" : "en";
@@ -35,7 +35,7 @@ export default function DarkPageContent({ initialLanguage = defaultLanguage }: P
       <ImpactCounters language={language} />
       <MissionSection language={language} />
       <FinalCtaDark language={language} />
-      <DarkFooter language={language} />
+      <Footer content={translations[language].footer} />
     </>
   );
 }
