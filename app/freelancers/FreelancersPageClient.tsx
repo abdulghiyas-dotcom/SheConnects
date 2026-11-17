@@ -176,7 +176,7 @@ export default function FreelancersPageClient({ initialLanguage = defaultLanguag
                     {language === "it" ? "Vedi profilo" : "View profile"}
                   </Link>
                   <Link
-                    href={`/app/sign-up`}
+                    href={`/app/sign-up?role=client`}
                     className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-600 px-3 py-2 text-xs font-semibold text-white shadow-brand hover:bg-brand-700 transition-colors"
                   >
                     {language === "it" ? "Invia offerta" : "Send offer"}

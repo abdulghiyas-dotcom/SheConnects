@@ -193,6 +193,13 @@ export default function ApplyPage() {
             Sign in to continue
           </Link>
         </p>
+
+        <p className="border-t border-slate-100 pt-5 text-center text-sm text-slate-500">
+          Hiring for an organisation?{" "}
+          <Link href="/app/sign-up?role=client" className={authLinkClass}>
+            Create an organisation account
+          </Link>
+        </p>
       </form>
     </WizardShell>
   )

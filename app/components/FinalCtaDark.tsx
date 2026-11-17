@@ -68,7 +68,7 @@ export default function FinalCta({ language }: Props) {
 
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
-                href="/app/sign-up"
+                href="/app/sign-up?role=client"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-bold text-indigo-700 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
               >
                 {c.cta1}

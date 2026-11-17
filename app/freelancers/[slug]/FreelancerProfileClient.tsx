@@ -171,7 +171,7 @@ export default function FreelancerProfileClient({ slug, initialLanguage = defaul
                   : "Create a free account to send an offer."}
               </p>
               <Link
-                href="/app/sign-up"
+                href="/app/sign-up?role=client"
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-brand hover:bg-brand-700 transition-all hover:-translate-y-0.5"
               >
                 {language === "it" ? "Invia offerta" : "Send offer"}
