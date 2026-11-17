@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/db/client"
 import { getAppUrl } from "@/lib/utils/app-url"
+import { env } from "@/lib/env"
 
 /**
  * GET /api/health — deployment self-check.
@@ -38,8 +39,10 @@ const SETTINGS: Record<string, { needed: string[]; anyOf?: string[][]; feature: 
     anyOf: [["EMAIL_FROM", "RESEND_FROM_EMAIL"]],
   },
   ai: {
-    feature: "AI matching on the project brief",
-    needed: ["GROQ_API_KEY", "GOOGLE_AI_API_KEY", "HUGGINGFACE_API_KEY", "LANGFUSE_SECRET_KEY", "LANGFUSE_PUBLIC_KEY"],
+    // Only Groq is required: Gemini is the fallback when Groq is rate-limited.
+    // Hugging Face and Langfuse keys are read by lib/ai but nothing calls them yet.
+    feature: "\"Analyze with AI\" on the project brief",
+    needed: ["GROQ_API_KEY"],
   },
 }
 
@@ -224,9 +227,91 @@ function projectChecks(): Check[] {
   return checks
 }
 
+/** Calls a provider's free "who am I / list models" endpoint. Never sends prompts, never spends tokens. */
+async function probe(url: string, headers: Record<string, string>): Promise<{ status: number; body: unknown } | null> {
+  try {
+    const res = await withTimeout(fetch(url, { headers, cache: "no-store" }), 8000)
+    const body = await res.json().catch(() => null)
+    return { status: res.status, body }
+  } catch {
+    return null
+  }
+}
+
+const rejected = (status: number) => status === 400 || status === 401 || status === 403
+
+function modelIds(body: unknown): string[] {
+  const data = (body as { data?: { id?: string }[] } | null)?.data ?? []
+  return data.map((m) => (m.id ?? "").replace(/^models\//, ""))
+}
+
+async function aiChecks(): Promise<Check[]> {
+  const checks: Check[] = []
+
+  if (has("GROQ_API_KEY")) {
+    const r = await probe("https://api.groq.com/openai/v1/models", { Authorization: `Bearer ${process.env.GROQ_API_KEY!.trim()}` })
+    if (!r) checks.push({ name: "ai: Groq (optional)", ok: false, detail: "Groq could not be reached from this deployment", fix: "Try again in a minute; if it persists, check status.groq.com." })
+    else if (rejected(r.status)) checks.push({ name: "ai: Groq (optional)", ok: false, detail: "Groq rejected GROQ_API_KEY", fix: "Create a new key at console.groq.com → API Keys, paste it without spaces or quotes, then redeploy." })
+    else if (r.status !== 200) checks.push({ name: "ai: Groq (optional)", ok: false, detail: `Groq answered with status ${r.status}` })
+    else {
+      const ids = modelIds(r.body)
+      // The brief analysis uses the fast model; the default model is kept for future features.
+      const missing = [env.groqFastModel, env.groqDefaultModel].filter((m) => !ids.includes(m))
+      checks.push(
+        missing.length === 0
+          ? { name: "ai: Groq", ok: true, detail: `key accepted; models ${env.groqFastModel} and ${env.groqDefaultModel} available` }
+          : {
+              name: "ai: Groq (optional)",
+              ok: missing[0] !== env.groqFastModel,
+              detail: `key accepted, but Groq doesn't offer: ${missing.join(", ")}`,
+              fix: "Pick a current model id from console.groq.com/docs/models and set GROQ_FAST_MODEL (used by the brief analysis) / GROQ_DEFAULT_MODEL in Vercel.",
+            }
+      )
+    }
+  }
+
+  if (has("GOOGLE_AI_API_KEY")) {
+    const r = await probe("https://generativelanguage.googleapis.com/v1beta/openai/models", { Authorization: `Bearer ${process.env.GOOGLE_AI_API_KEY!.trim()}` })
+    if (!r) checks.push({ name: "ai: Gemini fallback (optional)", ok: false, detail: "Google AI could not be reached from this deployment" })
+    else if (rejected(r.status)) checks.push({ name: "ai: Gemini fallback (optional)", ok: false, detail: "Google rejected GOOGLE_AI_API_KEY", fix: "Create a key at aistudio.google.com → Get API key, paste it without spaces or quotes, then redeploy." })
+    else if (r.status !== 200) checks.push({ name: "ai: Gemini fallback (optional)", ok: false, detail: `Google AI answered with status ${r.status}` })
+    else if (!modelIds(r.body).includes(env.geminiModel))
+      checks.push({ name: "ai: Gemini fallback (optional)", ok: false, detail: `key accepted, but Google doesn't offer ${env.geminiModel}`, fix: "Set GEMINI_MODEL in Vercel to a current model id from ai.google.dev/gemini-api/docs/models." })
+    else checks.push({ name: "ai: Gemini fallback", ok: true, detail: `key accepted; model ${env.geminiModel} available` })
+  } else if (has("GROQ_API_KEY")) {
+    checks.push({ name: "ai: Gemini fallback (optional)", ok: false, detail: "Not set up — when Groq is rate-limited the brief analysis will fail instead of switching to Gemini", fix: "Add GOOGLE_AI_API_KEY (free at aistudio.google.com)." })
+  }
+
+  if (has("HUGGINGFACE_API_KEY")) {
+    const r = await probe("https://huggingface.co/api/whoami-v2", { Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY!.trim()}` })
+    checks.push(
+      r?.status === 200
+        ? { name: "ai: Hugging Face (not used yet)", ok: true, detail: "key accepted — reserved for semantic matching, which isn't built yet" }
+        : r
+          ? { name: "ai: Hugging Face (optional)", ok: false, detail: "Hugging Face rejected HUGGINGFACE_API_KEY (not used by any feature yet)", fix: "Create a read token at huggingface.co/settings/tokens." }
+          : { name: "ai: Hugging Face (optional)", ok: false, detail: "Hugging Face could not be reached from this deployment (not used by any feature yet)" }
+    )
+  }
+
+  if (has("LANGFUSE_PUBLIC_KEY") && has("LANGFUSE_SECRET_KEY")) {
+    const auth = Buffer.from(`${process.env.LANGFUSE_PUBLIC_KEY!.trim()}:${process.env.LANGFUSE_SECRET_KEY!.trim()}`).toString("base64")
+    const base = env.langfuseBaseUrl.replace(/\/$/, "")
+    const r = await probe(`${base}/api/public/projects`, { Authorization: `Basic ${auth}` })
+    checks.push(
+      r?.status === 200
+        ? { name: "ai: Langfuse (not used yet)", ok: true, detail: "keys accepted — reserved for AI monitoring, which isn't wired up yet" }
+        : { name: "ai: Langfuse (optional)", ok: false, detail: r ? "Langfuse rejected the public/secret key pair (not used by any feature yet)" : `Langfuse could not be reached at ${base}`, fix: "Copy both keys from the same Langfuse project; if your project is in the US region set LANGFUSE_BASE_URL=https://us.cloud.langfuse.com." }
+    )
+  } else if (has("LANGFUSE_PUBLIC_KEY") !== has("LANGFUSE_SECRET_KEY")) {
+    checks.push({ name: "ai: Langfuse (optional)", ok: false, detail: "Only one of LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY is set", fix: "Add both keys from the same Langfuse project." })
+  }
+
+  return checks
+}
+
 export async function GET() {
-  const [db, supabase] = await Promise.all([databaseChecks(), supabaseCheck()])
-  const checks = [...settingsChecks(), connectionStringCheck(), ...db, supabase, ...projectChecks()].filter((c): c is Check => c !== null)
+  const [db, supabase, ai] = await Promise.all([databaseChecks(), supabaseCheck(), aiChecks()])
+  const checks = [...settingsChecks(), connectionStringCheck(), ...db, supabase, ...projectChecks(), ...ai].filter((c): c is Check => c !== null)
 
   // Only core problems mean "the buttons won't work"; optional features are reported but don't fail the check.
   const coreFailures = checks.filter((c) => !c.ok && !c.name.endsWith("(optional)"))
